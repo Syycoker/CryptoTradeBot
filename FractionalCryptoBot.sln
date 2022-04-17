@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FractionalCryptoBot", "FractionalCryptoBot\FractionalCryptoBot.csproj", "{3BC5FF3B-C0A3-45A5-A48A-1E1565DB2196}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{A683F5F1-A535-451D-AB58-5F4C4E6C84CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Test\Tests.csproj", "{A683F5F1-A535-451D-AB58-5F4C4E6C84CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

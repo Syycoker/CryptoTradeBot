@@ -73,7 +73,7 @@ namespace FractionalCryptoBot.Configuration
     /// The base uri of the service.
     /// </summary>
     /// <param name="service"></param>
-    /// <returns></returns>
+    /// <returns>The base uri of the chosen marketplace.</returns>
     public static string GetBaseUri(Marketplaces service)
     {
       switch (service)
@@ -84,6 +84,27 @@ namespace FractionalCryptoBot.Configuration
 
         case Marketplaces.BINANCE:
           return BinanceAuthenticationDictionary[API_URL];
+
+        case Marketplaces.COINBASE:
+          return string.Empty;
+      }
+    }
+
+    /// <summary>
+    /// Returns the base websocket uri for the chosen service.
+    /// </summary>
+    /// <param name="service"></param>
+    /// <returns>The base websocket uri of the chosen marketplace.</returns>
+    public static string GetWebsocketUri(Marketplaces service)
+    {
+      switch (service)
+      {
+        default:
+        case Marketplaces.NONE:
+          return string.Empty;
+
+        case Marketplaces.BINANCE:
+          return BinanceAuthenticationDictionary[SOCKET_URL];
 
         case Marketplaces.COINBASE:
           return string.Empty;

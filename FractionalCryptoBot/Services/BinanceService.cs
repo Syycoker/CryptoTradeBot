@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Web;
+using System.Net.WebSockets;
 using FractionalCryptoBot.Enumerations;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -8,18 +9,20 @@ using Newtonsoft.Json;
 namespace FractionalCryptoBot.Services
 {
   /// <summary>
-  /// The service for binance.
+  /// The service class for binance.
   /// </summary>
-  public class BinanceService : HttpService
+  public sealed class BinanceService : HttpService
   {
     /// <summary>
     /// Default constuctor to instantiate a binance service object.
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="httpClient"></param>
-    public BinanceService(ILogger logger, HttpClient httpClient) : base(logger, httpClient, Marketplaces.BINANCE)
+    public BinanceService(ILogger logger, HttpClient httpClient, WebSocket webSocket) : base(logger, httpClient, webSocket, Marketplaces.BINANCE)
     {
       // Nothing needs to be set in the constructor for now.
+      // Not using string interpolation as I lose more valuable information and processing time when doing so.
+      Log.LogInformation("{0}: '{1}' has been instantiated.", DateTime.UtcNow, nameof(BinanceService));
     }
 
     /// <summary>
@@ -38,7 +41,7 @@ namespace FractionalCryptoBot.Services
         if (!(content is null))
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await HttpClient.SendAsync(request);
+        HttpResponseMessage response = await Client.SendAsync(request);
 
         using (HttpContent responseContent = response.Content)
         {
@@ -103,6 +106,56 @@ namespace FractionalCryptoBot.Services
       requestUriBuilder.Append("?").Append(queryStringBuilder.ToString());
 
       return await SendAsync(httpMethod, requestUriBuilder.ToString(), content);
+    }
+
+    /// <summary>
+    /// Sends a request to binance's websocket endpoint.
+    /// </summary>
+    /// <param name="streamName">The name of the stream</param>
+    /// <returns>A response string.</returns>
+    public override async Task<string> SendWebsocketAsync(string streamName)
+    {
+      // Testing stream 'kline'.
+      string pair = "btcusdt";
+      string interval = "1m";
+      string socketRequest =$"WebsocketBaseUri/ws/{ pair }@{ streamName }_{ interval }";
+
+      using (Socket = new WebSocket())
+      {
+
+      }
+
+        return socketRequest;
+    }
+
+    /// <summary>
+    /// Handles an operation when the websocket has been opened.
+    /// </summary>
+    /// <param name="sender">The object raising the event.</param>
+    /// <param name="args">The arguments of the event.</param>
+    public override void SocketOnOpen(object sender, EventArgs args)
+    {
+      throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Handles an operation when the websocket has recieved/sent a message.
+    /// </summary>
+    /// <param name="sender">The object raising the event.</param>
+    /// <param name="args">The arguments of the event.</param>
+    public override void SocketOnMessage(object sender, EventArgs args)
+    {
+      throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Handles an operation when the websocket has been closed.
+    /// </summary>
+    /// <param name="sender">The object raising the event.</param>
+    /// <param name="args">The arguments of the event.</param>
+    public override void SocketOnClose(object sender, EventArgs args)
+    {
+      throw new NotImplementedException();
     }
   }
 }

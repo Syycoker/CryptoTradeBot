@@ -35,6 +35,35 @@
     Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null);
 
     /// <summary>
+    /// Sends a request to the websocket endpoint location.
+    /// </summary>
+    /// <param name="streamName">The name of the stream.</param>
+    /// <returns>A response string, i.e. JSON.</returns>
+    Task SendWebsocketAsync(string streamName);
+
+    /// <summary>
+    /// To handle an operation once the socket has been opened.
+    /// </summary>
+    /// <param name="sender">The object raising the event.</param>
+    /// <param name="args">The arguments of the event.</param>
+    void SocketOnOpen(object sender, EventArgs args);
+
+    /// <summary>
+    /// To handle an operation once the socket has sent/recieved a message.
+    /// </summary>
+    /// <param name="sender">The object raising the event.</param>
+    /// <param name="args">The arguments of the event.</param>
+    void SocketOnMessage(object sender, EventArgs args);
+
+
+    /// <summary>
+    /// To handle an operation once the socket has been closed.
+    /// </summary>
+    /// <param name="sender">The object raising the event.</param>
+    /// <param name="args">The arguments of the event.</param>
+    void SocketOnClose(object sender, EventArgs args);
+
+    /// <summary>
     /// HMAC signs the string if provided a source and its secret.
     /// </summary>
     /// <param name="source">The source string to then be encrypted.</param>
