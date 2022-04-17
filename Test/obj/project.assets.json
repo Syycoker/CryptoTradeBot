@@ -5978,9 +5978,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\Test\\Test.csproj",
-      "projectName": "Test",
-      "projectPath": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\Test\\Test.csproj",
+      "projectUniqueName": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\Test\\Tests.csproj",
+      "projectName": "Tests",
+      "projectPath": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\Test\\Tests.csproj",
       "packagesPath": "C:\\Users\\Sylas Coker\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\Test\\obj\\",
       "projectStyle": "PackageReference",

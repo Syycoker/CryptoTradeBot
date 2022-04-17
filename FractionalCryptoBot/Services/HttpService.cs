@@ -36,8 +36,8 @@ namespace FractionalCryptoBot.Services
     /// <summary>
     /// The default constructor to any class inherting from HttpService.
     /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="httpClient"></param>
+    /// <param name="logger">Any logger thn implements ILogger.</param>
+    /// <param name="httpClient">The http client to be used to make calls.</param>
     public HttpService(ILogger logger, HttpClient httpClient, Marketplaces marketplace)
     {
       // Use dependency Injection to set the client and logger from the 'top level'.

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9OH6xibUJE+t4O67zL81tEuC0mueiFXr1Df8ZcJsZ2ShrimZPWtDbqJGm98ykLiqsCfi0ZzNnasMBp6L1feRpw==",
+  "dgSpecHash": "e2ZVjurtweCb1Z0VT38IaXIGu/hJrmsTvW/BUDRRTCvKqScZIwOFKHtpUY3tnYJ8Eg48aXLclQQ0YuqB4A+Fdg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\Test\\Test.csproj",
+  "projectFilePath": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\Test\\Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Sylas Coker\\.nuget\\packages\\coverlet.collector\\3.1.0\\coverlet.collector.3.1.0.nupkg.sha512",
     "C:\\Users\\Sylas Coker\\.nuget\\packages\\microsoft.codecoverage\\16.11.0\\microsoft.codecoverage.16.11.0.nupkg.sha512",
