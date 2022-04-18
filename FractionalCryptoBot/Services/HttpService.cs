@@ -19,11 +19,6 @@ namespace FractionalCryptoBot.Services
     public readonly HttpClient Client;
 
     /// <summary>
-    /// The Websocket for the service.
-    /// </summary>
-    public readonly ClientWebSocketFactory Socket;
-
-    /// <summary>
     /// The Logger for the service.
     /// </summary>
     public readonly ILogger Log;
@@ -54,11 +49,10 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="logger">Any logger thn implements ILogger.</param>
     /// <param name="httpClient">The http client to be used to make calls.</param>
-    public HttpService(ILogger logger, HttpClient httpClient, WebSocket webSocket, Marketplaces marketplace)
+    public HttpService(ILogger logger, HttpClient httpClient, Marketplaces marketplace)
     {
       // Use dependency Injection to set the client and logger from the 'top level'.
       Client = httpClient;
-      Socket = webSocket;
       Log = logger;
 
       // Set the dependencies based on what service the user requests, cannot be modified once set, else re-instantiation of the object itself.
@@ -72,10 +66,10 @@ namespace FractionalCryptoBot.Services
     public abstract Task<string> SendAsync(HttpMethod httpMethod, string requestUri, object? content = null);
     public abstract Task<string> SendPublicAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null);
     public abstract Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null);
-    public abstract Task SendWebsocketAsync(string streamName);
-    public abstract void SocketOnClose(object sender, EventArgs args);
-    public abstract void SocketOnMessage(object sender, EventArgs args);
-    public abstract void SocketOnOpen(object sender, EventArgs args);
+    public abstract Task SendWebsocketAsync(string parameter);
+    public abstract void SocketOnClose(object? sender, EventArgs args);
+    public abstract void SocketOnMessage(object? sender, EventArgs args);
+    public abstract void SocketOnOpen(object? sender, EventArgs args);
     public virtual string Sign(string source, string key)
     {
       byte[] keyBytes = Encoding.UTF8.GetBytes(key);

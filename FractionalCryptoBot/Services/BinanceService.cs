@@ -1,10 +1,9 @@
 ﻿using System.Text;
 using System.Web;
-using System.Net.WebSockets;
 using FractionalCryptoBot.Enumerations;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-
+using WebSocketSharp;
 
 namespace FractionalCryptoBot.Services
 {
@@ -18,7 +17,7 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="httpClient"></param>
-    public BinanceService(ILogger logger, HttpClient httpClient, WebSocket webSocket) : base(logger, httpClient, webSocket, Marketplaces.BINANCE)
+    public BinanceService(ILogger logger, HttpClient httpClient) : base(logger, httpClient, Marketplaces.BINANCE)
     {
       // Nothing needs to be set in the constructor for now.
       // Not using string interpolation as I lose more valuable information and processing time when doing so.
@@ -111,21 +110,21 @@ namespace FractionalCryptoBot.Services
     /// <summary>
     /// Sends a request to binance's websocket endpoint.
     /// </summary>
-    /// <param name="streamName">The name of the stream</param>
+    /// <param name="parameter">The name of the stream</param>
     /// <returns>A response string.</returns>
-    public override async Task<string> SendWebsocketAsync(string streamName)
+    public override async Task<string> SendWebsocketAsync(string parameter)
     {
       // Testing stream 'kline'.
       string pair = "btcusdt";
       string interval = "1m";
-      string socketRequest =$"WebsocketBaseUri/ws/{ pair }@{ streamName }_{ interval }";
+      string socketRequest =$"{WebsocketBaseUri}/ws/{ pair }@{ parameter }_{ interval }";
 
-      using (Socket = new WebSocket())
+      using (var socket = new WebSocket(socketRequest))
       {
-
+        socket.OnOpen += SocketOnOpen;
       }
 
-        return socketRequest;
+      return socketRequest;
     }
 
     /// <summary>
@@ -133,7 +132,7 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="sender">The object raising the event.</param>
     /// <param name="args">The arguments of the event.</param>
-    public override void SocketOnOpen(object sender, EventArgs args)
+    public override void SocketOnOpen(object? sender, EventArgs args)
     {
       throw new NotImplementedException();
     }
@@ -143,7 +142,7 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="sender">The object raising the event.</param>
     /// <param name="args">The arguments of the event.</param>
-    public override void SocketOnMessage(object sender, EventArgs args)
+    public override void SocketOnMessage(object? sender, EventArgs args)
     {
       throw new NotImplementedException();
     }
@@ -153,7 +152,7 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="sender">The object raising the event.</param>
     /// <param name="args">The arguments of the event.</param>
-    public override void SocketOnClose(object sender, EventArgs args)
+    public override void SocketOnClose(object? sender, EventArgs args)
     {
       throw new NotImplementedException();
     }
