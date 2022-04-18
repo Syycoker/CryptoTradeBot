@@ -37,7 +37,7 @@ namespace FractionalCryptoBot.Services
       {
         request.Headers.Add("X-MBX-APIKEY", ApiKey);
 
-        if (content is not null)
+        if (!(content is null))
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await Client.SendAsync(request);
@@ -112,7 +112,7 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="parameter">The name of the stream</param>
     /// <returns>A response string.</returns>
-    public override async Task<string> SendWebsocketAsync(string parameter)
+    public override void SendWebsocketAsync(string parameter)
     {
       // Testing stream 'kline'.
       string pair = "btcusdt";
@@ -123,8 +123,6 @@ namespace FractionalCryptoBot.Services
       {
         socket.OnOpen += SocketOnOpen;
       }
-
-      return socketRequest;
     }
 
     /// <summary>

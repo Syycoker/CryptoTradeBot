@@ -66,7 +66,7 @@ namespace FractionalCryptoBot.Services
     public abstract Task<string> SendAsync(HttpMethod httpMethod, string requestUri, object? content = null);
     public abstract Task<string> SendPublicAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null);
     public abstract Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null);
-    public abstract Task SendWebsocketAsync(string parameter);
+    public abstract void SendWebsocketAsync(string parameter);
     public abstract void SocketOnClose(object? sender, EventArgs args);
     public abstract void SocketOnMessage(object? sender, EventArgs args);
     public abstract void SocketOnOpen(object? sender, EventArgs args);

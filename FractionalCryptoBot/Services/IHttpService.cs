@@ -39,7 +39,7 @@
     /// </summary>
     /// <param name="parameter">The name of the stream.</param>
     /// <returns>A response string, i.e. JSON.</returns>
-    Task SendWebsocketAsync(string parameter);
+    void SendWebsocketAsync(string parameter);
 
     /// <summary>
     /// To handle an operation once the socket has been opened.
