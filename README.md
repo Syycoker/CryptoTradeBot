@@ -6,7 +6,7 @@ This is the second revision for this project as the first revision works, but be
 The aim of this project is to view the current asking/bidding/sale prices of each trade pair and their respective assets, monitor the price change of each asset and make an informed decision to either buy, sell or hold the asset based on its current performance.
 
 The application will be using the services of Binance and Coinbase and maybe more in the future.
-The reason for this (without delving too much into my trading strategies) is to get any asset (that is listed on both marketplaces), bid the lowest price to buy the asset, transfer it to a cold wallet and monitor its performance on both marketplaces. Conversely I will monitor the status of any crypto assets that I hold in my cold wallet and monitor the asking price for each asset and place the asset for sale when I've reached my threshold for profit.
+The reason for this (without delving too much into my trading strategies) is to get any asset (that are listed on both marketplaces), bid the lowest price to buy the asset, transfer it to a cold wallet and monitor its performance on both marketplaces. Conversely I will monitor the status of any crypto assets that I hold in my cold wallet and monitor the asking price for each asset and place the asset for sale when I've reached my threshold for profit.
 
 The project will eventaully be placed in a Virutal Machine to let the process run 24/7, the decided service to use to allow me to do this is still in its planning stages, although I'm looking to use Docker to do this.
 
@@ -18,11 +18,11 @@ At some stage this project will no longer be Open Source and I will start to cha
 
 I'll be using Xamarin (Soon to be Mono) to develop a (pseudo) platform agnostic User Interface during November to allow the user to visually see what the program is doing instead of using a console application on a windows machine/vm.
 
-## Code
+# Code
 Alright, the bit where most of you are waiting for, although the code itself has more comments than I can put on here, so please check it out.
 
-# **HttpService**
-The core of the application. HttpService is an abstract class that implements **IHttpService** and its implementations. The reason why this is structured this way is because since I've worked with both Binance and Coinbase's API Service there are core componenets that they both use for example (taken from the class **'BinanceService'** which has the implementation of a method from IHttpService):
+## **HttpService**
+The core of the application. HttpService is an abstract class that implements the interface **IHttpService**. The reason why this is structured this way is because since I've worked with both Binance and Coinbase's API Service there are core componenets that they both use for example (taken from the class **'BinanceService'** which has the implementation of a method from IHttpService):
 ```
     /// <summary>
     /// Helper method to send an asynchoronus call to binance's endpoints.
@@ -37,7 +37,7 @@ The core of the application. HttpService is an abstract class that implements **
       {
         request.Headers.Add("X-MBX-APIKEY", ApiKey);
 
-        if (!(content is null))
+        if (content is not null)
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await Client.SendAsync(request);
@@ -51,4 +51,4 @@ The core of the application. HttpService is an abstract class that implements **
       }
     }
 ```
-This method is used by other methods from IHttpService such as SendPublicAsync & SendSignedAsync (decomposition of the code allowed for better flexibility) to make their calls respectively as someendpoints require an authenticated string which uses the client's api secret and api key.
+This method is used by other methods from IHttpService such as **SendPublicAsync** & **SendSignedAsync** (decomposition of the code allowed for better flexibility) to make their calls respectively as some endpoints require an authenticated string which uses the client's api secret and api key.

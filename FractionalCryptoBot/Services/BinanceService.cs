@@ -37,7 +37,7 @@ namespace FractionalCryptoBot.Services
       {
         request.Headers.Add("X-MBX-APIKEY", ApiKey);
 
-        if (!(content is null))
+        if (content is not null)
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await Client.SendAsync(request);
