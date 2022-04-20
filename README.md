@@ -8,11 +8,11 @@ The aim of this project is to view the current asking/bidding/sale prices of eac
 The application will be using the services of Binance and Coinbase and maybe more in the future.
 The reason for this (without delving too much into my trading strategies) is to get any asset (that are listed on both marketplaces), bid the lowest price to buy the asset, transfer it to a cold wallet and monitor its performance on both marketplaces. Conversely I will monitor the status of any crypto assets that I hold in my cold wallet and monitor the asking price for each asset and place the asset for sale when I've reached my threshold for profit.
 
-The project will eventaully be placed in a Virutal Machine to let the process run 24/7, the decided service to use to allow me to do this is still in its planning stages, although I'm looking to use Docker to do this.
+The project will eventually be placed in a Virtual Machine to let the process run 24/7, the decided service to use to allow me to do this is still in its planning stages, although I'm looking to use Docker to do this.
 
 Once the Minimum Viable Product has been made, I will host this project and because of the structure, I will be able to add features and microservices to enhance the user experience.
 
-At some stage this project will no longer be Open Source and I will start to charge users user for each successful trade.
+At some stage this project will no longer be Open Source and I will start to charge users for each successful trade.
 
 ## Features to look forward to
 
