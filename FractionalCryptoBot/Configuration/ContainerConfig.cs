@@ -10,7 +10,7 @@ namespace FractionalCryptoBot.Configuration
       var builder = new ContainerBuilder();
 
       builder.RegisterType<Application>().As<IApplication>();
-      builder.RegisterType<HttpService>().As<IHttpService>();
+      // builder.RegisterType<BinanceService>().As<IHttpService>();
 
       return builder.Build();
     }
