@@ -1,6 +1,7 @@
 ﻿using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
+using Microsoft.Extensions.Logging;
 
 namespace FractionalCryptoBot.Cores
 {
@@ -24,6 +25,11 @@ namespace FractionalCryptoBot.Cores
     /// The average price change for all the cryptocurrencies in the marketplace.
     /// </summary>
     double MarketplaceAverage { get; }
+
+    /// <summary>
+    /// The logger to be used.
+    /// </summary>
+    ILogger Log { get; }
 
     /// <summary>
     /// The service to be used to make ALL restful calls.
@@ -65,10 +71,18 @@ namespace FractionalCryptoBot.Cores
     CoreStatus SellAsset(Crypto crypto, double amount);
 
     /// <summary>
-    /// Attempts to transfer the crypto to a cold wallet (if provided).
+    /// Attempts to transfer the crypto to a 'cold wallet' (if provided).
     /// </summary>
     /// <returns>A 'CoreStatus' to let the calling body know of the result of the procedure.</returns>
     CoreStatus TransferAssetToColdWallet(Crypto crypto, int walletId);
+
+    /// <summary>
+    /// Attempts to transfer the crypto to a 'hot wallet' / a wallet in the exchange.
+    /// </summary>
+    /// <param name="crypto">The asset to be transferred.</param>
+    /// <param name="walletId">The identifier for a wallet in the exchange.</param>
+    /// <returns>A 'CoreStatus' to let the calling body know of the result of the procedure.</returns>
+    CoreStatus TransferAssetToExchange(Crypto crypto, string walletId);
     #endregion
   }
 }

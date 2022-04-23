@@ -49,10 +49,10 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="logger">Any logger thn implements ILogger.</param>
     /// <param name="httpClient">The http client to be used to make calls.</param>
-    public HttpService(ILogger logger, HttpClient httpClient, Marketplaces marketplace)
+    public HttpService(ILogger logger, Marketplaces marketplace)
     {
       // Use dependency Injection to set the client and logger from the 'top level'.
-      Client = httpClient;
+      Client = new HttpClient();
       Log = logger;
 
       // Set the dependencies based on what service the user requests, cannot be modified once set, else re-instantiation of the object itself.

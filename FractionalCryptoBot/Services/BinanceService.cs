@@ -17,7 +17,7 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="httpClient"></param>
-    public BinanceService(ILogger logger, HttpClient httpClient) : base(logger, httpClient, Marketplaces.BINANCE)
+    public BinanceService(ILogger logger) : base(logger, Marketplaces.BINANCE)
     {
       // Nothing needs to be set in the constructor for now.
       // Not using string interpolation as I lose more valuable information and processing time when doing so.
