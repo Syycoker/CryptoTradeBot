@@ -24,9 +24,8 @@ namespace FractionalCryptoBot.Cores
     public decimal TotalPriceChange { get => _totalPriceChange; private set => _totalPriceChange = value; }
     public double MarketplaceAverage { get => _marketplaceAverage; private set => _marketplaceAverage = value; }
     public ILogger Log { get; init; }
-    public IHttpService Service { get; init; }
+    public IHttpService Service { get; set; }
     public IEnumerable<Crypto> Cryptocurrencies { get => _cryptoCurrencies; set => _cryptoCurrencies = new List<Crypto>(value); }
-    public ServiceSettings Settings { get; set; }
     #endregion
     #region Constructor
     /// <summary>
@@ -38,10 +37,21 @@ namespace FractionalCryptoBot.Cores
       // Setting the logger and the service to make http calls to the respectve service's endpoints.
       Log = logger;
       Service = new BinanceService(logger);
-      Settings = new ServiceSettings();
     }
     #endregion
     #region Public Methods
+    public Task Run()
+    {
+      var settings = Service.GetSettings();
+
+      while (settings.ShouldRun)
+      {
+
+      }
+
+      return Task.CompletedTask;
+    }
+
     public CoreStatus BuyAsset(Crypto crypto, double amount)
     {
       throw new NotImplementedException();

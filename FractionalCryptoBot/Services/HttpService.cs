@@ -41,6 +41,11 @@ namespace FractionalCryptoBot.Services
     /// The secret key to the client's service account.
     /// </summary>
     public readonly string ApiSecret;
+
+    /// <summary>
+    /// The settings the service will use.
+    /// </summary>
+    public ServiceSettings Settings { get; set; }
     #endregion
     #region Constructor
     /// <summary>
@@ -53,6 +58,7 @@ namespace FractionalCryptoBot.Services
       // Use dependency Injection to set the client and logger from the 'top level'.
       Client = new HttpClient();
       Log = logger;
+      Settings = new ServiceSettings();
 
       // Set the dependencies based on what service the user requests, cannot be modified once set, else re-instantiation of the object itself.
       BaseUri = AuthenticationConfig.GetBaseUri(marketplace);
@@ -81,6 +87,10 @@ namespace FractionalCryptoBot.Services
 
         return BitConverter.ToString(hash).Replace("-", "").ToLower();
       }
+    }
+    public ServiceSettings GetSettings()
+    {
+      return Settings;
     }
     #endregion
   }

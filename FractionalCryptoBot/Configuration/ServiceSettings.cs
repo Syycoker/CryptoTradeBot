@@ -14,24 +14,28 @@ namespace FractionalCryptoBot.Configuration
     /// <summary>
     /// Is the application going to run on the service's sandbox api endpoints?
     /// </summary>
-    public static bool IsSandboxMode { get; private set; } = false;
+    public bool IsSandboxMode { get; private set; } = false;
 
     /// <summary>
     /// Minimum amount of threads running to check the marketplace for a particular service.
     /// </summary>
-    public static int MinConcurrentThreads { get; private set; } = 100;
+    public int MinConcurrentThreads { get; private set; } = 100;
 
     /// <summary>
     /// The maximum amount of threads running to check the marketplace for a particular service.
     /// </summary>
-    public static int MaxConcurrentThreads { get; private set; } = 100;
+    public int MaxConcurrentThreads { get; private set; } = 100;
 
+    /// <summary>
+    /// Determines whether the core whould be running or not.
+    /// </summary>
+    public bool ShouldRun { get; private set; } = true;
 
     /// <summary>
     /// Sets where the service's endpoints will go to, i.e. live marketplace or sandbox.
     /// </summary>
     /// <param name="enabled">Whether to make the application use sandbox settings or not.</param>
-    public static void SetSandboxMode(bool enabled)
+    public void SetSandboxMode(bool enabled)
     {
       IsSandboxMode = enabled;
     }
@@ -40,7 +44,7 @@ namespace FractionalCryptoBot.Configuration
     /// Sets the minimum amount of threads running concurrently for all the services.
     /// </summary>
     /// <param name="minThreads"></param>
-    public static void SetMinConcurrentThreads(int minThreads)
+    public void SetMinConcurrentThreads(int minThreads)
     {
       MinConcurrentThreads = minThreads;
     }
@@ -49,9 +53,18 @@ namespace FractionalCryptoBot.Configuration
     /// Sets the maximum amount of threads running concurrently for all the services.
     /// </summary>
     /// <param name="maxThreads"></param>
-    public static void SetMaxConcurrentThreads(int maxThreads)
+    public void SetMaxConcurrentThreads(int maxThreads)
     {
       MaxConcurrentThreads = maxThreads;
+    }
+
+    /// <summary>
+    /// Public method to allow the user to determine whether the core should be running or not.
+    /// </summary>
+    /// <param name="value"></param>
+    public void RunCore(bool value)
+    {
+      ShouldRun = value;
     }
   }
 }

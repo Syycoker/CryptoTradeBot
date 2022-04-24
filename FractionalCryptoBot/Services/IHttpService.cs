@@ -1,4 +1,6 @@
-﻿namespace FractionalCryptoBot.Services
+﻿using FractionalCryptoBot.Configuration;
+
+namespace FractionalCryptoBot.Services
 {
   /// <summary>
   /// An interface to enable communication between services such as "Binance, Crypto.com, Coinbase, etc.
@@ -69,5 +71,11 @@
     /// <param name="key">The secret key to encrypt the source.</param>
     /// <returns>An encrypted string.</returns>
     string Sign(string source, string key);
+
+    /// <summary>
+    /// Returns the settings the service abides by.
+    /// </summary>
+    /// <returns></returns>
+    ServiceSettings GetSettings();
   }
 }

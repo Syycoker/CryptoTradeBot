@@ -38,16 +38,16 @@ namespace FractionalCryptoBot.Cores
     IHttpService Service { get; }
 
     /// <summary>
-    /// The settings the service will use.
-    /// </summary>
-    ServiceSettings Settings { get; set; }
-
-    /// <summary>
     /// A public property to get all available cryptocurrencies in the marketplace the service uses.
     /// </summary>
     IEnumerable<Crypto> Cryptocurrencies { get; }
     #endregion
     #region Public Methods
+    /// <summary>
+    /// Runs a process that continues for lifetime of the instance.
+    /// </summary>
+    /// <returns>A task.</returns>
+    Task Run();
     /// <summary>
     /// Gets a collection of cryptocurrencies using the service that will be used to make a call on its endpoints.
     /// </summary>

@@ -7,13 +7,13 @@ namespace FractionalCryptoBot
   {
     static void Main(string[] args)
     {
-      var container = ContainerConfig.Configure();
+      var cores = CoreFactory.GetCores();
 
-      using (var scope = container.BeginLifetimeScope())
-      {
-        var app = scope.Resolve<IApplication>();
-        app.Run();
-      }
+      if (cores is null || !cores.Any())
+        return;
+
+      // Run all the cores
+      cores.ToList().ForEach(core => core.Run());
 
       Console.ReadLine();
     }
