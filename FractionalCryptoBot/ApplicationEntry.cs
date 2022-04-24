@@ -3,7 +3,7 @@ using FractionalCryptoBot.Configuration;
 
 namespace FractionalCryptoBot
 {
-  public class Program
+  public class ApplicationEntry
   {
     static void Main(string[] args)
     {

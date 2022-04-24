@@ -3,7 +3,6 @@ using System.Text;
 using FractionalCryptoBot.Configuration;
 using FractionalCryptoBot.Enumerations;
 using Microsoft.Extensions.Logging;
-using System.ServiceModel.Channels;
 
 namespace FractionalCryptoBot.Services
 {

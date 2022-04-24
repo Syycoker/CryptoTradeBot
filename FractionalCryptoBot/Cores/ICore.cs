@@ -1,4 +1,5 @@
-﻿using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Configuration;
+using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
@@ -35,6 +36,11 @@ namespace FractionalCryptoBot.Cores
     /// The service to be used to make ALL restful calls.
     /// </summary>
     IHttpService Service { get; }
+
+    /// <summary>
+    /// The settings the service will use.
+    /// </summary>
+    ServiceSettings Settings { get; set; }
 
     /// <summary>
     /// A public property to get all available cryptocurrencies in the marketplace the service uses.

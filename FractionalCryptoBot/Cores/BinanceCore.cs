@@ -1,4 +1,5 @@
-﻿using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Configuration;
+using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
@@ -25,6 +26,7 @@ namespace FractionalCryptoBot.Cores
     public ILogger Log { get; init; }
     public IHttpService Service { get; init; }
     public IEnumerable<Crypto> Cryptocurrencies { get => _cryptoCurrencies; set => _cryptoCurrencies = new List<Crypto>(value); }
+    public ServiceSettings Settings { get; set; }
     #endregion
     #region Constructor
     /// <summary>
@@ -36,6 +38,7 @@ namespace FractionalCryptoBot.Cores
       // Setting the logger and the service to make http calls to the respectve service's endpoints.
       Log = logger;
       Service = new BinanceService(logger);
+      Settings = new ServiceSettings();
     }
     #endregion
     #region Public Methods

@@ -9,7 +9,7 @@ namespace FractionalCryptoBot.Configuration
   /// <summary>
   /// Static class to define the settings the application will run under.
   /// </summary>
-  public static class ApplicationSettings
+  public class ServiceSettings
   {
     /// <summary>
     /// Is the application going to run on the service's sandbox api endpoints?
