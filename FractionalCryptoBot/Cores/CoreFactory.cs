@@ -23,7 +23,7 @@ namespace FractionalCryptoBot
     /// Get all cores that have been instantiated by the system.
     /// </summary>
     /// <returns>A collection of cores to be used by the system.</returns>
-    public static IEnumerable<ICore>? GetCores()
+    public static IEnumerable<ICore> GetCores()
     {
       BinanceCore _binanceCore = new(LoggerFactory.CreateLogger<ICore>());
       return new List<ICore>() { _binanceCore };

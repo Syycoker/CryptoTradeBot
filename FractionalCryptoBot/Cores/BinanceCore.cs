@@ -3,6 +3,7 @@ using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,17 +41,6 @@ namespace FractionalCryptoBot.Cores
     }
     #endregion
     #region Public Methods
-    public Task Run()
-    {
-      var settings = Service.GetSettings();
-
-      while (settings.ShouldRun)
-      {
-
-      }
-
-      return Task.CompletedTask;
-    }
 
     public CoreStatus BuyAsset(Crypto crypto, double amount)
     {
@@ -78,6 +68,11 @@ namespace FractionalCryptoBot.Cores
     }
 
     public CoreStatus TransferAssetToExchange(Crypto crypto, string walletId)
+    {
+      throw new NotImplementedException();
+    }
+
+    public JObject GetAsset(string crypto)
     {
       throw new NotImplementedException();
     }

@@ -3,6 +3,7 @@ using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace FractionalCryptoBot.Cores
 {
@@ -44,11 +45,6 @@ namespace FractionalCryptoBot.Cores
     #endregion
     #region Public Methods
     /// <summary>
-    /// Runs a process that continues for lifetime of the instance.
-    /// </summary>
-    /// <returns>A task.</returns>
-    Task Run();
-    /// <summary>
     /// Gets a collection of cryptocurrencies using the service that will be used to make a call on its endpoints.
     /// </summary>
     /// <returns>An enumerable collection of DTOs.</returns>
@@ -61,12 +57,33 @@ namespace FractionalCryptoBot.Cores
     IEnumerable<Crypto> GetPerformantCrypto();
 
     /// <summary>
+    /// Attempts to retrieve a cryptocurrency from an exchange as  JObject.
+    /// </summary>
+    /// <param name="crypto">The short name of the crypto.</param>
+    /// <returns>A Json Object representing everything about the crypto in the particualr exchange.</returns>
+    Task<JObject> GetAsset(string crypto);
+
+    /// <summary>
+    /// Gets the bidding price of the asset in the exchange.
+    /// </summary>
+    /// <param name="cryptoJsonObject"></param>
+    /// <returns>A decimal representing the price of the asset.</returns>
+    decimal GetBiddingPrice(Crypto cryptoDTO);
+
+    /// <summary>
+    /// Converts an asset to a DTO if found in the exchange to be used from the calling class.
+    /// </summary>
+    /// <param name="crypto">The qualified name for the cryptocurrency.</param>
+    /// <returns>A 'Crypto' DTO.</returns>
+    Task<Crypto> GetDTOFromAsset(string crypto);
+
+    /// <summary>
     /// Attempts to buy a specifc crypto (provided the DTO) and the amount wanting to buy.
     /// </summary>
     /// <param name="crypto">The crypto to be bought.</param>
     /// <param name="amount">The amount of the crypto to be bought.</param>
     /// <returns>A 'CoreStatus' to provide the upper layer calling this method how the procedure went.</returns>
-    CoreStatus BuyAsset(Crypto crypto, double amount);
+    CoreStatus BuyAsset(Crypto crypto, decimal amount);
 
     /// <summary>
     /// Attempts to sell a specifc crypto (provided the DTO) and the amount wanting to buy.

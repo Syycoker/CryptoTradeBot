@@ -16,5 +16,7 @@ namespace FractionalCryptoBot.Enumerations
     SELL_SUCCESSFUL = 5,
     SELL_UNSUCCESSFUL = 6,
     UNKNOWN_ERROR = 7,
+    ASSET_EXISTS = 8,
+    ASSET_DOES_NOT_EXIST = 9
   }
 }

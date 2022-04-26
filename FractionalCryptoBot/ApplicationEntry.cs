@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using FractionalCryptoBot.Configuration;
+using FractionalCryptoBot.Cores;
+using Microsoft.Extensions.Logging;
 
 namespace FractionalCryptoBot
 {
@@ -7,13 +9,8 @@ namespace FractionalCryptoBot
   {
     static void Main(string[] args)
     {
-      var cores = CoreFactory.GetCores();
-
-      if (cores is null || !cores.Any())
-        return;
-
-      // Run all the cores
-      cores.ToList().ForEach(core => core.Run());
+      // Bootup the main core and instantiate a logger for it.
+      MainCore mainCore = new(new LoggerFactory().CreateLogger<MainCore>());
 
       Console.ReadLine();
     }
