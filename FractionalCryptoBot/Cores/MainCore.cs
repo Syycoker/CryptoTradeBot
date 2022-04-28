@@ -1,4 +1,5 @@
 ﻿using FractionalCryptoBot.Configuration;
+using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
@@ -22,7 +23,6 @@ namespace FractionalCryptoBot.Cores
     /// The logger for the class
     /// </summary>
     ILogger Logger;
-
     #endregion
     #region Constructor
     /// <summary>
@@ -36,18 +36,22 @@ namespace FractionalCryptoBot.Cores
     }
     #endregion
     #region Public Methods
-    public async Task GetLowestPriceOfAsset(string symbol)
+    /// <summary>
+    /// Attempts to return the lowest priced asset from all available marketplaces.
+    /// </summary>
+    /// <param name="symbol">The qualified name of the asset.</param>
+    /// <returns>A Crypto DTO.</returns>
+    /// <exception cref="ArgumentNullException">If the crypto could not be found in any of the marketplaces.</exception>
+    public async Task<Crypto> GetLowestPriceOfAsset(string symbol)
     {
       var cores = CoreFactory.GetCores();
 
       IEnumerator core = cores.GetEnumerator();
 
-      Crypto cryptoToBeBought = null;
+      Crypto? cryptoToBeBought = null;
 
       decimal lowestPricedAsset = 0;
 
-      ICore? exchangeAssetCameFrom = null;
-        
       while (core.MoveNext())
       {
         ICore c = (ICore)core;
@@ -61,17 +65,33 @@ namespace FractionalCryptoBot.Cores
         if (assetDto.BiddingPrice.CompareTo(lowestPricedAsset) < 0)
         {
           lowestPricedAsset = assetDto.BiddingPrice;
-
-          // Set
           cryptoToBeBought = assetDto;
-          exchangeAssetCameFrom = c;
         }
       }
 
-      if (cryptoToBeBought is null || exchangeAssetCameFrom is null)
-        return;
+      if (cryptoToBeBought is null)
+        throw new ArgumentNullException(nameof(cryptoToBeBought) + " is null.");
 
-      exchangeAssetCameFrom.BuyAsset(cryptoToBeBought, cryptoToBeBought.BiddingPrice);
+      return cryptoToBeBought;
+    }
+
+    /// <summary>
+    /// Buys the lowest priced version of an asset from all available marketplaces.
+    /// </summary>
+    /// <param name="symbol"></param>
+    /// <returns></returns>
+    public async Task<CoreStatus> BuyLowestPricedAsset(string symbol)
+    {
+      try
+      {
+        var lowestPricedAsset = await GetLowestPriceOfAsset(symbol);
+
+        return lowestPricedAsset.Core.BuyAsset(lowestPricedAsset, 0.00m);
+      }
+      catch
+      {
+        return CoreStatus.BUY_UNSUCCESSFUL;
+      }
     }
     #endregion
   }

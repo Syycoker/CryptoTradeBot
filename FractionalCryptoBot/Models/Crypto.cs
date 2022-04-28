@@ -1,4 +1,5 @@
-﻿using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Cores;
+using FractionalCryptoBot.Services;
 
 namespace FractionalCryptoBot.Models
 {
@@ -8,9 +9,9 @@ namespace FractionalCryptoBot.Models
   public class Crypto
   {
     /// <summary>
-    /// The marketplace the asset is from.
+    /// The core which was used to instantiate this object.
     /// </summary>
-    public Marketplaces Marketplace;
+    public readonly ICore Core;
 
     /// <summary>
     /// The name of the crptocurrency as its short version of its name, i.e. 'BTC' -> 'Bitcoin'.
@@ -33,13 +34,16 @@ namespace FractionalCryptoBot.Models
     public readonly decimal MinimumBuyPrice = 0;
 
     /// <summary>
-    /// Standard constructor for constructor injection.
+    /// 
     /// </summary>
+    /// <param name="core">The core which references the crypto.</param>
     /// <param name="name">The name of the cryptocurrency as a 3-5 letter shorthand.</param>
     /// <param name="precision">The precision of the asset.</param>
-    public Crypto(Marketplaces marketplace, string name, int precision, decimal biddingPrice, decimal minimumBuyPrice)
+    /// <param name="biddingPrice">The bidding price of the coin</param>
+    /// <param name="minimumBuyPrice">The minimum buy price of the coin.</param>
+    public Crypto(ICore core, string name, int precision, decimal biddingPrice, decimal minimumBuyPrice)
     {
-      Marketplace = marketplace;
+      Core = core;
       Name = name;
       Precision = precision;
       BiddingPrice = biddingPrice;
