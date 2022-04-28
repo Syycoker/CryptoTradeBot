@@ -71,7 +71,7 @@ namespace FractionalCryptoBot.Cores
     decimal GetBiddingPrice(Crypto cryptoDTO);
 
     /// <summary>
-    /// Converts an asset to a DTO if found in the exchange to be used from the calling class.
+    /// Attempts to get an asset froma marketplace and convert the response string to a DTO if found in the exchange to be used from the calling class (MainCore).
     /// </summary>
     /// <param name="crypto">The qualified name for the cryptocurrency.</param>
     /// <returns>A 'Crypto' DTO.</returns>

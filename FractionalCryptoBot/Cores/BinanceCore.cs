@@ -42,7 +42,7 @@ namespace FractionalCryptoBot.Cores
     #endregion
     #region Public Methods
 
-    public CoreStatus BuyAsset(Crypto crypto, double amount)
+    public CoreStatus BuyAsset(Crypto crypto, decimal amount)
     {
       throw new NotImplementedException();
     }
@@ -72,7 +72,17 @@ namespace FractionalCryptoBot.Cores
       throw new NotImplementedException();
     }
 
-    public JObject GetAsset(string crypto)
+    public Task<JObject> GetAsset(string crypto)
+    {
+      throw new NotImplementedException();
+    }
+
+    public decimal GetBiddingPrice(Crypto cryptoDTO)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<Crypto> GetDTOFromAsset(string crypto)
     {
       throw new NotImplementedException();
     }

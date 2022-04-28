@@ -37,6 +37,60 @@ namespace FractionalCryptoBot.Cores
     #endregion
     #region Public Methods
     /// <summary>
+    /// Runs the main procedure.
+    /// </summary>
+    public void RunMainProcedure()
+    {
+      try
+      {
+
+      }
+      catch
+      {
+        // Reboot procedure if you get certain exceptions.
+        Logger.LogError("{0}: An error has occured in '{1}', attempting to reboot.", DateTime.UtcNow, nameof(RunMainProcedure));
+      }
+    }
+
+    /// <summary>
+    /// Gets all the names of cryptocurrenies that may be available for sale on all the marketplaces.
+    /// </summary>
+    /// <returns></returns>
+    public async Task GetCryptoCurrencies()
+    {
+      try
+      {
+        // List<string> currencies = await;
+
+        // currencies.ForEach(currency => Task.Run());
+      }
+      catch
+      {
+        // Swallow the exception
+      }
+    }
+
+    /// <summary>
+    /// Buys the lowest priced version of an asset from all available marketplaces.
+    /// </summary>
+    /// <param name="symbol">The symbol to be bought.</param>
+    /// <returns>A 'CoreStatus' to relay what happened during the operation.</returns>
+    public async Task<CoreStatus> BuyLowestPricedAsset(string symbol, decimal price)
+    {
+      try
+      {
+        var lowestPricedAsset = await GetLowestPriceOfAsset(symbol);
+
+        return lowestPricedAsset.Core.BuyAsset(lowestPricedAsset, price);
+      }
+      catch
+      {
+        Logger.LogError("{0}: '{1}' has been bought", DateTime.UtcNow, nameof(MainCore));
+        return CoreStatus.BUY_UNSUCCESSFUL;
+      }
+    }
+
+    /// <summary>
     /// Attempts to return the lowest priced asset from all available marketplaces.
     /// </summary>
     /// <param name="symbol">The qualified name of the asset.</param>
@@ -73,25 +127,6 @@ namespace FractionalCryptoBot.Cores
         throw new ArgumentNullException(nameof(cryptoToBeBought) + " is null.");
 
       return cryptoToBeBought;
-    }
-
-    /// <summary>
-    /// Buys the lowest priced version of an asset from all available marketplaces.
-    /// </summary>
-    /// <param name="symbol"></param>
-    /// <returns></returns>
-    public async Task<CoreStatus> BuyLowestPricedAsset(string symbol)
-    {
-      try
-      {
-        var lowestPricedAsset = await GetLowestPriceOfAsset(symbol);
-
-        return lowestPricedAsset.Core.BuyAsset(lowestPricedAsset, 0.00m);
-      }
-      catch
-      {
-        return CoreStatus.BUY_UNSUCCESSFUL;
-      }
     }
     #endregion
   }

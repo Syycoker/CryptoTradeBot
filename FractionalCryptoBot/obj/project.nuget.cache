@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QMAhuU34f/JiNHFZp6xfnhJIENTg4hTZ85Tn0Id+Dp+YFAruGHu+E4/8kInwznzxyIpSo+8Lmk8khiYB5uU+3Q==",
+  "dgSpecHash": "Jg1YaRxPZigKl7iK9CLCgcG7lyYIp8Rx0aLg2TNA8eQ5t1Ya9LCO2p0riEaeyar5W8XXHuyeApEbX7XT5Bf4Ww==",
   "success": true,
   "projectFilePath": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
   "expectedPackageFiles": [
@@ -38,10 +38,10 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Package 'WebSocketSharp 1.0.3-rc11' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net6.0-windows7.0'. This package may not be fully compatible with your project.",
+      "message": "Package 'WebSocketSharp 1.0.3-rc11' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
       "libraryId": "WebSocketSharp",
       "targetGraphs": [
-        "net6.0-windows7.0"
+        "net6.0"
       ]
     }
   ]
