@@ -54,7 +54,7 @@ namespace FractionalCryptoBot.Cores
     /// Gets a collection of cryptocurrencies using the service that will be used to make a call on its endpoints.
     /// </summary>
     /// <returns>An enumerable collection of DTOs.</returns>
-    IEnumerable<Crypto> GetCryptoCurrencies();
+    Task<IEnumerable<Crypto>> GetCryptoCurrencies();
 
     /// <summary>
     /// Gets a collection of cryptocurrencies that are performing well in the marketplace.

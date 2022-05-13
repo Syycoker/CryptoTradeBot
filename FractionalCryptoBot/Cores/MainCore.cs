@@ -48,7 +48,7 @@ namespace FractionalCryptoBot.Cores
       catch
       {
         // Reboot procedure if you get certain exceptions.
-        Logger.LogError("{0}: An error has occured in '{1}', attempting to reboot.", DateTime.UtcNow, nameof(RunMainProcedure));
+        Logger.LogError("{0}: An error has occured in '{1}', attempting to reboot...", DateTime.UtcNow, nameof(RunMainProcedure));
       }
     }
 
@@ -56,18 +56,54 @@ namespace FractionalCryptoBot.Cores
     /// Gets all the names of cryptocurrenies that may be available for sale on all the marketplaces.
     /// </summary>
     /// <returns></returns>
-    public async Task GetCryptoCurrencies()
+    public async Task<List<IEnumerable<Crypto>>> GetAllCryptoCurrencies()
     {
+      List<IEnumerable<Crypto>> crypto = new();
       try
       {
-        // List<string> currencies = await;
+        // Get all the cores available.
+        IEnumerable<ICore> cores = CoreFactory.GetCores();
 
-        // currencies.ForEach(currency => Task.Run());
+        // Get a collection of all the cryptocurrencies in each core.
+        foreach (var core in cores)
+        {
+          IEnumerable<Crypto> currencies = await core.GetCryptoCurrencies();
+          crypto.Add(currencies);
+        }
+
+        // Return the collection.
+        return crypto;
       }
-      catch
+      catch(Exception e)
       {
-        // Swallow the exception
+        // Swallow the exception and return which core threw this error.
+        Logger.LogError("{0}: Could not get cryptocurrencies from '{1}.", DateTime.UtcNow, e.Message);
+        return crypto;
       }
+    }
+
+    /// <summary>
+    /// Returns all commmon crypto currencies using a greedy approach.
+    /// </summary>
+    /// <returns>A collection of SharedCrypto DTOs.</returns>
+    public IEnumerable<SharedCrypto> GetCommonCryptocurrencies(IEnumerable<IEnumerable<Crypto>> cryptosFromDifferentExhanges)
+    {
+      // Sort each list lexicographically first.
+      List<SharedCrypto> commonCurrencies = new();
+
+      foreach (var exchangeCurrencies in cryptosFromDifferentExhanges)
+      {
+        // Sort by name in place.
+        exchangeCurrencies.ToList().Sort((currencyOne, currencyTwo) => currencyOne.Name.CompareTo(currencyTwo.Name));
+
+        // Check if a crypto has already been selected.
+        foreach (Crypto crypto in exchangeCurrencies)
+        {
+          
+        }
+      }
+
+      return commonCurrencies;
     }
 
     /// <summary>
@@ -79,8 +115,17 @@ namespace FractionalCryptoBot.Cores
     {
       try
       {
+        // Try and get the lowest price of this symbol.
         var lowestPricedAsset = await GetLowestPriceOfAsset(symbol);
 
+        // If we couldn't get one, return the corresponding enum.
+        if (lowestPricedAsset is null) return CoreStatus.ASSET_DOES_NOT_EXIST;
+
+        Logger.LogInformation("{0}: Initiating buy order for '{1}' in the '{2}'.", DateTime.UtcNow,
+          lowestPricedAsset.Name,
+          nameof(lowestPricedAsset.Core.Service));
+        
+        // Initiate a buy order.
         return lowestPricedAsset.Core.BuyAsset(lowestPricedAsset, price);
       }
       catch
