@@ -41,6 +41,10 @@ namespace FractionalCryptoBot.Cores
     }
     #endregion
     #region Public Methods
+    public Task<bool> ActiveService()
+    {
+      throw new NotImplementedException();
+    }
 
     public CoreStatus BuyAsset(Crypto crypto, decimal amount)
     {

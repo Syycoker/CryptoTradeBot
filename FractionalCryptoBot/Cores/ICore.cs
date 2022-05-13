@@ -45,6 +45,12 @@ namespace FractionalCryptoBot.Cores
     #endregion
     #region Public Methods
     /// <summary>
+    /// Checks whether the core's service is active.
+    /// </summary>
+    /// <returns></returns>
+    Task<bool> ActiveService();
+
+    /// <summary>
     /// Gets a collection of cryptocurrencies using the service that will be used to make a call on its endpoints.
     /// </summary>
     /// <returns>An enumerable collection of DTOs.</returns>
