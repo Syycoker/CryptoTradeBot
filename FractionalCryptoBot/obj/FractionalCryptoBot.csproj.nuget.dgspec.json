@@ -1,34 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj": {}
+    "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj": {}
   },
   "projects": {
-    "C:\\Users\\coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj": {
+    "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
+        "projectUniqueName": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
         "projectName": "FractionalCryptoBot",
-        "projectPath": "C:\\Users\\coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
-        "packagesPath": "C:\\Users\\coker\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\obj\\",
+        "projectPath": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
+        "packagesPath": "C:\\Users\\Sylas Coker\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Sylas Coker\\source\\repos\\FractionalCryptoBot\\FractionalCryptoBot\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\coker\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Sylas Coker\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -87,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

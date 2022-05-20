@@ -86,24 +86,23 @@ namespace FractionalCryptoBot.Cores
     /// Returns all commmon crypto currencies using a greedy approach.
     /// </summary>
     /// <returns>A collection of SharedCrypto DTOs.</returns>
-    public IEnumerable<SharedCrypto> GetCommonCryptocurrencies(IEnumerable<IEnumerable<Crypto>> cryptosFromDifferentExhanges)
+    public IEnumerable<SharedCrypto> GetCommonCryptocurrencies(IEnumerable<string> cryptoCurrencies)
     {
-      // Sort each list lexicographically first.
-      List<SharedCrypto> commonCurrencies = new();
+      // Go through each crypto in the collection and feed each one of them to the cores's services to see
+      // If the core's marketplace does indeed have that particualr crypto.
+      // If it does, then create a DTO for each of the common cryptos on multiple marketplaces.
 
-      foreach (var exchangeCurrencies in cryptosFromDifferentExhanges)
-      {
-        // Sort by name in place.
-        exchangeCurrencies.ToList().Sort((currencyOne, currencyTwo) => currencyOne.Name.CompareTo(currencyTwo.Name));
+      // Get all the cores available to make the calls...
+      IEnumerable<ICore> cores = CoreFactory.GetCores();
 
-        // Check if a crypto has already been selected.
-        foreach (Crypto crypto in exchangeCurrencies)
-        {
-          
-        }
-      }
+      // Use LINQ to return the common cryptos...
+      IEnumerable<SharedCrypto> sharedCrypto = cryptoCurrencies
+        .Select(crypto => new SharedCrypto(
+          (cores.Select(core =>
+            core.GetCryptoCurrency(crypto).Result
+            ).Where(c => (c is not null) || !string.IsNullOrEmpty(c?.Name)))));
 
-      return commonCurrencies;
+      return sharedCrypto;
     }
 
     /// <summary>
@@ -156,7 +155,7 @@ namespace FractionalCryptoBot.Cores
         ICore c = (ICore)core;
 
         // Get a DTO if the asset exists in the exchange.
-        var assetDto = await c.GetDTOFromAsset(symbol);
+        var assetDto = await c.GetCryptoCurrency(symbol);
 
         if (assetDto is null)
           continue;

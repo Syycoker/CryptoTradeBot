@@ -26,6 +26,15 @@ namespace FractionalCryptoBot.Models
     {
       CommonCurrencies = cryptos;
     }
+
+    /// <summary>
+    /// Public constructorthat takes in a collection of Crypto DTOs.
+    /// </summary>
+    /// <param name="cryptos"></param>
+    public SharedCrypto(IEnumerable<Crypto> cryptos)
+    {
+      CommonCurrencies = cryptos;
+    }
     #endregion
   }
 }

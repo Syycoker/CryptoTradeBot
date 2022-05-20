@@ -81,7 +81,7 @@ namespace FractionalCryptoBot.Cores
     /// </summary>
     /// <param name="crypto">The qualified name for the cryptocurrency.</param>
     /// <returns>A 'Crypto' DTO.</returns>
-    Task<Crypto> GetDTOFromAsset(string crypto);
+    Task<Crypto> GetCryptoCurrency(string crypto);
 
     /// <summary>
     /// Attempts to buy a specifc crypto (provided the DTO) and the amount wanting to buy.
