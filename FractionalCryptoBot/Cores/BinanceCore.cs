@@ -86,7 +86,7 @@ namespace FractionalCryptoBot.Cores
       throw new NotImplementedException();
     }
 
-    public Task<Crypto> GetCryptoCurrency(string crypto)
+    public Task<Crypto?> GetCryptoCurrency(string crypto)
     {
       throw new NotImplementedException();
     }

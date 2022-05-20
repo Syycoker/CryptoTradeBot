@@ -98,79 +98,55 @@ namespace FractionalCryptoBot.Cores
       // Use LINQ to return the common cryptos...
       IEnumerable<SharedCrypto> sharedCrypto = cryptoCurrencies
         .Select(crypto => new SharedCrypto(
-          (cores.Select(core =>
+          cores.Select(core =>
             core.GetCryptoCurrency(crypto).Result
-            ).Where(c => (c is not null) || !string.IsNullOrEmpty(c?.Name)))));
+            )));
 
       return sharedCrypto;
     }
 
     /// <summary>
-    /// Buys the lowest priced version of an asset from all available marketplaces.
+    /// Returns the cryptocurrency which is the lowest denomination from multiple other of it's type in different marketplaces.
     /// </summary>
-    /// <param name="symbol">The symbol to be bought.</param>
-    /// <returns>A 'CoreStatus' to relay what happened during the operation.</returns>
-    public async Task<CoreStatus> BuyLowestPricedAsset(string symbol, decimal price)
+    /// <param name="sharedCryptos"></param>
+    /// <returns></returns>
+    public Crypto? GetLowestPricedAsset(SharedCrypto sharedCryptos)
     {
-      try
-      {
-        // Try and get the lowest price of this symbol.
-        var lowestPricedAsset = await GetLowestPriceOfAsset(symbol);
-
-        // If we couldn't get one, return the corresponding enum.
-        if (lowestPricedAsset is null) return CoreStatus.ASSET_DOES_NOT_EXIST;
-
-        Logger.LogInformation("{0}: Initiating buy order for '{1}' in the '{2}'.", DateTime.UtcNow,
-          lowestPricedAsset.Name,
-          nameof(lowestPricedAsset.Core.Service));
-        
-        // Initiate a buy order.
-        return lowestPricedAsset.Core.BuyAsset(lowestPricedAsset, price);
-      }
-      catch
-      {
-        Logger.LogError("{0}: '{1}' has been bought", DateTime.UtcNow, nameof(MainCore));
-        return CoreStatus.BUY_UNSUCCESSFUL;
-      }
+      return sharedCryptos.GetLowestBiddingAsset();
     }
 
     /// <summary>
-    /// Attempts to return the lowest priced asset from all available marketplaces.
+    /// Initiates a market order for the cryptocurrenc in their respective marketplace.
     /// </summary>
-    /// <param name="symbol">The qualified name of the asset.</param>
-    /// <returns>A Crypto DTO.</returns>
-    /// <exception cref="ArgumentNullException">If the crypto could not be found in any of the marketplaces.</exception>
-    public async Task<Crypto> GetLowestPriceOfAsset(string symbol)
+    /// <param name="crypto">The cryptocurrency to be bought.</param>
+    /// <param name="price">The price to buy the cryptocurrency.</param>
+    /// <param name="quantity">The optional variable to override the price.</param>
+    /// <returns>A 'CoreStatus' enum to return how the process went.</returns>
+    public async Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00m)
     {
-      var cores = CoreFactory.GetCores();
+      Logger.LogInformation("{0}: Attempting to buy asset '{1}' on the '{2}' marketplace.",
+          DateTime.UtcNow,
+          crypto.Name,
+          nameof(crypto.Core.Service));
 
-      IEnumerator core = cores.GetEnumerator();
+      return await crypto.Core.BuyAsset(crypto, price);
+    }
 
-      Crypto? cryptoToBeBought = null;
+    /// <summary>
+    /// Initiates a market order for the cryptocurrenc in their respective marketplace.
+    /// </summary>
+    /// <param name="crypto">The cryptocurrency to be bought.</param>
+    /// <param name="price">The price to buy the cryptocurrency.</param>
+    /// <param name="quantity">The optional variable to override the price.</param>
+    /// <returns>A 'CoreStatus' enum to return how the process went.</returns>
+    public async Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00m)
+    {
+      Logger.LogInformation("{0}: Attempting to sell asset '{1}' on the '{2}' marketplace.",
+          DateTime.UtcNow,
+          crypto.Name,
+          nameof(crypto.Core.Service));
 
-      decimal lowestPricedAsset = 0;
-
-      while (core.MoveNext())
-      {
-        ICore c = (ICore)core;
-
-        // Get a DTO if the asset exists in the exchange.
-        var assetDto = await c.GetCryptoCurrency(symbol);
-
-        if (assetDto is null)
-          continue;
-
-        if (assetDto.BiddingPrice.CompareTo(lowestPricedAsset) < 0)
-        {
-          lowestPricedAsset = assetDto.BiddingPrice;
-          cryptoToBeBought = assetDto;
-        }
-      }
-
-      if (cryptoToBeBought is null)
-        throw new ArgumentNullException(nameof(cryptoToBeBought) + " is null.");
-
-      return cryptoToBeBought;
+      return await crypto.Core.SellAsset(crypto, price);
     }
     #endregion
   }

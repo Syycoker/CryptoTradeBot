@@ -81,23 +81,24 @@ namespace FractionalCryptoBot.Cores
     /// </summary>
     /// <param name="crypto">The qualified name for the cryptocurrency.</param>
     /// <returns>A 'Crypto' DTO.</returns>
-    Task<Crypto> GetCryptoCurrency(string crypto);
+    Task<Crypto?> GetCryptoCurrency(string crypto);
 
     /// <summary>
     /// Attempts to buy a specifc crypto (provided the DTO) and the amount wanting to buy.
     /// </summary>
     /// <param name="crypto">The crypto to be bought.</param>
-    /// <param name="amount">The amount of the crypto to be bought.</param>
+    /// <param name="quantity">The amount of the crypto to be bought.</param>
+    /// <param name="price">The price to override the quantity to be bought.</param>
     /// <returns>A 'CoreStatus' to provide the upper layer calling this method how the procedure went.</returns>
-    CoreStatus BuyAsset(Crypto crypto, decimal amount);
+    Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00m);
 
     /// <summary>
     /// Attempts to sell a specifc crypto (provided the DTO) and the amount wanting to buy.
     /// </summary>
     /// <param name="crypto">The crypto to be sold.</param>
-    /// <param name="amount">The amount of the crypto to be sold.</param>
+    /// <param name="price">The amount of the crypto to be sold.</param>
     /// <returns>A 'CoreStatus' to provide the upper layer calling this method how the procedure went.</returns>
-    CoreStatus SellAsset(Crypto crypto, double amount);
+    Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00m);
 
     /// <summary>
     /// Attempts to transfer the crypto to a 'cold wallet' (if provided).
