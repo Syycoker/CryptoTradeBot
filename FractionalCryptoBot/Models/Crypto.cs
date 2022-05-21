@@ -1,5 +1,4 @@
 ﻿using FractionalCryptoBot.Cores;
-using FractionalCryptoBot.Services;
 
 namespace FractionalCryptoBot.Models
 {

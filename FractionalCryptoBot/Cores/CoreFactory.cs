@@ -27,5 +27,23 @@ namespace FractionalCryptoBot
       // Return the collection of services where their exhcnage's are currently active...
       return new List<ICore>() { _binanceCore }.Where(core => core.ActiveService().Result);
     }
+
+    /// <summary>
+    /// Get a core based on the type requested.
+    /// </summary>
+    /// <param name="core"></param>
+    /// <returns>The core requested if valid, else null.</returns>
+    /// <exception cref="Exception">Unable to identify 'core' type.</exception>
+    public static ICore? GetCore(Type core)
+    {
+      // Check if the type implements ICore...
+      if (core is not ICore) throw new Exception(string.Format("Unable to identify type, please specify a type which implements type '0'.", nameof(ICore)));
+
+      // Return the core requested.
+      if (typeof(BinanceCore) == core.GetType()) return new BinanceCore(LoggerFactory.CreateLogger<BinanceCore>());
+
+      // Should not reach this point, if it does no test case was created for the core requested, add it.
+      return null;
+    }
   }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FractionalCryptoBot.Models
+﻿namespace FractionalCryptoBot.Models
 {
   /// <summary>
   /// DTO class to represent currencies that are common in however many other services.

@@ -1,8 +1,10 @@
 using Castle.Core.Logging;
 using FractionalCryptoBot;
 using FractionalCryptoBot.Cores;
+using FractionalCryptoBot.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -15,6 +17,11 @@ namespace Tests
   /// </summary>
   public class CoreSystemTests
   {
+    /// <summary>
+    /// Instantiating cores for the system tests.
+    /// </summary>
+    IEnumerable<ICore> Cores = CoreFactory.GetCores();
+
     [Fact]
     public void Do_The_Services_In_Each_Core_Have_A_Stable_Server_Connection()
     {
@@ -36,6 +43,16 @@ namespace Tests
 
       // We don't expect any cores to be inactive
       Assert.False(anyCoresInactive);
+    }
+
+    [Theory]
+    [ClassData(typeof(CryptoManager))]
+    /// <summary>
+    /// Checks if the 'SharedDTO' will aggregate commonalities if they're valid...
+    /// </summary>
+    public void CheckIfSharedCryptoDtoWorks(int expectedItemLength, params Crypto[] cryptos)
+    {
+      Assert.Equal(1, cryptos.Length);
     }
   }
 }
