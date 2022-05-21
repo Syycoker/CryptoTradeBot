@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace FractionalCryptoBot.Cores
 {
+  /// <summary>
+  /// Class to make binance api calls.
+  /// </summary>
   public sealed class BinanceCore : ICore
   {
     #region Private Members

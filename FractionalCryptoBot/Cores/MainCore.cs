@@ -56,29 +56,29 @@ namespace FractionalCryptoBot.Cores
     /// Gets all the names of cryptocurrenies that may be available for sale on all the marketplaces.
     /// </summary>
     /// <returns></returns>
-    public async Task<List<IEnumerable<Crypto>>> GetAllCryptoCurrencies()
+    public async Task<IEnumerable<Crypto>> GetAllCryptoCurrencies()
     {
-      List<IEnumerable<Crypto>> crypto = new();
       try
       {
         // Get all the cores available.
         IEnumerable<ICore> cores = CoreFactory.GetCores();
 
         // Get a collection of all the cryptocurrencies in each core.
-        foreach (var core in cores)
-        {
-          IEnumerable<Crypto> currencies = await core.GetCryptoCurrencies();
-          crypto.Add(currencies);
-        }
+        IEnumerable<Crypto> collectedCrypto = (await Task.WhenAll(
+                                                cores.Select(core => 
+                                                core.GetCryptoCurrencies()))).SelectMany(currencies =>
+                                                currencies).ToList();
 
         // Return the collection.
-        return crypto;
+        return collectedCrypto;
       }
       catch(Exception e)
       {
         // Swallow the exception and return which core threw this error.
         Logger.LogError("{0}: Could not get cryptocurrencies from '{1}.", DateTime.UtcNow, e.Message);
-        return crypto;
+
+        // Return an empty collection of crypto DTOs.
+        return new List<Crypto>();
       }
     }
 
@@ -103,6 +103,18 @@ namespace FractionalCryptoBot.Cores
             )));
 
       return sharedCrypto;
+    }
+
+    /// <summary>
+    /// Returns a collection of SharedCrypto DTOs where multiple exchanges have the sanem asset.
+    /// </summary>
+    /// <param name="cryptos"></param>
+    /// <returns></returns>
+    public IEnumerable<SharedCrypto> GetCommonCryptocurrencies(IEnumerable<Crypto> cryptos)
+    {
+      cryptos.OrderBy(crypto => crypto.Name);
+      return from crypto in cryptos
+             select new SharedCrypto(cryptos);
     }
 
     /// <summary>
