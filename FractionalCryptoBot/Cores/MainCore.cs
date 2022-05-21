@@ -1,14 +1,6 @@
-﻿using FractionalCryptoBot.Configuration;
-using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
-using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FractionalCryptoBot.Cores
 {
@@ -83,38 +75,36 @@ namespace FractionalCryptoBot.Cores
     }
 
     /// <summary>
-    /// Returns all commmon crypto currencies using a greedy approach.
+    /// Returns a collection of SharedCrypto DTOs where multiple exchanges have the sanem asset.
     /// </summary>
-    /// <returns>A collection of SharedCrypto DTOs.</returns>
-    public IEnumerable<SharedCrypto> GetCommonCryptocurrencies(IEnumerable<string> cryptoCurrencies)
+    /// <param name="cryptos"></param>
+    /// <returns>A collection of  cryptocurrencies that exist on multiple exchanges.</returns>
+    public IEnumerable<SharedCrypto> GetCommonCryptocurrencies(IEnumerable<Crypto> cryptos)
     {
-      // Go through each crypto in the collection and feed each one of them to the cores's services to see
-      // If the core's marketplace does indeed have that particualr crypto.
-      // If it does, then create a DTO for each of the common cryptos on multiple marketplaces.
+      // Sort the collection by their base asset's name and their quote asset's name. (lexicographically)
+      var sortedCurrencies = cryptos.OrderBy(crypto => crypto.BaseName).ThenBy(crypto => crypto.QuoteName);
 
-      // Get all the cores available to make the calls...
-      IEnumerable<ICore> cores = CoreFactory.GetCores();
-
-      // Use LINQ to return the common cryptos...
-      IEnumerable<SharedCrypto> sharedCrypto = cryptoCurrencies
-        .Select(crypto => new SharedCrypto(
-          cores.Select(core =>
-            core.GetCryptoCurrency(crypto).Result
-            )));
+      // Aggregate the identical assets.
+      IEnumerable<SharedCrypto> sharedCrypto = sortedCurrencies
+                                                .Select(crypto => 
+                                                new SharedCrypto(
+                                                  sortedCurrencies.Where(c => c.BaseName.Equals(crypto.BaseName)
+                                                  && c.QuoteName.Equals(crypto.QuoteName))));
 
       return sharedCrypto;
     }
 
     /// <summary>
-    /// Returns a collection of SharedCrypto DTOs where multiple exchanges have the sanem asset.
+    /// Checks the current state of the cryptocurrencies in their respective exchanges and their metrics, i.e. 'price change, volume, etc'...
     /// </summary>
-    /// <param name="cryptos"></param>
+    /// <param name="sharedCrypto"></param>
     /// <returns></returns>
-    public IEnumerable<SharedCrypto> GetCommonCryptocurrencies(IEnumerable<Crypto> cryptos)
+    public Task CheckPerformanceOfCryptosInExchange(SharedCrypto sharedCrypto)
     {
-      cryptos.OrderBy(crypto => crypto.Name);
-      return from crypto in cryptos
-             select new SharedCrypto(cryptos);
+      // Check the volumes of the cryptos, if it's compaitably low, then continue...
+
+      // Check the price changes of the cryptos, if it's negative, then continue...
+      return Task.CompletedTask;
     }
 
     /// <summary>
@@ -124,7 +114,7 @@ namespace FractionalCryptoBot.Cores
     /// <returns></returns>
     public Crypto? GetLowestPricedAsset(SharedCrypto sharedCryptos)
     {
-      return sharedCryptos.GetLowestBiddingAsset();
+      return sharedCryptos.GetLowestBaseBiddingAsset();
     }
 
     /// <summary>
@@ -138,7 +128,7 @@ namespace FractionalCryptoBot.Cores
     {
       Logger.LogInformation("{0}: Attempting to buy asset '{1}' on the '{2}' marketplace.",
           DateTime.UtcNow,
-          crypto.Name,
+          crypto.BaseName+crypto.QuoteName,
           nameof(crypto.Core.Service));
 
       return await crypto.Core.BuyAsset(crypto, price);
@@ -155,7 +145,7 @@ namespace FractionalCryptoBot.Cores
     {
       Logger.LogInformation("{0}: Attempting to sell asset '{1}' on the '{2}' marketplace.",
           DateTime.UtcNow,
-          crypto.Name,
+          crypto.BaseName + crypto.QuoteName,
           nameof(crypto.Core.Service));
 
       return await crypto.Core.SellAsset(crypto, price);

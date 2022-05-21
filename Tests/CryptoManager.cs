@@ -1,12 +1,9 @@
 ﻿using FractionalCryptoBot;
 using FractionalCryptoBot.Cores;
 using FractionalCryptoBot.Models;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tests
 {
@@ -24,7 +21,9 @@ namespace Tests
       var binanceCore = CoreFactory.GetCore(typeof(BinanceCore));
       if (binanceCore is null) return;
 
-      // Add an invalid crypto
+      // Add an invalid crypto, update -> changed structure to object, will be changing soon.
+
+      /*
       Crypto.Add(new Crypto(binanceCore, string.Empty, 1, 0.00m, 0.00m));
       Crypto.Add(new Crypto(binanceCore, "BTC", 8, 0.00m, 0.00m));
       Crypto.Add(new Crypto(binanceCore, "ETH", 7, 0.00m, 0.00m));
@@ -32,7 +31,7 @@ namespace Tests
       Crypto.Add(new Crypto(binanceCore, "XRP", 8, 0.00m, 0.00m));
       Crypto.Add(new Crypto(binanceCore, "DOGE", 8, 0.00m, 0.00m));
       Crypto.Add(new Crypto(binanceCore, "SHIB", 8, 0.00m, 0.00m));
-      Crypto.Add(new Crypto(binanceCore, "SOL", 8, 0.00m, 0.00m));
+      Crypto.Add(new Crypto(binanceCore, "SOL", 8, 0.00m, 0.00m));*/
     }
 
     public IEnumerator<Crypto> GetEnumerator()

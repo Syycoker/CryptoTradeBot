@@ -1,13 +1,9 @@
-using Castle.Core.Logging;
 using FractionalCryptoBot;
 using FractionalCryptoBot.Cores;
 using FractionalCryptoBot.Models;
-using Microsoft.Extensions.Logging;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using Xunit;
 
 namespace Tests

@@ -32,12 +32,21 @@
     #endregion
     #region Public
     /// <summary>
-    /// Returns the lowest priced asset in the collection of cryptocurrencies stored.
+    /// Returns the asset with the lowest base price in the collection stored.
     /// </summary>
     /// <returns>The lowest bidding asset from multiple exchanges.</returns>
-    public Crypto? GetLowestBiddingAsset()
+    public Crypto? GetLowestBaseBiddingAsset()
     {
-      return Cryptos.MinBy(crypto => crypto?.BiddingPrice);
+      return Cryptos.MinBy(crypto => crypto?.BaseBiddingPrice);
+    }
+
+    /// <summary>
+    /// Returns the asset with the lowest quote price in the collection stored.
+    /// </summary>
+    /// <returns></returns>
+    public Crypto? GetLowestQuoteBiddingPriceAsset()
+    {
+      return Cryptos.MinBy(crypto => crypto?.QuoteBiddingPrice);
     }
     #endregion
   }
