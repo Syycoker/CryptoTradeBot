@@ -1,4 +1,5 @@
 ﻿using FractionalCryptoBot.Cores;
+using FractionalCryptoBot.Enumerations;
 using Microsoft.Extensions.Logging;
 
 namespace FractionalCryptoBot
@@ -44,6 +45,22 @@ namespace FractionalCryptoBot
 
       // Should not reach this point, if it does no test case was created for the core requested, add it.
       return null;
+    }
+
+    /// <summary>
+    /// Get a specific core based on the marketplaces enum.
+    /// </summary>
+    /// <param name="marketplace"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception">Unable to identify 'core' type.</exception>
+    public static ICore? GetCore(Marketplaces marketplace)
+    {
+      switch (marketplace)
+      {
+        default:
+        case Marketplaces.NONE: throw new Exception(string.Format("Unable to identify type, please specify a type which implements type '0'.", nameof(ICore)));
+        case Marketplaces.BINANCE: return new BinanceCore(LoggerFactory.CreateLogger<BinanceCore>());
+      }
     }
   }
 }

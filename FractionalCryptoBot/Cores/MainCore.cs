@@ -102,6 +102,7 @@ namespace FractionalCryptoBot.Cores
     public Task CheckPerformanceOfCryptosInExchange(SharedCrypto sharedCrypto)
     {
       // Check the volumes of the cryptos, if it's compaitably low, then continue...
+      
 
       // Check the price changes of the cryptos, if it's negative, then continue...
       return Task.CompletedTask;

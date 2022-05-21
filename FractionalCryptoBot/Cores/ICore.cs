@@ -26,7 +26,12 @@ namespace FractionalCryptoBot.Cores
     /// <summary>
     /// The average price change for all the cryptocurrencies in the marketplace.
     /// </summary>
-    double MarketplaceAverage { get; }
+    decimal MarketplaceAverage { get; }
+
+    /// <summary>
+    /// The average volume of all cryptocurrencies in the exchange.
+    /// </summary>
+    decimal AverageVolume { get; }
 
     /// <summary>
     /// The logger to be used.
