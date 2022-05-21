@@ -75,19 +75,13 @@
     /// Returns the asset with the lowest base price in the collection stored.
     /// </summary>
     /// <returns>The lowest bidding asset from multiple exchanges.</returns>
-    public Crypto? GetLowestBaseBiddingAsset()
-    {
-      return Cryptos.MinBy(crypto => crypto.BaseBiddingPrice);
-    }
+    public Crypto? GetLowestBaseBiddingAsset() => Cryptos.MinBy(crypto => crypto.BaseBiddingPrice);
 
     /// <summary>
     /// Returns the asset with the lowest quote price in the collection stored.
     /// </summary>
     /// <returns></returns>
-    public Crypto? GetLowestQuoteBiddingPriceAsset()
-    {
-      return Cryptos.MinBy(crypto => crypto.QuoteBiddingPrice);
-    }
+    public Crypto? GetLowestQuoteBiddingPriceAsset() => Cryptos.MinBy(crypto => crypto.QuoteBiddingPrice);
     #endregion
   }
 }

@@ -31,16 +31,29 @@ namespace FractionalCryptoBot.Cores
     /// <summary>
     /// Runs the main procedure.
     /// </summary>
-    public void RunMainProcedure()
+    public async Task RunMainProcedure()
     {
       try
       {
+        // Get all the cryptocurrencies in all the cores in the system.
+        var allExchangeCryptocurrencies = await GetAllCryptoCurrencies();
 
+        // Check if we have any cryptocurrencies at all...
+        if (allExchangeCryptocurrencies is null || allExchangeCryptocurrencies.Count() == 0) throw new Exception($"No cryptocurrencies found in any exchange - '{nameof(RunMainProcedure)}'.");
+
+        // Group all the crypotcurrencies that can be found in more than one exchange/marketplace.
+        var sharedCryptos = GetCommonCryptocurrencies(allExchangeCryptocurrencies);
+
+        // Check if we have any shared cryptocurrencies...
+        if (sharedCryptos is null || sharedCryptos.Count() == 0) throw new Exception($"No common cryptocurrencies found in any of the exchanges - '{nameof(RunMainProcedure)}'.");
       }
-      catch
+      catch(Exception e)
       {
+        // Log the exception
+        Logger.LogCritical("{0}: '{1}'.", DateTime.UtcNow, e.Message);
+
         // Reboot procedure if you get certain exceptions.
-        Logger.LogError("{0}: An error has occured in '{1}', attempting to reboot...", DateTime.UtcNow, nameof(RunMainProcedure));
+        Logger.LogCritical("{0}: An error has occured in '{1}', attempting to reboot...", DateTime.UtcNow, nameof(RunMainProcedure));
       }
     }
 
@@ -106,16 +119,6 @@ namespace FractionalCryptoBot.Cores
 
       // Check the price changes of the cryptos, if it's negative, then continue...
       return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Returns the cryptocurrency which is the lowest denomination from multiple other of it's type in different marketplaces.
-    /// </summary>
-    /// <param name="sharedCryptos"></param>
-    /// <returns></returns>
-    public Crypto? GetLowestPricedAsset(SharedCrypto sharedCryptos)
-    {
-      return sharedCryptos.GetLowestBaseBiddingAsset();
     }
 
     /// <summary>
