@@ -46,11 +46,6 @@ namespace FractionalCryptoBot.Cores
       throw new NotImplementedException();
     }
 
-    public CoreStatus BuyAsset(Crypto crypto, decimal amount)
-    {
-      throw new NotImplementedException();
-    }
-
     public Task<IEnumerable<Crypto>> GetCryptoCurrencies()
     {
       throw new NotImplementedException();
@@ -61,17 +56,7 @@ namespace FractionalCryptoBot.Cores
       throw new NotImplementedException();
     }
 
-    public CoreStatus SellAsset(Crypto crypto, double amount)
-    {
-      throw new NotImplementedException();
-    }
-
     public CoreStatus TransferAssetToColdWallet(Crypto crypto, int walletId)
-    {
-      throw new NotImplementedException();
-    }
-
-    public CoreStatus TransferAssetToExchange(Crypto crypto, string walletId)
     {
       throw new NotImplementedException();
     }
@@ -87,6 +72,21 @@ namespace FractionalCryptoBot.Cores
     }
 
     public Task<Crypto?> GetCryptoCurrency(string crypto)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<CoreStatus> TransferAssetToExchange(Crypto crypto, string walletId)
     {
       throw new NotImplementedException();
     }

@@ -1,10 +1,5 @@
 ﻿using FractionalCryptoBot.Cores;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FractionalCryptoBot
 {
@@ -25,8 +20,12 @@ namespace FractionalCryptoBot
     /// <returns>A collection of cores to be used by the system.</returns>
     public static IEnumerable<ICore> GetCores()
     {
+      // Only instantiate services which you explicitly want to run...
+      // Get an instance of each service.
       BinanceCore _binanceCore = new(LoggerFactory.CreateLogger<ICore>());
-      return new List<ICore>() { _binanceCore };
+
+      // Return the collection of services where their exhcnage's are currently active...
+      return new List<ICore>() { _binanceCore }.Where(core => core.ActiveService().Result);
     }
   }
 }

@@ -112,7 +112,7 @@ namespace FractionalCryptoBot.Cores
     /// <param name="crypto">The asset to be transferred.</param>
     /// <param name="walletId">The identifier for a wallet in the exchange.</param>
     /// <returns>A 'CoreStatus' to let the calling body know of the result of the procedure.</returns>
-    CoreStatus TransferAssetToExchange(Crypto crypto, string walletId);
+    Task<CoreStatus> TransferAssetToExchange(Crypto crypto, string walletId);
     #endregion
   }
 }
