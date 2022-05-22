@@ -36,40 +36,44 @@ namespace FractionalCryptoBot.Models
     /// <summary>
     /// The current bidding price for the base asset.
     /// </summary>
-    public decimal BaseBiddingPrice { get; private set; } = 0.00m;
+    public decimal BaseBiddingPrice { get; private set; } = decimal.Zero;
 
     /// <summary>
     /// The current bidding price for the quote asset.
     /// </summary>
-    public decimal QuoteBiddingPrice { get; private set; } = 0.00m;
+    public decimal QuoteBiddingPrice { get; private set; } = decimal.Zero;
 
     /// <summary>
     /// The current minimum buy price for the base asset.
     /// </summary>
-    public decimal BaseMinimumBuyPrice { get; private set; } = 0.00m;
+    public decimal BaseMinimumBuyPrice { get; private set; } = decimal.Zero;
 
     /// <summary>
     /// The current minimum buy price for the quote asset.
     /// </summary>
-    public decimal QuoteMinimumBuyPrice { get; private set; } = 0.00m;
+    public decimal QuoteMinimumBuyPrice { get; private set; } = decimal.Zero;
+
+    /// <summary>
+    /// The marketcap for this particular crypto, i.e. how many are circulating * price of each individual asset.
+    /// </summary>
+    public decimal MarketCap { get; private set; } = decimal.Zero;
+
+    /// <summary>
+    /// What's the trend of the cryptocurrency in this particular exchange, i.e. negative volume change means less people are trading it than in the last 24 hours.
+    /// </summary>
+    public decimal VolumeChange { get; private set; } = decimal.Zero;
     #endregion
     #region Constructor
     /// <summary>
     /// Default constructor for a crypto object regardless of marketplace.
     /// </summary>
-    /// <param name="core"></param>
-    /// <param name="baseName"></param>
-    /// <param name="quoteName"></param>
-    /// <param name="basePrecision"></param>
-    /// <param name="quotePrecision"></param>
-    /// <param name="baseBiddingPrice"></param>
-    /// <param name="quoteBiddingPrice"></param>
-    /// <param name="baseMinimumBuyPrice"></param>
-    /// <param name="quoteMinimumBuyPrice"></param>
+    /// <param name="core">The marketplace the coin belongs to.</param>
+    /// <param name="baseName">e.g. 'BTC'.</param>
+    /// <param name="quoteName">e.g. 'USD'.</param>
+    /// <param name="basePrecision">e.g.'8' (0.00000001).</param>
+    /// <param name="quotePrecision">e.g.'8' (0.00000001).</param>
     public Crypto(ICore core, string baseName, string quoteName,
-                  int basePrecision, int quotePrecision,
-                  decimal baseBiddingPrice, decimal quoteBiddingPrice,
-                  decimal baseMinimumBuyPrice, decimal quoteMinimumBuyPrice)
+                  int basePrecision, int quotePrecision)
     {
       // Setting corresponding fields & properties.
 
@@ -80,12 +84,6 @@ namespace FractionalCryptoBot.Models
 
       BasePrecision = basePrecision; // The precisions
       QuotePrecision = quotePrecision;
-
-      BaseBiddingPrice = baseBiddingPrice; // The bidding prices
-      QuoteBiddingPrice = quoteBiddingPrice;
-
-      BaseMinimumBuyPrice = baseMinimumBuyPrice; // The minimum buy prices
-      QuoteMinimumBuyPrice = quoteMinimumBuyPrice;
 
       // On construction of the object, bootupp the websocket in its core to update the bidding price &
       // minimum buy price in the background.
@@ -115,6 +113,18 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     /// <param name="quoteMinimumPrice">The minimum buy price for the quote asset.</param>
     public void SetQuoteMinimumPrice(decimal quoteMinimumPrice) => QuoteMinimumBuyPrice = quoteMinimumPrice;
+
+    /// <summary>
+    /// Sets the marketcap for this particular cryptocurrency trade pair.
+    /// </summary>
+    /// <param name="marketCap">The current marketcap for this DTO.</param>
+    public void SetMarketCap(decimal marketCap) => MarketCap = marketCap;
+
+    /// <summary>
+    /// Sets the volume chane for this particual cryptocurrency trade pair.
+    /// </summary>
+    /// <param name="volumeChange">The current (24h) volume change for  this DTO.</param>
+    public void SetVolumeChange(decimal volumeChange) => VolumeChange = volumeChange;
     #endregion
   }
 }

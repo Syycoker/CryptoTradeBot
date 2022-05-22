@@ -1,10 +1,6 @@
 ﻿using FractionalCryptoBot.Enumerations;
+using FractionalCryptoBot.Exceptions;
 using FractionalCryptoBot.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FractionalCryptoBot.Services
 {
@@ -13,21 +9,45 @@ namespace FractionalCryptoBot.Services
   /// </summary>
   public static class AssetManager
   {
+    #region Members
+    /// <summary>
+    /// To make sure not cross-thread operations cause any issues.
+    /// </summary>
+    private static Mutex BuyMutex = new Mutex();
+    #endregion
+    #region Public
     /// <summary>
     /// Allows the user to buy an asset using a merket order.
     /// </summary>
-    /// <param name="crypto"></param>
-    /// <param name="price"></param>
-    /// <param name="quantity"></param>
+    /// <param name="crypto">The cryptocurrency to be bought.</param>
+    /// <param name="price">The price to buy the cryptocurrency.</param>
+    /// <param name="quantity">The amount of which to buy the cryptocurrency.</param>
     /// <returns></returns>
-    public static async Task BuyAsset(this Crypto crypto, decimal price, decimal quantity = 0.00m)
+    public static async Task<CoreStatus> BuyAsset(this Crypto crypto, decimal price = 0.00m, decimal quantity = 0.00m)
     {
-      CoreStatus procedureResult = CoreStatus.NONE;
+      BuyMutex.WaitOne();
+      try
+      {
+        CoreStatus procedureResult = CoreStatus.NONE;
 
-      if (quantity == 0.00m) procedureResult = await crypto.Core.BuyAsset(crypto, price);
-      else procedureResult = await crypto.Core.BuyAsset(crypto, price, quantity);
+        // If the user chooses to override the price or quantity, choose accordingly
+        if (price != 0.00m || quantity != 0.00m)
+        {
+          procedureResult = await crypto.Core.BuyAsset(crypto, price, quantity);
+        }
+        else
+        {
+          // If nothing has been specified / overriden the buy the smallest amount of which we can buy.
+          procedureResult = await crypto.Core.BuyAsset(crypto, crypto.BaseMinimumBuyPrice);
+        }
 
-      if (procedureResult != CoreStatus.BUY_SUCCESSFUL) HandleBuyOrderError(procedureResult);
+        // Return the response up a level.
+        return procedureResult;
+      }
+      finally
+      {
+        BuyMutex.ReleaseMutex();
+      }
     }
 
     /// <summary>
@@ -38,8 +58,16 @@ namespace FractionalCryptoBot.Services
     {
       switch (errorStatus)
       {
-
+        default:
+        case CoreStatus.NONE:
+        case CoreStatus.INSUFFICIENT_FUNDS:
+        case CoreStatus.BUY_UNSUCCESSFUL:
+        case CoreStatus.SELL_UNSUCCESSFUL:
+        case CoreStatus.ASSET_DOES_NOT_EXIST: throw new Exception();
+        case CoreStatus.UNKNOWN_ERROR: throw new InvalidAuthenticationException();
+        case CoreStatus.OUT_OF_SYNC: throw new OutOfSyncException();
       }
     }
+    #endregion
   }
 }
