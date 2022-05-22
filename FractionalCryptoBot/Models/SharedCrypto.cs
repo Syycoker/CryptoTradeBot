@@ -1,4 +1,5 @@
-﻿using FractionalCryptoBot.Services;
+﻿using FractionalCryptoBot.Enumerations;
+using FractionalCryptoBot.Services;
 
 namespace FractionalCryptoBot.Models
 {
@@ -65,6 +66,8 @@ namespace FractionalCryptoBot.Models
       if (nonNullCryptoObjs is null || nonNullCryptoObjs.Count() == 0) return;
 
       Cryptos = nonNullCryptoObjs.ToList();
+
+      // Start the websocket for each crypto...
     }
 
     /// <summary>
@@ -77,6 +80,23 @@ namespace FractionalCryptoBot.Models
       if (nonNullCryptoObjs is null || nonNullCryptoObjs.Count() == 0) return;
 
       Cryptos = nonNullCryptoObjs.ToList();
+
+      // Start the websocket for each crypto...
+    }
+    #endregion
+    #region Private
+    private void StartWebsockets()
+    {
+
+    }
+    /// <summary>
+    /// Determines the performance of an asset based on its metrics.
+    /// </summary>
+    /// <param name="crypto"></param>
+    /// <returns></returns>
+    private AnalysisEval DeterminePerformance(Crypto crypto)
+    {
+      return AnalysisEval.NONE;
     }
     #endregion
     #region Public
@@ -89,9 +109,6 @@ namespace FractionalCryptoBot.Models
       while (ShouldCheckStatus)
       {
         await Task.Delay(CHECK_STATUS_POLLING_INTERVAL);
-
-        // (For the purpose of making sense, I will only be analysing the base asset...)
-
         // Get the asset that's the bidding for the lowest amount.
         Crypto? lowestAsset = GetLowestBaseBiddingAsset();
         Crypto? highestAsset = GetHighestBaseBiddingAsset();
@@ -132,7 +149,7 @@ namespace FractionalCryptoBot.Models
     /// Sets the 'ShouldCheckStatus' to whatever the value is (can stop the 'CheckStatus' method from running).
     /// </summary>
     /// <param name="run"></param>
-    public void Run(bool run) => ShouldCheckStatus = run;
+    public void Stop(bool run = false) => ShouldCheckStatus = run;
 
     /// <summary>
     /// Returns the asset with the lowest base bidding price in the collection stored.

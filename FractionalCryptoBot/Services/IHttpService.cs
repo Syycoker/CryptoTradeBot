@@ -71,11 +71,5 @@ namespace FractionalCryptoBot.Services
     /// <param name="key">The secret key to encrypt the source.</param>
     /// <returns>An encrypted string.</returns>
     string Sign(string source, string key);
-
-    /// <summary>
-    /// Returns the settings the service abides by.
-    /// </summary>
-    /// <returns></returns>
-    ServiceSettings GetSettings();
   }
 }

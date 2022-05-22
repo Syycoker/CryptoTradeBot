@@ -1,6 +1,4 @@
-﻿using Autofac;
-using FractionalCryptoBot.Configuration;
-using FractionalCryptoBot.Cores;
+﻿using FractionalCryptoBot.Cores;
 using Microsoft.Extensions.Logging;
 
 namespace FractionalCryptoBot

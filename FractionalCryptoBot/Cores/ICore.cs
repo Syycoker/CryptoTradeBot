@@ -1,9 +1,7 @@
-﻿using FractionalCryptoBot.Configuration;
-using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 
 namespace FractionalCryptoBot.Cores
 {
@@ -61,37 +59,24 @@ namespace FractionalCryptoBot.Cores
     Task<bool> ActiveService();
 
     /// <summary>
+    /// Attempts to get an asset froma marketplace and convert the response string to a DTO if found in the exchange to be used from the calling class (MainCore).
+    /// </summary>
+    /// <param name="crypto">The qualified name for the cryptocurrency.</param>
+    /// <returns>A 'Crypto' DTO.</returns>
+    Task<Crypto?> GetCryptoCurrency(string crypto);
+
+    /// <summary>
     /// Gets a collection of cryptocurrencies using the service that will be used to make a call on its endpoints.
     /// </summary>
     /// <returns>An enumerable collection of DTOs.</returns>
     Task<IEnumerable<Crypto>> GetCryptoCurrencies();
 
     /// <summary>
-    /// Gets a collection of cryptocurrencies that are performing well in the marketplace.
+    /// Starts a websocket to constantly stream/update the metrics to a particular cryptocurrency.
     /// </summary>
-    /// <returns>An enumerable collection of DTOs.</returns>
-    IEnumerable<Crypto> GetPerformantCrypto();
-
-    /// <summary>
-    /// Attempts to retrieve a cryptocurrency from an exchange as  JObject.
-    /// </summary>
-    /// <param name="crypto">The short name of the crypto.</param>
-    /// <returns>A Json Object representing everything about the crypto in the particualr exchange.</returns>
-    Task<JObject> GetAsset(string crypto);
-
-    /// <summary>
-    /// Gets the bidding price of the asset in the exchange.
-    /// </summary>
-    /// <param name="cryptoJsonObject"></param>
-    /// <returns>A decimal representing the price of the asset.</returns>
-    Task<decimal> GetBiddingPrice(Crypto cryptoDTO);
-
-    /// <summary>
-    /// Attempts to get an asset froma marketplace and convert the response string to a DTO if found in the exchange to be used from the calling class (MainCore).
-    /// </summary>
-    /// <param name="crypto">The qualified name for the cryptocurrency.</param>
-    /// <returns>A 'Crypto' DTO.</returns>
-    Task<Crypto?> GetCryptoCurrency(string crypto);
+    /// <param name="crypto"></param>
+    /// <returns></returns>
+    Task StartCryptoStream(Crypto crypto);
 
     /// <summary>
     /// Attempts to buy a specifc crypto (provided the DTO) and the amount wanting to buy.
