@@ -34,6 +34,16 @@ namespace FractionalCryptoBot.Cores
     decimal AverageVolume { get; }
 
     /// <summary>
+    /// The fees for transactions that are considered 'making' the market.
+    /// </summary>
+    decimal MakerFee { get; }
+
+    /// <summary>
+    /// The fees for transactions that are considered 'taking' from the market.
+    /// </summary>
+    decimal TakerFee { get; }
+
+    /// <summary>
     /// The logger to be used.
     /// </summary>
     ILogger Log { get; }

@@ -7,9 +7,14 @@
   {
     #region Constants
     /// <summary>
-    /// The frequency (ms) that the shared crypto should be observed in their respective marketplaces.
+    /// If the collection may make us money, how frequent should I check the collections to repeat the procedure?
     /// </summary>
-    private const int CHECK_STATUS_POLLING_INTERVAL = 10000;
+    private const int PROMISING_TRANSACTION_POLL_TIME = 10000;
+
+    /// <summary>
+    /// If the collection may not make us money, how frequent should I check the collection to repeat the procedure?
+    /// </summary>
+    private const int NON_PROMISING_TRANSACTION_POLL_INTERVAL = 100000;
     #endregion
     #region Members
     /// <summary>
@@ -21,6 +26,11 @@
     /// Should the 'CheckStatus' operation continue?
     /// </summary>
     public bool ShouldCheckStatus { get; private set; } = true;
+
+    /// <summary>
+    /// The frequency (ms) that the shared crypto should be observed in their respective marketplaces.
+    /// </summary>
+    private int CHECK_STATUS_POLLING_INTERVAL = NON_PROMISING_TRANSACTION_POLL_INTERVAL;
     #endregion
     #region Constructor
     /// <summary>
@@ -58,10 +68,37 @@
       {
         await Task.Delay(CHECK_STATUS_POLLING_INTERVAL);
 
-        // Get the average of the bidding prices between the collection
-        var averageBiddingPrice = Cryptos.Average(crypto => crypto.BaseBiddingPrice);
+        // (For the purpose of making sense, I will only be analysing the base asset...)
+        // Get the asset that's the bidding for the lowest amount.
+        Crypto? lowestAsset = GetLowestBaseBiddingAsset();
+        Crypto? highestAsset = GetHighestBaseBiddingAsset();
 
-        // Get the average volume from the collection
+        // If whatever we recieve is invalid, throw an exception up a level to the procedure that is calling.
+        if (lowestAsset is null || highestAsset is null) throw new Exception(string.Format("Unable to justify the assets in the collection - '{1}'.", nameof(CheckStatus)));
+
+        // Get the fees of the cheaper of the two cryptocurrency.
+        decimal transactionFee = lowestAsset.Core.TakerFee;
+
+        // Calculate the difference between the lowest & highest asset (minus the fee) to see if we can make a profit.
+        decimal difference = (highestAsset.BaseBiddingPrice - lowestAsset.BaseBiddingPrice) - transactionFee;
+
+        bool continueBuyProcedure = difference.CompareTo(decimal.Zero) > 0;
+
+        // If the difference is negative, we will lose money if we fulfil the buy order so, let's just sleep for a while...
+        if (!continueBuyProcedure)
+        {
+          // Check the collection and how it's doing less frequently.
+          CHECK_STATUS_POLLING_INTERVAL = NON_PROMISING_TRANSACTION_POLL_INTERVAL;
+          continue;
+        }
+        else
+        {
+          // Check the collection and how it's performing more frequently.
+          CHECK_STATUS_POLLING_INTERVAL = PROMISING_TRANSACTION_POLL_TIME;
+        }
+
+        // Attempt to buy the asset.
+        lowestAsset.Core.BuyAsset();
       }
     }
 
@@ -72,16 +109,28 @@
     public void Run(bool run) => ShouldCheckStatus = run;
 
     /// <summary>
-    /// Returns the asset with the lowest base price in the collection stored.
+    /// Returns the asset with the lowest base bidding price in the collection stored.
     /// </summary>
     /// <returns>The lowest bidding asset from multiple exchanges.</returns>
     public Crypto? GetLowestBaseBiddingAsset() => Cryptos.MinBy(crypto => crypto.BaseBiddingPrice);
+
+    /// <summary>
+    /// Returns the asset with the highest base bidding price in the collection stored.
+    /// </summary>
+    /// <returns></returns>
+    public Crypto? GetHighestBaseBiddingAsset() => Cryptos.MaxBy(crypto => crypto.BaseBiddingPrice);
 
     /// <summary>
     /// Returns the asset with the lowest quote price in the collection stored.
     /// </summary>
     /// <returns></returns>
     public Crypto? GetLowestQuoteBiddingPriceAsset() => Cryptos.MinBy(crypto => crypto.QuoteBiddingPrice);
+
+    /// <summary>
+    /// Returns the asset with the highest quote bidding price in the collection stored.
+    /// </summary>
+    /// <returns></returns>
+    public Crypto? GetHighestQuoteBiddingAsset() => Cryptos.MaxBy(crypto => crypto.QuoteBiddingPrice);
     #endregion
   }
 }
