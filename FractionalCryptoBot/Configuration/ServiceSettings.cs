@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FractionalCryptoBot.Cores;
 
 namespace FractionalCryptoBot.Configuration
 {
@@ -11,6 +7,7 @@ namespace FractionalCryptoBot.Configuration
   /// </summary>
   public class ServiceSettings
   {
+    #region Members
     /// <summary>
     /// Is the application going to run on the service's sandbox api endpoints?
     /// </summary>
@@ -30,7 +27,14 @@ namespace FractionalCryptoBot.Configuration
     /// Determines whether the core whould be running or not.
     /// </summary>
     public bool ShouldRun { get; private set; } = true;
+    #endregion
+    #region Constructor
+    public ServiceSettings(ICore core)
+    {
 
+    }
+    #endregion
+    #region Public
     /// <summary>
     /// Sets where the service's endpoints will go to, i.e. live marketplace or sandbox.
     /// </summary>
@@ -66,5 +70,6 @@ namespace FractionalCryptoBot.Configuration
     {
       ShouldRun = value;
     }
+    #endregion
   }
 }

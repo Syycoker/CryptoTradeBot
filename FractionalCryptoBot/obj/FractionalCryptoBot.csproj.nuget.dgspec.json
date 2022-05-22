@@ -59,10 +59,6 @@
             "System.ServiceModel.Primitives": {
               "target": "Package",
               "version": "[4.9.0, )"
-            },
-            "WebSocketSharp": {
-              "target": "Package",
-              "version": "[1.0.3-rc11, )"
             }
           },
           "imports": [

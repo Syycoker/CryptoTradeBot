@@ -25,7 +25,7 @@ namespace FractionalCryptoBot.Configuration
     /// <summary>
     /// To check wheter the authentication strings should be from the sandbox api or not.
     /// </summary>
-    public static bool SandBoxMode = new ServiceSettings().IsSandboxMode;
+    public static bool SandBoxMode = false;
 
     /// <summary>
     /// Gets the api key for the client.

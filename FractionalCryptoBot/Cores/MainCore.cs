@@ -46,6 +46,9 @@ namespace FractionalCryptoBot.Cores
 
         // Check if we have any shared cryptocurrencies...
         if (sharedCryptos is null || sharedCryptos.Count() == 0) throw new Exception($"No common cryptocurrencies found in any of the exchanges - '{nameof(RunMainProcedure)}'.");
+
+        // Run each procedure...
+        CheckPerformanceOfCryptosInExchange(sharedCryptos);
       }
       catch(Exception e)
       {
@@ -112,47 +115,10 @@ namespace FractionalCryptoBot.Cores
     /// </summary>
     /// <param name="sharedCrypto"></param>
     /// <returns></returns>
-    public Task CheckPerformanceOfCryptosInExchange(SharedCrypto sharedCrypto)
+    public void CheckPerformanceOfCryptosInExchange(IEnumerable<SharedCrypto> sharedCrypto)
     {
-      // Check the volumes of the cryptos, if it's compaitably low, then continue...
-      
-
-      // Check the price changes of the cryptos, if it's negative, then continue...
-      return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Initiates a market order for the cryptocurrenc in their respective marketplace.
-    /// </summary>
-    /// <param name="crypto">The cryptocurrency to be bought.</param>
-    /// <param name="price">The price to buy the cryptocurrency.</param>
-    /// <param name="quantity">The optional variable to override the price.</param>
-    /// <returns>A 'CoreStatus' enum to return how the process went.</returns>
-    public async Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00m)
-    {
-      Logger.LogInformation("{0}: Attempting to buy asset '{1}' on the '{2}' marketplace.",
-          DateTime.UtcNow,
-          crypto.BaseName+crypto.QuoteName,
-          nameof(crypto.Core.Service));
-
-      return await crypto.Core.BuyAsset(crypto, price);
-    }
-
-    /// <summary>
-    /// Initiates a market order for the cryptocurrenc in their respective marketplace.
-    /// </summary>
-    /// <param name="crypto">The cryptocurrency to be bought.</param>
-    /// <param name="price">The price to buy the cryptocurrency.</param>
-    /// <param name="quantity">The optional variable to override the price.</param>
-    /// <returns>A 'CoreStatus' enum to return how the process went.</returns>
-    public async Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00m)
-    {
-      Logger.LogInformation("{0}: Attempting to sell asset '{1}' on the '{2}' marketplace.",
-          DateTime.UtcNow,
-          crypto.BaseName + crypto.QuoteName,
-          nameof(crypto.Core.Service));
-
-      return await crypto.Core.SellAsset(crypto, price);
+      // Make each object run their specific task.
+      sharedCrypto.Select(sc => sc.CheckStatus());
     }
     #endregion
   }

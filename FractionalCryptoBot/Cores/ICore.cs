@@ -42,11 +42,6 @@ namespace FractionalCryptoBot.Cores
     /// The service to be used to make ALL restful calls.
     /// </summary>
     IHttpService Service { get; }
-
-    /// <summary>
-    /// A public property to get all available cryptocurrencies in the marketplace the service uses.
-    /// </summary>
-    IEnumerable<Crypto> Cryptocurrencies { get; }
     #endregion
     #region Public Methods
     /// <summary>
@@ -79,7 +74,7 @@ namespace FractionalCryptoBot.Cores
     /// </summary>
     /// <param name="cryptoJsonObject"></param>
     /// <returns>A decimal representing the price of the asset.</returns>
-    decimal GetBiddingPrice(Crypto cryptoDTO);
+    Task<decimal> GetBiddingPrice(Crypto cryptoDTO);
 
     /// <summary>
     /// Attempts to get an asset froma marketplace and convert the response string to a DTO if found in the exchange to be used from the calling class (MainCore).

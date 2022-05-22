@@ -53,7 +53,7 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     public decimal QuoteMinimumBuyPrice { get; private set; } = 0.00m;
     #endregion
-    #region Constructors
+    #region Constructor
     /// <summary>
     /// Default constructor for a crypto object regardless of marketplace.
     /// </summary>
@@ -86,6 +86,9 @@ namespace FractionalCryptoBot.Models
 
       BaseMinimumBuyPrice = baseMinimumBuyPrice; // The minimum buy prices
       QuoteMinimumBuyPrice = quoteMinimumBuyPrice;
+
+      // On construction of the object, bootupp the websocket in its core to update the bidding price &
+      // minimum buy price in the background.
     }
     #endregion
     #region Public Methods

@@ -419,15 +419,6 @@
             "rid": "win"
           }
         }
-      },
-      "WebSocketSharp/1.0.3-rc11": {
-        "type": "package",
-        "compile": {
-          "lib/websocket-sharp.dll": {}
-        },
-        "runtime": {
-          "lib/websocket-sharp.dll": {}
-        }
       }
     }
   },
@@ -1350,19 +1341,6 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
-    },
-    "WebSocketSharp/1.0.3-rc11": {
-      "sha512": "7VCF7f7zVMOvLGD8LeGS4DVXc8lOcB6kXnUMeTxigu+PMiU+6wW5Olq2gYrDU8vDRKOwFY+5RyBaLyzb8skEzA==",
-      "type": "package",
-      "path": "websocketsharp/1.0.3-rc11",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/websocket-sharp.dll",
-        "lib/websocket-sharp.xml",
-        "websocketsharp.1.0.3-rc11.nupkg.sha512",
-        "websocketsharp.nuspec"
-      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -1371,8 +1349,7 @@
       "Microsoft.Extensions.Logging >= 6.0.0",
       "Microsoft.Extensions.Logging.Abstractions >= 6.0.1",
       "Newtonsoft.Json >= 13.0.1",
-      "System.ServiceModel.Primitives >= 4.9.0",
-      "WebSocketSharp >= 1.0.3-rc11"
+      "System.ServiceModel.Primitives >= 4.9.0"
     ]
   },
   "packageFolders": {
@@ -1433,10 +1410,6 @@
           "System.ServiceModel.Primitives": {
             "target": "Package",
             "version": "[4.9.0, )"
-          },
-          "WebSocketSharp": {
-            "target": "Package",
-            "version": "[1.0.3-rc11, )"
           }
         },
         "imports": [
@@ -1457,17 +1430,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'WebSocketSharp 1.0.3-rc11' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
-      "libraryId": "WebSocketSharp",
-      "targetGraphs": [
-        "net6.0"
-      ]
-    }
-  ]
+  }
 }
