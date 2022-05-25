@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Net.WebSockets;
+using System.Security.Cryptography;
 using System.Text;
 using FractionalCryptoBot.Configuration;
 using FractionalCryptoBot.Enumerations;
@@ -16,6 +17,11 @@ namespace FractionalCryptoBot.Services
     /// The HttpClient for the service.
     /// </summary>
     public readonly HttpClient Client;
+
+    /// <summary>
+    /// The websocket all cryptocurrencies linked to the marketplace will use.
+    /// </summary>
+    public ClientWebSocket? Socket { get; set; }
 
     /// <summary>
     /// The Logger for the service.

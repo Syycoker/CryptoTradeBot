@@ -1,4 +1,7 @@
 ﻿using FractionalCryptoBot.Configuration;
+using FractionalCryptoBot.Models;
+using Microsoft.Extensions.Logging;
+using System.Net.WebSockets;
 
 namespace FractionalCryptoBot.Services
 {
@@ -7,6 +10,43 @@ namespace FractionalCryptoBot.Services
   /// </summary>
   public interface IHttpService
   {
+    #region Members
+    /// <summary>
+    /// The HttpClient for the service.
+    /// </summary>
+    public HttpClient Client { get; }
+
+    /// <summary>
+    /// The Logger for the service.
+    /// </summary>
+    public ILogger Log { get; }
+
+    /// <summary>
+    /// The base uri for the service.
+    /// </summary>
+    public string BaseUri { get; }
+
+    /// <summary>
+    /// The base uri for the service's websocket.
+    /// </summary>
+    public string WebsocketBaseUri { get; }
+
+    /// <summary>
+    /// The interval the stream from the marketplace will be checked at.
+    /// </summary>
+    public string KlineStreamInterval { get; }
+
+    /// <summary>
+    /// The api key to the client's service account.
+    /// </summary>
+    public string ApiKey { get; }
+
+    /// <summary>
+    /// The secret key to the client's service account.
+    /// </summary>
+    public string ApiSecret { get; }
+    #endregion
+    #region Public
     /// <summary>
     /// Sends a request to an endpoint and returns a string.
     /// </summary>
@@ -37,32 +77,24 @@ namespace FractionalCryptoBot.Services
     Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null);
 
     /// <summary>
-    /// Sends a request to the websocket endpoint location.
+    /// Returns a new Websocket to be used.
     /// </summary>
-    /// <param name="parameter">The name of the stream.</param>
-    /// <returns>A response string, i.e. JSON.</returns>
-    void SendWebsocketAsync(string parameter);
+    /// <returns></returns>
+    ClientWebSocket CreateWebSocket()
+    {
+      return new ClientWebSocket();
+    }
 
     /// <summary>
-    /// To handle an operation once the socket has been opened.
+    /// Starts a stream with the parameters set.
     /// </summary>
-    /// <param name="sender">The object raising the event.</param>
-    /// <param name="args">The arguments of the event.</param>
-    void SocketOnOpen(object? sender, EventArgs args);
+    /// <param name="content">What content to start the stream with.</param>
+    void StartStream(string content);
 
     /// <summary>
-    /// To handle an operation once the socket has sent/recieved a message.
+    /// Parses the stream to populate the 'Crypto' Model.
     /// </summary>
-    /// <param name="sender">The object raising the event.</param>
-    /// <param name="args">The arguments of the event.</param>
-    void SocketOnMessage(object? sender, EventArgs args);
-
-    /// <summary>
-    /// To handle an operation once the socket has been closed.
-    /// </summary>
-    /// <param name="sender">The object raising the event.</param>
-    /// <param name="args">The arguments of the event.</param>
-    void SocketOnClose(object? sender, EventArgs args);
+    void ParseStream(Crypto crypto, string content);
 
     /// <summary>
     /// HMAC signs the string if provided a source and its secret.
@@ -71,5 +103,6 @@ namespace FractionalCryptoBot.Services
     /// <param name="key">The secret key to encrypt the source.</param>
     /// <returns>An encrypted string.</returns>
     string Sign(string source, string key);
+    #endregion
   }
 }

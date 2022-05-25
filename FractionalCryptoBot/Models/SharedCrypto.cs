@@ -85,10 +85,6 @@ namespace FractionalCryptoBot.Models
     }
     #endregion
     #region Private
-    private void StartWebsockets()
-    {
-
-    }
     /// <summary>
     /// Determines the performance of an asset based on its metrics.
     /// </summary>

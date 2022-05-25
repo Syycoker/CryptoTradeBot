@@ -1,4 +1,5 @@
 ﻿using FractionalCryptoBot.Cores;
+using System.Net.WebSockets;
 
 namespace FractionalCryptoBot.Models
 {
@@ -85,11 +86,42 @@ namespace FractionalCryptoBot.Models
       BasePrecision = basePrecision; // The precisions
       QuotePrecision = quotePrecision;
 
-      // On construction of the object, bootupp the websocket in its core to update the bidding price &
+      // On construction of the object, bootup the websocket in its core to update the bidding price &
       // minimum buy price in the background.
     }
     #endregion
     #region Public Methods
+    /// <summary>
+    /// Using the propertys from the model itself, 
+    /// </summary>
+    public async Task RunStream()
+    {
+      CancellationTokenSource source = new CancellationTokenSource();
+
+      using (var ws = Core.Service.CreateWebSocket())
+      {
+        await ws.ConnectAsync(new Uri(Core.Service.WebsocketBaseUri + Core.Service.KlineStreamInterval + this.BaseName), CancellationToken.None);
+        byte[] buffer = new byte[256];
+        while (ws.State == WebSocketState.Open)
+        {
+          var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+          if (result.MessageType == WebSocketMessageType.Close)
+          {
+            await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+          }
+          else
+          {
+            HandleMessage(buffer, result.Count);
+          }
+        }
+      }
+    }
+
+    private static void HandleMessage(byte[] buffer, int count)
+    {
+      string messageRecieved = BitConverter.ToString(buffer, 0, count);
+    }
+
     /// <summary>
     /// Public method to set the base asset's bidding price.
     /// </summary>
