@@ -1,7 +1,10 @@
 ﻿using FractionalCryptoBot.Configuration;
+using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using Microsoft.Extensions.Logging;
 using System.Net.WebSockets;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace FractionalCryptoBot.Services
 {
@@ -84,17 +87,6 @@ namespace FractionalCryptoBot.Services
     {
       return new ClientWebSocket();
     }
-
-    /// <summary>
-    /// Starts a stream with the parameters set.
-    /// </summary>
-    /// <param name="content">What content to start the stream with.</param>
-    void StartStream(string content);
-
-    /// <summary>
-    /// Parses the stream to populate the 'Crypto' Model.
-    /// </summary>
-    void ParseStream(Crypto crypto, string content);
 
     /// <summary>
     /// HMAC signs the string if provided a source and its secret.

@@ -1,29 +1,52 @@
-﻿using System.Text;
-using System.Web;
-using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Enumerations;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using WebSocketSharp;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
 
 namespace FractionalCryptoBot.Services
 {
   /// <summary>
   /// The service class for binance.
   /// </summary>
-  public sealed class BinanceService : HttpService
+  public sealed class BinanceService : IHttpService
   {
+    #region Private Members
+    private HttpClient httpClient;
+    private ILogger log;
+    private string baseUri = string.Empty;
+    private string websocketBaseUri = string.Empty;
+    private string klineStreamInterval = string.Empty;
+    private string apiKey = string.Empty;
+    private string apiSecret = string.Empty;
+    #endregion
+    #region Public Members
+    public HttpClient Client { get => httpClient; private set => httpClient = value; }
+    public ILogger Log { get => log; private set => log = value; }
+    public string BaseUri { get => baseUri; private set => baseUri = value; }
+    public string WebsocketBaseUri { get => websocketBaseUri; private set => websocketBaseUri = value; }
+    public string KlineStreamInterval { get => klineStreamInterval; private set => klineStreamInterval = value; }
+    public string ApiKey { get => apiKey; private set => apiKey = value; }
+    public string ApiSecret { get => apiSecret; private set => apiSecret = value; }
+    #endregion
+    #region Constructor
     /// <summary>
     /// Default constuctor to instantiate a binance service object.
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="httpClient"></param>
-    public BinanceService(ILogger logger) : base(logger, Marketplaces.BINANCE)
+    public BinanceService(ILogger logger)
     {
       // Nothing needs to be set in the constructor for now.
+      httpClient = new HttpClient();
+      log = logger;
+
       // Not using string interpolation as I lose more valuable information and processing time when doing so.
       Log.LogInformation("{0}: '{1}' has been instantiated.", DateTime.UtcNow, nameof(BinanceService));
     }
-
+    #endregion
+    #region Public Members
     /// <summary>
     /// Helper method to send an asynchoronus call to binance's endpoints.
     /// </summary>
@@ -31,7 +54,7 @@ namespace FractionalCryptoBot.Services
     /// <param name="requestUri">The address of the endpoint.</param>
     /// <param name="content">The content to go with the call.</param>
     /// <returns>A response string in JSON.</returns>
-    public override async Task<string> SendAsync(HttpMethod httpMethod, string requestUri, object? content = null)
+    public async Task<string> SendAsync(HttpMethod httpMethod, string requestUri, object? content = null)
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
@@ -59,7 +82,7 @@ namespace FractionalCryptoBot.Services
     /// <param name="query">Queries to be added to the request uri.</param>
     /// <param name="content">The content to go with the call.</param>
     /// <returns>A response string in JSON.</returns>
-    public override async Task<string> SendPublicAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null)
+    public async Task<string> SendPublicAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null)
     {
       if (!(query is null))
       {
@@ -82,7 +105,7 @@ namespace FractionalCryptoBot.Services
     /// <param name="query">Queries to be added to the request uri.</param>
     /// <param name="content">The content to go with the call.</param>
     /// <returns>A response string in JSON.</returns>
-    public override async Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null)
+    public async Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null)
     {
       StringBuilder queryStringBuilder = new StringBuilder();
 
@@ -108,51 +131,24 @@ namespace FractionalCryptoBot.Services
     }
 
     /// <summary>
-    /// Sends a request to binance's websocket endpoint.
+    /// HMAC signs the string if provided a source and its secret.
     /// </summary>
-    /// <param name="parameter">The name of the stream</param>
-    /// <returns>A response string.</returns>
-    public override void SendWebsocketAsync(string parameter)
+    /// <param name="source">The source string to then be encrypted.</param>
+    /// <param name="key">The secret key to encrypt the source.</param>
+    /// <returns>An encrypted string.</returns>
+    public string Sign(string source, string key)
     {
-      // Testing stream 'kline'.
-      string pair = "btcusdt";
-      string interval = "1m";
-      string socketRequest =$"{WebsocketBaseUri}/ws/{ pair }@{ parameter }_{ interval }";
+      byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 
-      using (var socket = new WebSocket(socketRequest))
+      using (HMACSHA256 hmacsha256 = new HMACSHA256(keyBytes))
       {
-        socket.OnOpen += SocketOnOpen;
+        byte[] sourceBytes = Encoding.UTF8.GetBytes(source);
+
+        byte[] hash = hmacsha256.ComputeHash(sourceBytes);
+
+        return BitConverter.ToString(hash).Replace("-", "").ToLower();
       }
     }
-
-    /// <summary>
-    /// Handles an operation when the websocket has been opened.
-    /// </summary>
-    /// <param name="sender">The object raising the event.</param>
-    /// <param name="args">The arguments of the event.</param>
-    public override void SocketOnOpen(object? sender, EventArgs args)
-    {
-      throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// Handles an operation when the websocket has recieved/sent a message.
-    /// </summary>
-    /// <param name="sender">The object raising the event.</param>
-    /// <param name="args">The arguments of the event.</param>
-    public override void SocketOnMessage(object? sender, EventArgs args)
-    {
-      throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// Handles an operation when the websocket has been closed.
-    /// </summary>
-    /// <param name="sender">The object raising the event.</param>
-    /// <param name="args">The arguments of the event.</param>
-    public override void SocketOnClose(object? sender, EventArgs args)
-    {
-      throw new NotImplementedException();
-    }
+    #endregion
   }
 }

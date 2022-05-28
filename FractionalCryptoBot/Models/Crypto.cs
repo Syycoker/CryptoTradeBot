@@ -8,6 +8,12 @@ namespace FractionalCryptoBot.Models
   /// </summary>
   public class Crypto
   {
+    #region Constants
+    /// <summary>
+    /// The maximum amount of data that can be stored in a byte.
+    /// </summary>
+    private const ushort WEBSOCKET_BYTE_COUNT = 256;
+    #endregion
     #region Members
     /// <summary>
     /// The core which was used to instantiate this object.
@@ -90,6 +96,17 @@ namespace FractionalCryptoBot.Models
       // minimum buy price in the background.
     }
     #endregion
+    #region Private Methods
+    /// <summary>
+    /// Handles the message read from the websocket.
+    /// </summary>
+    /// <param name="buffer">The data being recieved.</param>
+    /// <param name="count">The amount of bytes (int).</param>
+    private static void HandleMessage(byte[] buffer, int count)
+    {
+      string messageRecieved = BitConverter.ToString(buffer, 0, count);
+    }
+    #endregion
     #region Public Methods
     /// <summary>
     /// Using the propertys from the model itself, 
@@ -101,7 +118,7 @@ namespace FractionalCryptoBot.Models
       using (var ws = Core.Service.CreateWebSocket())
       {
         await ws.ConnectAsync(new Uri(Core.Service.WebsocketBaseUri + Core.Service.KlineStreamInterval + this.BaseName), CancellationToken.None);
-        byte[] buffer = new byte[256];
+        byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
         while (ws.State == WebSocketState.Open)
         {
           var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
@@ -115,11 +132,6 @@ namespace FractionalCryptoBot.Models
           }
         }
       }
-    }
-
-    private static void HandleMessage(byte[] buffer, int count)
-    {
-      string messageRecieved = BitConverter.ToString(buffer, 0, count);
     }
 
     /// <summary>
@@ -157,6 +169,17 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     /// <param name="volumeChange">The current (24h) volume change for  this DTO.</param>
     public void SetVolumeChange(decimal volumeChange) => VolumeChange = volumeChange;
+    #endregion
+    #region Comments for implementation details
+    //// Testing stream 'kline'.
+    //string pair = "btcusdt";
+    //string interval = "1m";
+    //string socketRequest = $"{WebsocketBaseUri}/ws/{ pair }@{ parameter }_{ interval }";
+
+    //  using (var socket = new WebSocket(socketRequest))
+    //  {
+    //    socket.OnOpen += SocketOnOpen;
+    //  }
     #endregion
   }
 }

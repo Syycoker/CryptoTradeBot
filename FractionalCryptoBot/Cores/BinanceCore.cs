@@ -22,6 +22,8 @@ namespace FractionalCryptoBot.Cores
     private decimal totalPriceChange = 0;
     private decimal marketplaceAverage = 0;
     private decimal averageVolume = 0.00m;
+    private decimal makerFee = 0.00m;
+    private decimal takerFee = 0.00m;
     #endregion
     #region Public Members
     /// <summary>
@@ -53,6 +55,16 @@ namespace FractionalCryptoBot.Cores
     /// The average volume of cryptocurrency in the binance marketplace.
     /// </summary>
     public decimal AverageVolume { get => averageVolume; private set => averageVolume = value; }
+
+    /// <summary>
+    /// The maker fee for the account.
+    /// </summary>
+    public decimal MakerFee { get => makerFee; private set => makerFee = value; }
+
+    /// <summary>
+    /// The taker fee for the account.
+    /// </summary>
+    public decimal TakerFee { get => takerFee; private set => takerFee = value; }
     #endregion
     #region Constructor
     /// <summary>
@@ -72,27 +84,17 @@ namespace FractionalCryptoBot.Cores
       throw new NotImplementedException();
     }
 
+    public Task<Crypto?> GetCryptoCurrency(string crypto)
+    {
+      throw new NotImplementedException();
+    }
+
     public Task<IEnumerable<Crypto>> GetCryptoCurrencies()
     {
       throw new NotImplementedException();
     }
 
-    public IEnumerable<Crypto> GetPerformantCrypto()
-    {
-      throw new NotImplementedException();
-    }
-
-    public Task<JObject> GetAsset(string crypto)
-    {
-      throw new NotImplementedException();
-    }
-
-    public Task<decimal> GetBiddingPrice(Crypto cryptoDTO)
-    {
-      throw new NotImplementedException();
-    }
-
-    public Task<Crypto?> GetCryptoCurrency(string crypto)
+    public Task StartCryptoStream(Crypto crypto)
     {
       throw new NotImplementedException();
     }
