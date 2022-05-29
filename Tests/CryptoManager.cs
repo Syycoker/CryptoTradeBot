@@ -1,6 +1,7 @@
 ﻿using FractionalCryptoBot;
 using FractionalCryptoBot.Cores;
 using FractionalCryptoBot.Models;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,38 +11,40 @@ namespace Tests
   /// <summary>
   /// A class to produce a dummy collection oF 'Crypto' collection.
   /// </summary>
-  public class CryptoManager : IEnumerable<Crypto>
+  public class CryptoManager
   {
     List<ICore> Cores = CoreFactory.GetCores().ToList();
 
-    List<Crypto> Crypto = new List<Crypto>();
+    public List<Crypto> AllCryptos = new List<Crypto>();
+    public List<Crypto> BinanceCryptos = new List<Crypto>();
+    public List<Crypto> CoinbaseCryptos = new List<Crypto>();
 
     public CryptoManager()
     {
-      var binanceCore = CoreFactory.GetCore(typeof(BinanceCore));
-      if (binanceCore is null) return;
+      var binanceCore = Cores[0];
+      var coinbaseCore = Cores[1];
 
-      // Add an invalid crypto, update -> changed structure to object, will be changing soon.
+      BinanceCryptos.Add(new Crypto(binanceCore, string.Empty, string.Empty, 0, 0));
+      CoinbaseCryptos.Add(new Crypto(coinbaseCore, "BTC", "USD", 7, 7));
+      BinanceCryptos.Add(new Crypto(binanceCore, "BTC", "USD", 6, 8));
+      CoinbaseCryptos.Add(new Crypto(coinbaseCore, "LTC", "USD", 7, 7));
+      BinanceCryptos.Add(new Crypto(binanceCore, "LTC", "USD", 7, 7));
+      CoinbaseCryptos.Add(new Crypto(coinbaseCore, string.Empty, string.Empty, 0, 0));
 
-      /*
-      Crypto.Add(new Crypto(binanceCore, string.Empty, 1, 0.00m, 0.00m));
-      Crypto.Add(new Crypto(binanceCore, "BTC", 8, 0.00m, 0.00m));
-      Crypto.Add(new Crypto(binanceCore, "ETH", 7, 0.00m, 0.00m));
-      Crypto.Add(new Crypto(binanceCore, "LUNA", 8, 0.00m, 0.00m));
-      Crypto.Add(new Crypto(binanceCore, "XRP", 8, 0.00m, 0.00m));
-      Crypto.Add(new Crypto(binanceCore, "DOGE", 8, 0.00m, 0.00m));
-      Crypto.Add(new Crypto(binanceCore, "SHIB", 8, 0.00m, 0.00m));
-      Crypto.Add(new Crypto(binanceCore, "SOL", 8, 0.00m, 0.00m));*/
+      AllCryptos.AddRange(BinanceCryptos);
+      AllCryptos.AddRange(CoinbaseCryptos);
+
+      AllCryptos = SetBiddingPrices(AllCryptos).ToList();
     }
 
-    public IEnumerator<Crypto> GetEnumerator()
+    private IEnumerable<Crypto> SetBiddingPrices(IEnumerable<Crypto> cryptos)
     {
-      return Crypto.GetEnumerator();
-    }
+      Random rand = new Random();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
+      foreach (var crypto in cryptos)
+        crypto.SetBaseBiddingPrice(rand.Next(0, 100));
+
+      return cryptos;
     }
   }
 }

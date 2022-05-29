@@ -23,14 +23,15 @@ namespace Tests
     [Fact]
     public void Can_Create_A_Crypto_Collection()
     {
-      var cryptos = cryptoManager.GetEnumerator();
+      var cryptos = cryptoManager.AllCryptos;
       Assert.NotNull(cryptos);
+      Assert.True(cryptos.Any());
     }
 
     [Fact]
     public void Can_Create_A_Crypto_DTO()
     {
-      var crypto = cryptoManager.GetEnumerator().Current;
+      var crypto = cryptoManager.AllCryptos[0];
       Assert.NotNull(crypto);
     }
   }

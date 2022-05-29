@@ -1,14 +1,7 @@
-﻿using FractionalCryptoBot.Configuration;
-using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FractionalCryptoBot.Cores
 {
