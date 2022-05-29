@@ -72,13 +72,6 @@ namespace FractionalCryptoBot.Cores
     Task<IEnumerable<Crypto>> GetCryptoCurrencies();
 
     /// <summary>
-    /// Starts a websocket to constantly stream/update the metrics to a particular cryptocurrency.
-    /// </summary>
-    /// <param name="crypto"></param>
-    /// <returns></returns>
-    Task StartCryptoStream(Crypto crypto);
-
-    /// <summary>
     /// Attempts to buy a specifc crypto (provided the DTO) and the amount wanting to buy.
     /// </summary>
     /// <param name="crypto">The crypto to be bought.</param>

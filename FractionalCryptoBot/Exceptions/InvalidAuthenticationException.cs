@@ -18,20 +18,31 @@ namespace FractionalCryptoBot.Exceptions
     const string SOCKET_URL = "SOCKET_URL";
     const string VALUE = "value";
     #endregion
+    #region Members
+    public string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+    #endregion
     #region Constructor
     /// <summary>
     /// Creates a default ".xml" file which provides the correct structure for the "AuthenticationConfig" Class to parse correctly.
     /// </summary>
     public InvalidAuthenticationException()
     {
+      CreateXmlFile();
+      // CreateJsonFile();
+    }
+    #endregion
+    #region Private
+    private void CreateJsonFile()
+    {
+
+    }
+    private void CreateXmlFile()
+    {
       try
       {
-        // Get the user's desktop location.
-        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
         // Create a file name for the user's xml file.
         const string authenticationXmlFileName = "UserAuthentication.xml";
-        string userFilePath = desktopPath + "\\" + authenticationXmlFileName;
+        string userFilePath = DesktopPath + "\\" + authenticationXmlFileName;
 
         List<string> lines = new();
         lines.Add("<?xml version=" + '\u0022' + "1.0" + '\u0022' + " encoding=" + '\u0022' + "utf-8" + '\u0022' + " ?>");
@@ -69,8 +80,6 @@ namespace FractionalCryptoBot.Exceptions
         // Swallow Exception
       }
     }
-    #endregion
-    #region Private
     /// <summary>
     /// If successful, return a list of the now added elements.
     /// </summary>

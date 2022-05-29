@@ -97,6 +97,11 @@ namespace FractionalCryptoBot.Models
     #endregion
     #region Public
     /// <summary>
+    /// Runs the stream for each crypto.
+    /// </summary>
+    public void RunStreams() => Cryptos.Select(crypto => crypto.RunStream());
+
+    /// <summary>
     /// Checks the status of each collection after the interval period has secceeded.
     /// </summary>
     /// <returns>N/A</returns>

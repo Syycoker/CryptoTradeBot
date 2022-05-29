@@ -69,6 +69,12 @@ namespace FractionalCryptoBot.Models
     /// What's the trend of the cryptocurrency in this particular exchange, i.e. negative volume change means less people are trading it than in the last 24 hours.
     /// </summary>
     public decimal VolumeChange { get; private set; } = decimal.Zero;
+
+    /// <summary>
+    /// Returns the pair name for this asset.
+    /// </summary>
+    /// <returns>A string representation of the asset in the exchange.</returns>
+    public string PairName => BaseName + QuoteName;
     #endregion
     #region Constructor
     /// <summary>
@@ -102,9 +108,12 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     /// <param name="buffer">The data being recieved.</param>
     /// <param name="count">The amount of bytes (int).</param>
-    private static void HandleMessage(byte[] buffer, int count)
+    private void HandleMessage(byte[] buffer, int count)
     {
       string messageRecieved = BitConverter.ToString(buffer, 0, count);
+
+      // Handle the payload by exchange implementation
+      Core.Service.ParseWebsocketPayload(this, messageRecieved);
     }
     #endregion
     #region Public Methods
@@ -117,7 +126,11 @@ namespace FractionalCryptoBot.Models
 
       using (var ws = Core.Service.CreateWebSocket())
       {
-        await ws.ConnectAsync(new Uri(Core.Service.WebsocketBaseUri + Core.Service.KlineStreamInterval + this.BaseName), CancellationToken.None);
+        string pair = PairName.ToLower();
+        var wssEndpoint = Core.Service.GetWebsocketEndpoint();
+        string socketRequest = (wssEndpoint.Item1 + pair + wssEndpoint.Item2).ToLower();
+
+        await ws.ConnectAsync(new Uri(socketRequest), CancellationToken.None);
         byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
         while (ws.State == WebSocketState.Open)
         {

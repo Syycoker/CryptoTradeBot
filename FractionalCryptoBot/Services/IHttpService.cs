@@ -89,6 +89,18 @@ namespace FractionalCryptoBot.Services
     }
 
     /// <summary>
+    /// Returns the websocket endpoint and the parameters of an exchange.
+    /// </summary>
+    /// <returns></returns>
+    ValueTuple<string, string> GetWebsocketEndpoint();
+
+    /// <summary>
+    /// Parses the websocket payload for a specific marketplace.
+    /// </summary>
+    /// <param name="payload"></param>
+    void ParseWebsocketPayload(Crypto crypto, string payload);
+
+    /// <summary>
     /// HMAC signs the string if provided a source and its secret.
     /// </summary>
     /// <param name="source">The source string to then be encrypted.</param>

@@ -87,11 +87,6 @@ namespace FractionalCryptoBot.Cores
       throw new NotImplementedException();
     }
 
-    public Task StartCryptoStream(Crypto crypto)
-    {
-      throw new NotImplementedException();
-    }
-
     public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
     {
       throw new NotImplementedException();

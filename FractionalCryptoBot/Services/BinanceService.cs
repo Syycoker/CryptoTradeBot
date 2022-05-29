@@ -1,4 +1,5 @@
 ﻿using FractionalCryptoBot.Enumerations;
+using FractionalCryptoBot.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
@@ -128,6 +129,16 @@ namespace FractionalCryptoBot.Services
       requestUriBuilder.Append("?").Append(queryStringBuilder.ToString());
 
       return await SendAsync(httpMethod, requestUriBuilder.ToString(), content);
+    }
+
+    /// <summary>
+    /// Parses the payload.
+    /// </summary>
+    /// <param name="payload"></param>
+    /// <exception cref="NotImplementedException"></exception>
+    public void ParseWebsocketPayload(Crypto crypto, string payload)
+    {
+      throw new NotImplementedException();
     }
 
     /// <summary>

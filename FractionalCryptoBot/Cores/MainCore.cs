@@ -47,6 +47,9 @@ namespace FractionalCryptoBot.Cores
         // Check if we have any shared cryptocurrencies...
         if (sharedCryptos is null || sharedCryptos.Count() == 0) throw new Exception($"No common cryptocurrencies found in any of the exchanges - '{nameof(RunMainProcedure)}'.");
 
+        // Open the websockets...
+        RunStreams(sharedCryptos);
+
         // Run each procedure...
         CheckPerformanceOfCryptosInExchange(sharedCryptos);
       }
@@ -109,6 +112,13 @@ namespace FractionalCryptoBot.Cores
 
       return sharedCrypto;
     }
+
+    /// <summary>
+    /// Initiates opening the websocket for each shared asset.
+    /// </summary>
+    /// <param name="cryptos"></param>
+    public void RunStreams(IEnumerable<SharedCrypto> cryptos) 
+      => cryptos.ToList().ForEach(crypto => crypto.RunStreams());
 
     /// <summary>
     /// Checks the current state of the cryptocurrencies in their respective exchanges and their metrics, i.e. 'price change, volume, etc'...
