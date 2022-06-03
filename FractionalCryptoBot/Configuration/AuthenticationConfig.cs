@@ -2,6 +2,7 @@
 using System.Net;
 using System.Xml;
 using FractionalCryptoBot.Enumerations;
+using Newtonsoft.Json.Linq;
 
 namespace FractionalCryptoBot.Configuration
 {
@@ -156,8 +157,21 @@ namespace FractionalCryptoBot.Configuration
         return false;
       }
     }
+    public static bool Initialise(string filePath)
+    {
+      if (string.IsNullOrEmpty(filePath)) return false;
+
+      var authentications = JObject.Parse(File.ReadAllText(filePath));
+
+      return true;
+    }
+    public static IAuthentication GetAuthentication(Marketplaces marketplace)
+    {
+      return Authentications[marketplace];
+    }
     #endregion
     #region Private
+    private static Dictionary<Marketplaces, IAuthentication> Authentications = new();
     /// <summary>
     /// Storage to hold the 'secret' , 'key' and 'pass'.
     /// </summary>

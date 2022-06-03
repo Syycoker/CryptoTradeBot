@@ -12,12 +12,12 @@ namespace FractionalCryptoBot.Models
     /// <summary>
     /// If the collection may make us money, how frequent should I check the collections to repeat the procedure?
     /// </summary>
-    private const int PROMISING_TRANSACTION_POLL_TIME = 10000;
+    private const int PROMISING_TRANSACTION_POLL_TIME = 3500;
 
     /// <summary>
     /// If the collection may not make us money, how frequent should I check the collection to repeat the procedure?
     /// </summary>
-    private const int NON_PROMISING_TRANSACTION_POLL_INTERVAL = 100000;
+    private const int NON_PROMISING_TRANSACTION_POLL_INTERVAL = 35000;
 
     /// <summary>
     /// The lower end of a marketcap for a cryptocurrency to be classified as a risky investment;

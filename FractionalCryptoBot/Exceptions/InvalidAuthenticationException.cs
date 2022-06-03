@@ -42,7 +42,7 @@ namespace FractionalCryptoBot.Exceptions
       {
         // Create a file name for the user's xml file.
         const string authenticationXmlFileName = "UserAuthentication.xml";
-        string userFilePath = DesktopPath + "\\" + authenticationXmlFileName;
+        string userFilePath = DesktopPath + "\\" + authenticationXmlFileName; 
 
         List<string> lines = new();
         lines.Add("<?xml version=" + '\u0022' + "1.0" + '\u0022' + " encoding=" + '\u0022' + "utf-8" + '\u0022' + " ?>");
