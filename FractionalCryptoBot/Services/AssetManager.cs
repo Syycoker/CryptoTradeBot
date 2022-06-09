@@ -11,9 +11,14 @@ namespace FractionalCryptoBot.Services
   {
     #region Members
     /// <summary>
-    /// To make sure not cross-thread operations cause any issues.
+    /// To make sure not cross-thread operations cause any issues when buying an asset.
     /// </summary>
     private static Mutex BuyMutex = new Mutex();
+
+    /// <summary>
+    /// To make sure no corss-thread operations cause any issues when selling an asset.
+    /// </summary>
+    private static Mutex SellMutex = new Mutex();
     #endregion
     #region Public
     /// <summary>
@@ -47,6 +52,29 @@ namespace FractionalCryptoBot.Services
       finally
       {
         BuyMutex.ReleaseMutex();
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="crypto">The crypto which to sell.</param>
+    /// <param name="price"></param>
+    /// <param name="quantity"></param>
+    /// <returns></returns>
+    public static async Task<CoreStatus> SellAsset(this Crypto crypto, decimal price = 0.00m, decimal quantity = 0.00m)
+    {
+      SellMutex.WaitOne();
+      try
+      {
+        if (price != 0.00m || quantity != 0.00m)
+          return await crypto.SellAsset(price, quantity);
+        else
+          return await crypto.SellAsset(crypto.BaseMinimumBuyPrice);
+      }
+      finally
+      {
+        SellMutex.ReleaseMutex();
       }
     }
 

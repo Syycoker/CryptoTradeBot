@@ -8,15 +8,6 @@ namespace FractionalCryptoBot.Configuration
 {
   public static class AuthenticationConfig
   {
-    #region Constants
-    public const string API_NAME = "DEFAULT_API";
-    public const string API_TEST_NAME = "DEFAULT_API_TEST";
-    public const string API_KEY = "API_KEY";
-    public const string API_SECRET = "API_SECRET";
-    public const string API_PASS = "API_PASSPHRASE";
-    public const string API_URL = "API_URL";
-    public const string SOCKET_URL = "SOCKET_URL";
-    #endregion
     #region Public
     /// <summary>
     ///  Checks if Authentication Config has been initialised.
@@ -27,6 +18,12 @@ namespace FractionalCryptoBot.Configuration
     /// To check wheter the authentication strings should be from the sandbox api or not.
     /// </summary>
     public static bool SandBoxMode = false;
+    #endregion
+    #region Static Constructor
+    static AuthenticationConfig()
+    {
+      Initialise(GetAuthenticationFilePath());
+    }
     #endregion
     #region Initialisation
     /// <summary>
@@ -39,7 +36,7 @@ namespace FractionalCryptoBot.Configuration
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-      if (string.IsNullOrEmpty(filePath)) return false;
+      if (string.IsNullOrEmpty(filePath)) filePath = GetAuthenticationFilePath();
 
       try
       {
@@ -70,10 +67,7 @@ namespace FractionalCryptoBot.Configuration
     /// </summary>
     /// <param name="marketplace"></param>
     /// <returns></returns>
-    public static IAuthentication? GetAuthentication(Marketplaces marketplace)
-    {
-      return Authentications[marketplace.ToString()];
-    }
+    public static IAuthentication? GetAuthentication(Marketplaces marketplace) => Authentications[marketplace.ToString()];
     #endregion
     #region Private
     private static Dictionary<string, IAuthentication> Authentications = new();

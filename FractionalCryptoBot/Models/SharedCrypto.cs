@@ -143,6 +143,9 @@ namespace FractionalCryptoBot.Models
 
         // Attempt to buy the asset.
         var buyResponse = await lowestAsset.BuyAsset();
+
+        // Attempt to sell the asset.
+        var sellResponse = await highestAsset.SellAsset();
       }
     }
 
