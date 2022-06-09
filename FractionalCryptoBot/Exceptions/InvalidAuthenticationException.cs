@@ -1,4 +1,7 @@
-﻿using System.Xml;
+﻿using FractionalCryptoBot.Configuration;
+using Newtonsoft.Json;
+using System.Xml;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace FractionalCryptoBot.Exceptions
 {
@@ -28,14 +31,47 @@ namespace FractionalCryptoBot.Exceptions
     public InvalidAuthenticationException()
     {
       CreateXmlFile();
-      // CreateJsonFile();
+    }
+
+    /// <summary>
+    /// Creates a default ".json" file which provides the correct structure for the "AuthenticationConfig" Class to parse correctly.
+    /// </summary>
+    public InvalidAuthenticationException(string filePath)
+    {
+      CreateJsonFile(filePath);
     }
     #endregion
     #region Private
-    private void CreateJsonFile()
+    /// <summary>
+    /// Creates a json file that contains all the authenitcation for different exchanges.
+    /// </summary>
+    /// <param name="filePath"></param>
+    private void CreateJsonFile(string filePath)
     {
+      ExchangeAuth newExchangeAuth = new()
+      {
+        Exchanges = new()
+        {
+          new ExchangeAuthentication(null)
+          {
+            Exchange = "BINANCE",
+            ApiKey = "api_key_example",
+            ApiSecret = "api_secret_example",
+            ApiPass = "api_pass_example"
+          }
+        }
+      };
 
+      string serialisedObj = 
+        JsonConvert.SerializeObject(newExchangeAuth,
+        Formatting.Indented);
+
+      File.WriteAllLines(filePath, new string[] { serialisedObj });
     }
+
+    /// <summary>
+    /// Creates an xml file that contains all the authentication for different exchanges.
+    /// </summary>
     private void CreateXmlFile()
     {
       try
@@ -80,6 +116,7 @@ namespace FractionalCryptoBot.Exceptions
         // Swallow Exception
       }
     }
+
     /// <summary>
     /// If successful, return a list of the now added elements.
     /// </summary>

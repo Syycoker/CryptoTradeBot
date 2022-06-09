@@ -18,9 +18,9 @@ namespace Tests
     [Fact]
     public void Authentication_returns_correct_value()
     {
-      Assert.Equal("sylasIsTheBest", Authentication.Authentication.ApiKey);
-      Assert.Equal("sylasIsTheBest", Authentication.Authentication.ApiSecret);
-      Assert.Equal("sylasIsTheBest", Authentication.Authentication.ApiPass);
+      Assert.Equal("api_key_example", Authentication.Authentication.ApiKey);
+      Assert.Equal("api_secret_example", Authentication.Authentication.ApiSecret);
+      Assert.Equal("api_pass_example", Authentication.Authentication.ApiPass);
     }
   }
 }

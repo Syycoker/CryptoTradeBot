@@ -157,21 +157,53 @@ namespace FractionalCryptoBot.Configuration
         return false;
       }
     }
+
+    /// <summary>
+    /// Attempts to parse the authentication for a .json file.
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidAuthenticationException"></exception>
     public static bool Initialise(string filePath)
     {
       if (string.IsNullOrEmpty(filePath)) return false;
 
+      try
+      {
+        if (!File.Exists(filePath)) throw new InvalidAuthenticationException(filePath);
+      }
+      catch
+      {
+        // Swallow exception
+      }
+
       var authentications = JObject.Parse(File.ReadAllText(filePath));
+
+      var exchanges = authentications["Exchanges"].Value<JArray>();
+
+      if (exchanges is null) throw new InvalidAuthenticationException();
+
+      foreach (JObject exchange in exchanges)
+      {
+        ExchangeAuthentication newAuth = new(exchange);
+        Authentications.Add(newAuth.Exchange, newAuth);
+      }
 
       return true;
     }
-    public static IAuthentication GetAuthentication(Marketplaces marketplace)
+
+    /// <summary>
+    /// Attempts to return the authentications for an exchange.
+    /// </summary>
+    /// <param name="marketplace"></param>
+    /// <returns></returns>
+    public static IAuthentication? GetAuthentication(Marketplaces marketplace)
     {
-      return Authentications[marketplace];
+      return Authentications[marketplace.ToString()];
     }
     #endregion
     #region Private
-    private static Dictionary<Marketplaces, IAuthentication> Authentications = new();
+    private static Dictionary<string, IAuthentication> Authentications = new();
     /// <summary>
     /// Storage to hold the 'secret' , 'key' and 'pass'.
     /// </summary>

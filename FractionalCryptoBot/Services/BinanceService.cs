@@ -160,6 +160,11 @@ namespace FractionalCryptoBot.Services
         return BitConverter.ToString(hash).Replace("-", "").ToLower();
       }
     }
+
+    public (string, string) GetWebsocketEndpoint()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

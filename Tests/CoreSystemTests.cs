@@ -13,11 +13,6 @@ namespace Tests
   /// </summary>
   public class CoreSystemTests
   {
-    /// <summary>
-    /// Instantiating cores for the system tests.
-    /// </summary>
-    IEnumerable<ICore> Cores = CoreFactory.GetCores();
-
     [Fact]
     /// Test to check if any of the cores in the system give an inactive state.
     public void Check_If_All_Services_Instantiated_Are_Active()

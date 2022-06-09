@@ -8,6 +8,7 @@ namespace FractionalCryptoBot.Configuration
 {
   public interface IAuthentication
   {
+    public string Exchange { get; }
     public string ApiKey { get; }
     public string ApiSecret { get; }
     public string ApiPass { get; }

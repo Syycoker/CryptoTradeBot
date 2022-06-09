@@ -13,7 +13,7 @@ namespace Tests.Authentication_Tests
 
     public AuthenticationStub()
     {
-      AuthenticationConfig.Initialise("");
+      AuthenticationConfig.Initialise("C:\\Users\\Sylas Coker\\Documents\\newAuthen.json");
       Authentication = AuthenticationConfig.GetAuthentication(FractionalCryptoBot.Enumerations.Marketplaces.BINANCE);
     }
   }
