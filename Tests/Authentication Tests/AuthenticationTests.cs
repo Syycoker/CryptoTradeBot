@@ -16,11 +16,14 @@ namespace Tests
     }
 
     [Fact]
+    public void Authentication_should_not_be_null() => Assert.NotNull(Authentication);
+
+    [Fact]
     public void Authentication_returns_correct_value()
     {
-      Assert.Equal("api_key_example", Authentication.Authentication.ApiKey);
-      Assert.Equal("api_secret_example", Authentication.Authentication.ApiSecret);
-      Assert.Equal("api_pass_example", Authentication.Authentication.ApiPass);
+      Assert.Equal("api_key_example", Authentication?.Authentication?.ApiKey);
+      Assert.Equal("api_secret_example", Authentication?.Authentication?.ApiSecret);
+      Assert.Equal("api_pass_example", Authentication?.Authentication?.ApiPass);
     }
   }
 }

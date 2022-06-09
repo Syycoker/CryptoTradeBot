@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using FractionalCryptoBot.Enumerations;
+using Newtonsoft.Json.Linq;
 
 namespace FractionalCryptoBot.Configuration
 {
@@ -14,10 +15,10 @@ namespace FractionalCryptoBot.Configuration
 
     public ExchangeAuthentication(JObject token)
     {
-      Exchange = token?[nameof(Exchange)].Value<string>() ?? string.Empty;
-      ApiKey = token?[nameof(ApiKey)].Value<string>() ?? string.Empty;
-      ApiSecret = token?[nameof(ApiSecret)].Value<string>() ?? string.Empty;
-      ApiPass = token?[nameof(ApiPass)].Value<string>() ?? string.Empty;
+      Exchange = token?[nameof(Exchange)]?.Value<string>() ?? string.Empty;
+      ApiKey = token?[nameof(ApiKey)]?.Value<string>() ?? string.Empty;
+      ApiSecret = token?[nameof(ApiSecret)]?.Value<string>() ?? string.Empty;
+      ApiPass = token?[nameof(ApiPass)]?.Value<string>() ?? string.Empty;
     }
   }
 }

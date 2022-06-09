@@ -9,7 +9,7 @@ namespace Tests.Authentication_Tests
 {
   public class AuthenticationStub
   {
-    public readonly IAuthentication Authentication;
+    public readonly IAuthentication? Authentication;
 
     public AuthenticationStub()
     {

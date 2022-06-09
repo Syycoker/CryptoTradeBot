@@ -20,6 +20,11 @@ namespace FractionalCryptoBot.Services
     public HttpClient Client { get; }
 
     /// <summary>
+    /// The authentication for the service to make valid signed calls.
+    /// </summary>
+    public IAuthentication? Authentication { get; }
+
+    /// <summary>
     /// The Logger for the service.
     /// </summary>
     public ILogger Log { get; }

@@ -1,4 +1,5 @@
-﻿using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Configuration;
+using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -15,6 +16,7 @@ namespace FractionalCryptoBot.Services
   {
     #region Private Members
     private HttpClient httpClient;
+    private IAuthentication? authentication;
     private ILogger log;
     private string baseUri = string.Empty;
     private string websocketBaseUri = string.Empty;
@@ -30,6 +32,7 @@ namespace FractionalCryptoBot.Services
     public string KlineStreamInterval { get => klineStreamInterval; private set => klineStreamInterval = value; }
     public string ApiKey { get => apiKey; private set => apiKey = value; }
     public string ApiSecret { get => apiSecret; private set => apiSecret = value; }
+    public IAuthentication? Authentication { get => authentication; private set => authentication = value; }
     #endregion
     #region Constructor
     /// <summary>
@@ -41,6 +44,7 @@ namespace FractionalCryptoBot.Services
     {
       // Nothing needs to be set in the constructor for now.
       httpClient = new HttpClient();
+      authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE);
       log = logger;
 
       // Not using string interpolation as I lose more valuable information and processing time when doing so.
