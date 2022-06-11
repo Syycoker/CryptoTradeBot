@@ -14,7 +14,7 @@ namespace Tests
       return new List<SharedCrypto>()
       {
         new SharedCrypto(new CryptoManager().BinanceCryptos),
-        new SharedCrypto(new CryptoManager().CoinbaseCryptos)
+        new SharedCrypto(new CryptoManager().CoinbaseProCryptos)
       };
     }
   }

@@ -1,9 +1,5 @@
 ﻿using FractionalCryptoBot.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FractionalCryptoBot.Enumerations;
 
 namespace Tests.Authentication_Tests
 {
@@ -13,8 +9,8 @@ namespace Tests.Authentication_Tests
 
     public AuthenticationStub()
     {
-      AuthenticationConfig.Initialise("C:\\Users\\Sylas Coker\\Documents\\newAuthen.json");
-      Authentication = AuthenticationConfig.GetAuthentication(FractionalCryptoBot.Enumerations.Marketplaces.BINANCE);
+      AuthenticationConfig.Initialise(string.Empty);
+      Authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE);
     }
   }
 }

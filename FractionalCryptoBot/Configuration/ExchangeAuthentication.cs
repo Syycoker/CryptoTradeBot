@@ -1,5 +1,4 @@
-﻿using FractionalCryptoBot.Enumerations;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace FractionalCryptoBot.Configuration
 {

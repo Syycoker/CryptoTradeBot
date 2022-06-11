@@ -78,7 +78,7 @@ namespace FractionalCryptoBot.Cores
     public async Task<bool> ActiveService()
     {
       string activeResponse = await Service.SendPublicAsync(HttpMethod.Get, "/sapi/v1/system/status");
-      return JObject.Parse(activeResponse)["status"].Value<int>().Equals(0); // '0' is normal, '1' is system maintainance
+      return JObject.Parse(activeResponse)?["status"]?.Value<int>().Equals(0) ?? false; // '0' is normal, '1' is system maintainance
     }
 
     public Task<Crypto?> GetCryptoCurrency(string crypto)

@@ -24,9 +24,12 @@ namespace FractionalCryptoBot
       // Only instantiate services which you explicitly want to run...
       // Get an instance of each service.
       BinanceCore _binanceCore = new(LoggerFactory.CreateLogger<ICore>());
+      CBProCore _coinbaseProCore = new(LoggerFactory.CreateLogger<ICore>());
 
       // Return the collection of services where their exhcnage's are currently active...
-      return new List<ICore>() { _binanceCore }.Where(core => core.ActiveService().Result);
+      return new List<ICore>() 
+      { _binanceCore, _coinbaseProCore }
+      .Where(core => core.ActiveService().Result);
     }
 
     /// <summary>
@@ -41,7 +44,8 @@ namespace FractionalCryptoBot
       if (core is not ICore) throw new Exception(string.Format("Unable to identify type, please specify a type which implements type '0'.", nameof(ICore)));
 
       // Return the core requested.
-      if (typeof(BinanceCore) == core.GetType()) return new BinanceCore(LoggerFactory.CreateLogger<BinanceCore>());
+      if (typeof(BinanceCore) == core.GetType()) return new BinanceCore(LoggerFactory.CreateLogger<ICore>());
+      if (typeof(CBProCore) == core.GetType()) return new CBProCore(LoggerFactory.CreateLogger<ICore>());
 
       // Should not reach this point, if it does no test case was created for the core requested, add it.
       return null;
@@ -59,7 +63,8 @@ namespace FractionalCryptoBot
       {
         default:
         case Marketplaces.NONE: throw new Exception(string.Format("Unable to identify type, please specify a type which implements type '0'.", nameof(ICore)));
-        case Marketplaces.BINANCE: return new BinanceCore(LoggerFactory.CreateLogger<BinanceCore>());
+        case Marketplaces.BINANCE: return new BinanceCore(LoggerFactory.CreateLogger<ICore>());
+        case Marketplaces.COINBASE_PRO: return new BinanceCore(LoggerFactory.CreateLogger<ICore>());
       }
     }
   }

@@ -11,7 +11,7 @@ namespace FractionalCryptoBot.Cores
   /// <summary>
   /// Class to make CBPro api calls.
   /// </summary>
-  public sealed class CBPro : ICore
+  public sealed class CBProCore : ICore
   {
     #region Private Members
     private int numberOfCryptoCurrencies = 0;
@@ -78,8 +78,7 @@ namespace FractionalCryptoBot.Cores
     #region Public Methods
     public async Task<bool> ActiveService()
     {
-      string activeResponse = await Service.SendPublicAsync(HttpMethod.Get, "/sapi/v1/system/status");
-      return JObject.Parse(activeResponse)["status"].Value<int>().Equals(0); // '0' is normal, '1' is system maintainance
+      return true; // Turning all active calls to true for now.
     }
 
     public Task<Crypto?> GetCryptoCurrency(string crypto)

@@ -50,7 +50,7 @@ namespace FractionalCryptoBot.Services
       {
         BaseAddress = new Uri("https://api.exchange.coinbase.com"),  
       };
-      authentication = AuthenticationConfig.GetAuthentication(Marketplaces.CBPro);
+      authentication = AuthenticationConfig.GetAuthentication(Marketplaces.COINBASE_PRO);
       log = logger;
 
       // Not using string interpolation as I lose more valuable information and processing time when doing so.

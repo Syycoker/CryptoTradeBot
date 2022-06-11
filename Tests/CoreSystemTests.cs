@@ -14,10 +14,17 @@ namespace Tests
   public class CoreSystemTests
   {
     [Fact]
-    public void Check_If_Binance_Service()
+    public void Check_If_Binance_Service_Is_Active()
     {
       var bCore = CoreFactory.GetCore(FractionalCryptoBot.Enumerations.Marketplaces.BINANCE);
       Assert.True(bCore?.ActiveService().Result);
+    }
+
+    [Fact]
+    public void Check_If_CoinbasePro_Service_Is_Active()
+    {
+      var cbCore = CoreFactory.GetCore(FractionalCryptoBot.Enumerations.Marketplaces.COINBASE_PRO);
+      Assert.True(cbCore?.ActiveService().Result);
     }
 
     [Fact]

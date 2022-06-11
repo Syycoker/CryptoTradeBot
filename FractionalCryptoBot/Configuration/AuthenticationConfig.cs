@@ -22,8 +22,7 @@ namespace FractionalCryptoBot.Configuration
     #region Static Constructor
     static AuthenticationConfig()
     {
-      Initialise("C:\\Users\\Sylas Coker\\Documents\\newAuthen.json");
-      // Initialise(GetAuthenticationFilePath());
+      Initialise(GetAuthenticationFilePath());
     }
     #endregion
     #region Initialisation
@@ -37,7 +36,7 @@ namespace FractionalCryptoBot.Configuration
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-      // if (string.IsNullOrEmpty(filePath)) filePath = GetAuthenticationFilePath();
+      if (string.IsNullOrEmpty(filePath)) filePath = GetAuthenticationFilePath();
 
       try
       {
@@ -70,15 +69,22 @@ namespace FractionalCryptoBot.Configuration
     /// </summary>
     /// <param name="marketplace"></param>
     /// <returns></returns>
-    public static IAuthentication? GetAuthentication(Marketplaces marketplace) => Authentications[marketplace.ToString()];
+    public static IAuthentication? GetAuthentication(Marketplaces marketplace) =>
+      Authentications.ContainsKey($"{marketplace}") 
+      ? Authentications[$"{marketplace}"] 
+      : new ExchangeAuthentication(new JObject());
+
     #endregion
     #region Private
+    /// <summary>
+    /// Dictionary that contains and authentication of all marketplace information that are account specific.
+    /// </summary>
     private static Dictionary<string, IAuthentication> Authentications = new();
 
     /// <summary>
     /// The file address for the authentication file.
     /// </summary>
-    private static string GetAuthenticationFilePath() { return Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + "UserAuthentication.xml"; }
+    private static string GetAuthenticationFilePath() { return Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + "FractionalCryptoBotAuthentication.json"; }
     #endregion
   }
 }

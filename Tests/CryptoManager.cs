@@ -13,26 +13,26 @@ namespace Tests
   /// </summary>
   public class CryptoManager
   {
-    List<ICore> Cores = CoreFactory.GetCores().ToList();
-
     public List<Crypto> AllCryptos = new List<Crypto>();
     public List<Crypto> BinanceCryptos = new List<Crypto>();
-    public List<Crypto> CoinbaseCryptos = new List<Crypto>();
+    public List<Crypto> CoinbaseProCryptos = new List<Crypto>();
 
     public CryptoManager()
     {
-      var binanceCore = Cores[0];
-      var coinbaseCore = Cores[1];
+      var binanceCore = CoreFactory.GetCore(FractionalCryptoBot.Enumerations.Marketplaces.BINANCE);
+      var coinbaseCore = CoreFactory.GetCore(FractionalCryptoBot.Enumerations.Marketplaces.COINBASE_PRO);
+
+      if (binanceCore is null || coinbaseCore is null) return;
 
       BinanceCryptos.Add(new Crypto(binanceCore, string.Empty, string.Empty, 0, 0));
-      CoinbaseCryptos.Add(new Crypto(coinbaseCore, "BTC", "USD", 7, 7));
+      CoinbaseProCryptos.Add(new Crypto(coinbaseCore, "BTC", "USD", 7, 7));
       BinanceCryptos.Add(new Crypto(binanceCore, "BTC", "USD", 6, 8));
-      CoinbaseCryptos.Add(new Crypto(coinbaseCore, "LTC", "USD", 7, 7));
+      CoinbaseProCryptos.Add(new Crypto(coinbaseCore, "LTC", "USD", 7, 7));
       BinanceCryptos.Add(new Crypto(binanceCore, "LTC", "USD", 7, 7));
-      CoinbaseCryptos.Add(new Crypto(coinbaseCore, string.Empty, string.Empty, 0, 0));
+      CoinbaseProCryptos.Add(new Crypto(coinbaseCore, string.Empty, string.Empty, 0, 0));
 
       AllCryptos.AddRange(BinanceCryptos);
-      AllCryptos.AddRange(CoinbaseCryptos);
+      AllCryptos.AddRange(CoinbaseProCryptos);
 
       AllCryptos = SetBiddingPrices(AllCryptos).ToList();
     }
