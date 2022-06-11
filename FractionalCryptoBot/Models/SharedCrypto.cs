@@ -111,6 +111,9 @@ namespace FractionalCryptoBot.Models
       {
         await Task.Delay(CHECK_STATUS_POLLING_INTERVAL);
         // Get the asset that's the bidding for the lowest amount.
+
+        if (Cryptos.Count <= 1) continue;
+
         Crypto? lowestAsset = GetLowestBaseBiddingAsset();
         Crypto? highestAsset = GetHighestBaseBiddingAsset();
 

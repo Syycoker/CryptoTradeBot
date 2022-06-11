@@ -16,7 +16,10 @@ namespace Tests
     }
 
     [Fact]
-    public void Authentication_should_not_be_null() => Assert.NotNull(Authentication);
+    public void Authentication_should_not_be_null()
+    {
+      Assert.True(Authentication is not null);
+    }
 
     [Fact]
     public void Authentication_returns_correct_value()

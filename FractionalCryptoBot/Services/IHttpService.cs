@@ -43,16 +43,6 @@ namespace FractionalCryptoBot.Services
     /// The interval the stream from the marketplace will be checked at.
     /// </summary>
     public string KlineStreamInterval { get; }
-
-    /// <summary>
-    /// The api key to the client's service account.
-    /// </summary>
-    public string ApiKey { get; }
-
-    /// <summary>
-    /// The secret key to the client's service account.
-    /// </summary>
-    public string ApiSecret { get; }
     #endregion
     #region Public
     /// <summary>

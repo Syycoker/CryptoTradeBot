@@ -22,7 +22,7 @@ namespace FractionalCryptoBot.Configuration
     #region Static Constructor
     static AuthenticationConfig()
     {
-      Initialise(GetAuthenticationFilePath());
+      // Initialise(GetAuthenticationFilePath());
     }
     #endregion
     #region Initialisation
@@ -36,7 +36,7 @@ namespace FractionalCryptoBot.Configuration
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-      if (string.IsNullOrEmpty(filePath)) filePath = GetAuthenticationFilePath();
+      // if (string.IsNullOrEmpty(filePath)) filePath = GetAuthenticationFilePath();
 
       try
       {

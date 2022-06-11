@@ -21,8 +21,6 @@ namespace FractionalCryptoBot.Services
     private string baseUri = string.Empty;
     private string websocketBaseUri = string.Empty;
     private string klineStreamInterval = string.Empty;
-    private string apiKey = string.Empty;
-    private string apiSecret = string.Empty;
     #endregion
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
@@ -30,8 +28,6 @@ namespace FractionalCryptoBot.Services
     public string BaseUri { get => baseUri; private set => baseUri = value; }
     public string WebsocketBaseUri { get => websocketBaseUri; private set => websocketBaseUri = value; }
     public string KlineStreamInterval { get => klineStreamInterval; private set => klineStreamInterval = value; }
-    public string ApiKey { get => apiKey; private set => apiKey = value; }
-    public string ApiSecret { get => apiSecret; private set => apiSecret = value; }
     public IAuthentication? Authentication { get => authentication; private set => authentication = value; }
     #endregion
     #region Constructor
@@ -63,7 +59,7 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
-        request.Headers.Add("X-MBX-APIKEY", ApiKey);
+        request.Headers.Add("X-MBX-APIKEY", Authentication?.ApiKey);
 
         if (!(content is null))
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
@@ -126,7 +122,9 @@ namespace FractionalCryptoBot.Services
       long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
       queryStringBuilder.Append("timestamp=").Append(now);
 
-      string signature = Sign(queryStringBuilder.ToString(), ApiSecret);
+      string secret = Authentication?.ApiSecret ?? string.Empty;
+
+      string signature = Sign(queryStringBuilder.ToString(), secret);
       queryStringBuilder.Append("&signature=").Append(signature);
 
       StringBuilder requestUriBuilder = new StringBuilder(requestUri);
