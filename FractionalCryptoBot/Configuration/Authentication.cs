@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// test commit for Tomos 
 namespace FractionalCryptoBot.Configuration
 {
   public class Authentication
