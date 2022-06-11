@@ -22,6 +22,7 @@ namespace FractionalCryptoBot.Configuration
     #region Static Constructor
     static AuthenticationConfig()
     {
+      Initialise("C:\\Users\\Sylas Coker\\Documents\\newAuthen.json");
       // Initialise(GetAuthenticationFilePath());
     }
     #endregion
@@ -52,6 +53,8 @@ namespace FractionalCryptoBot.Configuration
       var exchanges = authentications["Exchanges"]?.Value<JArray>();
 
       if (exchanges is null) throw new InvalidAuthenticationException();
+
+      Authentications.Clear();
 
       foreach (JObject exchange in exchanges)
       {

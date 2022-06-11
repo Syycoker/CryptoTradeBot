@@ -18,7 +18,7 @@ namespace FractionalCryptoBot.Services
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
-    private string baseUri = string.Empty;
+    private string baseUri = "https://api.binance.com";
     private string websocketBaseUri = string.Empty;
     private string klineStreamInterval = string.Empty;
     #endregion
@@ -39,7 +39,10 @@ namespace FractionalCryptoBot.Services
     public BinanceService(ILogger logger)
     {
       // Nothing needs to be set in the constructor for now.
-      httpClient = new HttpClient();
+      httpClient = new HttpClient()
+      {
+        BaseAddress = new Uri("https://api.binance.com"),
+      };
       authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE);
       log = logger;
 

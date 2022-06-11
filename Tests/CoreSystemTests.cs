@@ -14,6 +14,13 @@ namespace Tests
   public class CoreSystemTests
   {
     [Fact]
+    public void Check_If_Binance_Service()
+    {
+      var bCore = CoreFactory.GetCore(FractionalCryptoBot.Enumerations.Marketplaces.BINANCE);
+      Assert.True(bCore?.ActiveService().Result);
+    }
+
+    [Fact]
     /// Test to check if any of the cores in the system give an inactive state.
     public void Check_If_All_Services_Instantiated_Are_Active()
     {

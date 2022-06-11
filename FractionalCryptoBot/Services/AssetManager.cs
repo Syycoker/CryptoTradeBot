@@ -68,9 +68,9 @@ namespace FractionalCryptoBot.Services
       try
       {
         if (price != 0.00m || quantity != 0.00m)
-          return await crypto.SellAsset(price, quantity);
+          return await crypto.Core.SellAsset(crypto, price, quantity);
         else
-          return await crypto.SellAsset(crypto.BaseMinimumBuyPrice);
+          return await crypto.Core.SellAsset(crypto, crypto.BaseMinimumBuyPrice);
       }
       finally
       {

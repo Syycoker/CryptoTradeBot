@@ -3,6 +3,7 @@ using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Text;
 
 namespace FractionalCryptoBot.Cores
@@ -76,19 +77,8 @@ namespace FractionalCryptoBot.Cores
     #region Public Methods
     public async Task<bool> ActiveService()
     {
-      using (var request = new HttpRequestMessage(HttpMethod.Get, Service.BaseUri + "/markets/BTCUSD"))
-      {
-        request.Headers.Add("X-MBX-APIKEY", Service.Authentication?.ApiKey);
-
-        object content = request.Content = new StringContent(JsonConvert.SerializeObject(null), Encoding.UTF8, "application/json");
-
-        if (!(request.Content is null))
-          request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
-
-        HttpResponseMessage response = await Service.Client.SendAsync(request);
-
-        return response.IsSuccessStatusCode;
-      }
+      string activeResponse = await Service.SendPublicAsync(HttpMethod.Get, "/sapi/v1/system/status");
+      return JObject.Parse(activeResponse)["status"].Value<int>().Equals(0); // '0' is normal, '1' is system maintainance
     }
 
     public Task<Crypto?> GetCryptoCurrency(string crypto)
@@ -98,7 +88,7 @@ namespace FractionalCryptoBot.Cores
 
     public Task<IEnumerable<Crypto>> GetCryptoCurrencies()
     {
-      Crypto crypto = GetCryptoCurrency("BTC-GBP");
+      throw new NotImplementedException();
     }
 
     public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
