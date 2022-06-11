@@ -583,3 +583,6 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,csharp
 FractionalCryptoBot/obj/Debug/net6.0/FractionalCryptoBot.assets.cache
+FractionalCryptoBot/obj/project.assets.json
+.vs/FractionalCryptoBot/v17/.suo
+.vs/FractionalCryptoBot/v17/.suo
