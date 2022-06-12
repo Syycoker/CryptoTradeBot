@@ -81,14 +81,40 @@ namespace FractionalCryptoBot.Cores
       return JObject.Parse(activeResponse)?["status"]?.Value<int>().Equals(0) ?? false; // '0' is normal, '1' is system maintainance
     }
 
-    public Task<Crypto?> GetCryptoCurrency(string crypto)
+    public async Task<Crypto?> GetCryptoCurrency(string crypto)
     {
-      throw new NotImplementedException();
+      var parameters = new Dictionary<string, object>()
+      {
+        {
+          "symbol", crypto
+        }
+      };
+
+      string cryptoResponse = await Service.SendPublicAsync(HttpMethod.Get, "/api/v3/exchangeInfo", parameters);
+
+      JObject cryptoJson = JObject.Parse(cryptoResponse);
+      var info = cryptoJson["symbols"];
+
+      string symbol = info?["symbol"]?.Value<string>() ?? string.Empty;
+      string baseAsset = info?["baseAsset"]?.Value<string>() ?? string.Empty;
+      string quoteAsset = info?["quoteAsset"]?.Value<string>() ?? string.Empty;
+      int baseAssetPrecision = info?["baseAssetPrecision"]?.Value<int>() ?? 0;
+      int quoteAssetPrecision = info?["quoteAssetPrecision"]?.Value<int>() ?? 0;
+
+      return new Crypto(this, baseAsset, quoteAsset, baseAssetPrecision, quoteAssetPrecision, symbol);
     }
 
-    public Task<IEnumerable<Crypto>> GetCryptoCurrencies()
+    public async Task<IEnumerable<Crypto?>> GetCryptoCurrencies()
     {
-      throw new NotImplementedException();
+      string cryptoResponses = await Service.SendPublicAsync(HttpMethod.Get, "/api/v3/exchangeInfo");
+
+      JObject cryptoJsonArray = JObject.Parse(cryptoResponses);
+      var info = cryptoJsonArray?["symbols"]?.Value<JArray>();
+
+      return info.Select(arr => 
+          new Crypto(this, arr["baseAsset"].Value<string>(),
+          arr["quoteAsset"].Value<string>(), arr["baseAssetPrecision"].Value<int>(),
+          arr["quoteAssetPrecision"].Value<int>(), arr["symbol"].Value<string>()));
     }
 
     public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)

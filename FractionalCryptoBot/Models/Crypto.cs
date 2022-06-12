@@ -74,7 +74,7 @@ namespace FractionalCryptoBot.Models
     /// Returns the pair name for this asset.
     /// </summary>
     /// <returns>A string representation of the asset in the exchange.</returns>
-    public string PairName => BaseName + QuoteName;
+    public string PairName { get; private set; } = string.Empty;
     #endregion
     #region Constructor
     /// <summary>
@@ -86,7 +86,7 @@ namespace FractionalCryptoBot.Models
     /// <param name="basePrecision">e.g.'8' (0.00000001).</param>
     /// <param name="quotePrecision">e.g.'8' (0.00000001).</param>
     public Crypto(ICore core, string baseName, string quoteName,
-                  int basePrecision, int quotePrecision)
+                  int basePrecision, int quotePrecision, string pairName = "")
     {
       // Setting corresponding fields & properties.
 
@@ -98,6 +98,7 @@ namespace FractionalCryptoBot.Models
       BasePrecision = basePrecision; // The precisions
       QuotePrecision = quotePrecision;
 
+      PairName = string.IsNullOrEmpty(pairName) ? BaseName + QuoteName : pairName;
       // On construction of the object, bootup the websocket in its core to update the bidding price &
       // minimum buy price in the background.
     }
