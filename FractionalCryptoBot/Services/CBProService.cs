@@ -25,8 +25,8 @@ namespace FractionalCryptoBot.Services
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
-    private string baseUri = "https://api.exchange.coinbase.com";   
-    private string websocketBaseUri = string.Empty;
+    private string baseUri = @"https://api.exchange.coinbase.com";   
+    private string websocketBaseUri = string.Empty;  // ="wss://ws-feed.exchange.coinbase.com";
     private string klineStreamInterval = string.Empty;
     #endregion
     #region Public Members

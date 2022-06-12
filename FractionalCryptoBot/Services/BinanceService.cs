@@ -19,7 +19,7 @@ namespace FractionalCryptoBot.Services
     private IAuthentication? authentication;
     private ILogger log;
     private string baseUri = @"https://api.binance.com";
-    private string websocketBaseUri = string.Empty;
+    private string websocketBaseUri = string.Empty;   // = "wss://stream.binance.com:9443"
     private string klineStreamInterval = string.Empty;
     #endregion
     #region Public Members
