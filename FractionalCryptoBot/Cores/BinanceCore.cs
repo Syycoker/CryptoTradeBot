@@ -95,16 +95,18 @@ namespace FractionalCryptoBot.Cores
       JObject cryptoJson = JObject.Parse(cryptoResponse);
       var info = cryptoJson["symbols"];
 
-      string symbol = info?["symbol"]?.Value<string>() ?? string.Empty;
-      string baseAsset = info?["baseAsset"]?.Value<string>() ?? string.Empty;
-      string quoteAsset = info?["quoteAsset"]?.Value<string>() ?? string.Empty;
-      int baseAssetPrecision = info?["baseAssetPrecision"]?.Value<int>() ?? 0;
-      int quoteAssetPrecision = info?["quoteAssetPrecision"]?.Value<int>() ?? 0;
+      if (info is null) return null;
+
+      string symbol = info[0]?["symbol"]?.Value<string>() ?? string.Empty;
+      string baseAsset = info[0]?["baseAsset"]?.Value<string>() ?? string.Empty;
+      string quoteAsset = info[0]?["quoteAsset"]?.Value<string>() ?? string.Empty;
+      int baseAssetPrecision = info[0]?["baseAssetPrecision"]?.Value<int>() ?? 0;
+      int quoteAssetPrecision = info[0]?["quoteAssetPrecision"]?.Value<int>() ?? 0;
 
       return new Crypto(this, baseAsset, quoteAsset, baseAssetPrecision, quoteAssetPrecision, symbol);
     }
 
-    public async Task<IEnumerable<Crypto?>> GetCryptoCurrencies()
+    public async Task<IEnumerable<Crypto>> GetCryptoCurrencies()
     {
       string cryptoResponses = await Service.SendPublicAsync(HttpMethod.Get, "/api/v3/exchangeInfo");
 
