@@ -93,15 +93,17 @@ namespace FractionalCryptoBot.Cores
       string cryptoResponse = await Service.SendPublicAsync(HttpMethod.Get, "/api/v3/exchangeInfo", parameters);
 
       JObject cryptoJson = JObject.Parse(cryptoResponse);
-      var info = cryptoJson["symbols"];
+      var jsonArray = cryptoJson["symbols"];
 
-      if (info is null) return null;
+      if (jsonArray is null) return null;
+      var item = jsonArray[0];
+      if (item is null) return null;
 
-      string symbol = info[0]?["symbol"]?.Value<string>() ?? string.Empty;
-      string baseAsset = info[0]?["baseAsset"]?.Value<string>() ?? string.Empty;
-      string quoteAsset = info[0]?["quoteAsset"]?.Value<string>() ?? string.Empty;
-      int baseAssetPrecision = info[0]?["baseAssetPrecision"]?.Value<int>() ?? 0;
-      int quoteAssetPrecision = info[0]?["quoteAssetPrecision"]?.Value<int>() ?? 0;
+      string symbol = item["symbol"]?.Value<string>() ?? string.Empty;
+      string baseAsset = item["baseAsset"]?.Value<string>() ?? string.Empty;
+      string quoteAsset = item["quoteAsset"]?.Value<string>() ?? string.Empty;
+      int baseAssetPrecision = item["baseAssetPrecision"]?.Value<int>() ?? 0;
+      int quoteAssetPrecision = item["quoteAssetPrecision"]?.Value<int>() ?? 0;
 
       return new Crypto(this, baseAsset, quoteAsset, baseAssetPrecision, quoteAssetPrecision, symbol);
     }
@@ -111,12 +113,13 @@ namespace FractionalCryptoBot.Cores
       string cryptoResponses = await Service.SendPublicAsync(HttpMethod.Get, "/api/v3/exchangeInfo");
 
       JObject cryptoJsonArray = JObject.Parse(cryptoResponses);
-      var info = cryptoJsonArray?["symbols"]?.Value<JArray>();
+      var jsonArray = cryptoJsonArray?["symbols"]?.Value<JArray>();
+      if (jsonArray is null) return new List<Crypto>();
 
-      return info.Select(arr => 
-          new Crypto(this, arr["baseAsset"].Value<string>(),
-          arr["quoteAsset"].Value<string>(), arr["baseAssetPrecision"].Value<int>(),
-          arr["quoteAssetPrecision"].Value<int>(), arr["symbol"].Value<string>()));
+      return jsonArray.Select(arr => 
+          new Crypto(this, arr?["baseAsset"]?.Value<string>() ?? "",
+          arr?["quoteAsset"]?.Value<string>() ?? "", arr?["baseAssetPrecision"]?.Value<int>() ?? 0,
+          arr?["quoteAssetPrecision"]?.Value<int>() ?? 0, arr?["symbol"]?.Value<string>() ?? ""));
     }
 
     public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)

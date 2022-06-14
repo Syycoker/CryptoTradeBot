@@ -34,13 +34,23 @@ namespace Tests
       Assert.True(isActive);
     }
 
-    [Fact]
-    public async Task Can_Get_Cryptocurrency()
+    [Theory]
+    [InlineData("ETHBTC", "eth", "btc")]
+    public async Task Can_Get_A_Cryptocurrency(string cryptoName, params string[] expectedCosignments)
     {
-      var crypto = await binanceCore.GetCryptoCurrency("ETHBTC");
+      var crypto = await binanceCore.GetCryptoCurrency(cryptoName);
       Assert.NotNull(crypto);
-      Assert.True(crypto?.BaseName.ToLower().Equals("eth"));
-      Assert.True(crypto?.QuoteName.ToLower().Equals("btc"));
+      Assert.True(crypto?.BaseName.ToLower().Equals(expectedCosignments[0]));
+      Assert.True(crypto?.QuoteName.ToLower().Equals(expectedCosignments[1]));
+    }
+
+    [Fact]
+    public async Task Can_Get_Collection_Of_Cryptocurrency()
+    {
+      var collection = await binanceCore.GetCryptoCurrencies();
+      Assert.NotNull(collection);
+      Assert.True(collection.Count() > 0);
+      Assert.Contains(collection, c => c.PairName.Equals("ETHBTC"));
     }
   }
 }
