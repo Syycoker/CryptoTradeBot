@@ -1,4 +1,5 @@
 using FractionalCryptoBot;
+using FractionalCryptoBot.Configuration;
 using FractionalCryptoBot.Cores;
 using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
@@ -51,6 +52,13 @@ namespace Tests
       Assert.NotNull(collection);
       Assert.True(collection.Count() > 0);
       Assert.Contains(collection, c => c.PairName.Equals("ETHBTC"));
+    }
+
+    [Fact]
+    public async Task Can_Buy_Asset_Stop_Loss() // Must use in sandbox mode / credentials
+    {
+      AuthenticationConfig.SandBoxMode = true;
+      AuthenticationConfig.Initialise(string.Empty);
     }
   }
 }

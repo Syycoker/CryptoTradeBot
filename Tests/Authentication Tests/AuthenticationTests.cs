@@ -1,3 +1,4 @@
+using FractionalCryptoBot.Configuration;
 using Tests.Authentication_Tests;
 using Xunit;
 
@@ -12,7 +13,7 @@ namespace Tests
 
     public AuthenticationTests()
     {
-      Authentication = new AuthenticationStub();
+      Authentication = new AuthenticationStub(false);
     }
 
     [Fact]
@@ -27,6 +28,16 @@ namespace Tests
       Assert.Equal("api_key_example", Authentication?.Authentication?.ApiKey);
       Assert.Equal("api_secret_example", Authentication?.Authentication?.ApiSecret);
       Assert.Equal("api_pass_example", Authentication?.Authentication?.ApiPass);
+    }
+
+    [Fact]
+    public void Authentication_returns_correct_value_Sandbox_Mode()
+    {
+      var newStub = new AuthenticationStub(true);
+
+      Assert.Equal("api_key_sandbox_example", newStub?.Authentication?.ApiKey);
+      Assert.Equal("api_secret_sandbox_example", newStub?.Authentication?.ApiSecret);
+      Assert.Equal("api_pass_sandbox_example", newStub?.Authentication?.ApiPass);
     }
   }
 }

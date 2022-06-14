@@ -30,7 +30,7 @@ namespace FractionalCryptoBot.Exceptions
     /// </summary>
     public InvalidAuthenticationException()
     {
-      CreateXmlFile();
+      CreateXmlFile(); // Deprecated.
     }
 
     /// <summary>
@@ -57,7 +57,10 @@ namespace FractionalCryptoBot.Exceptions
             Exchange = "BINANCE",
             ApiKey = "api_key_example",
             ApiSecret = "api_secret_example",
-            ApiPass = "api_pass_example"
+            ApiPass = "api_pass_example",
+            ApiKeySandbox = "api_key_sandbox_example",
+            ApiSecretSandbox = "api_secret_sandbox_example",
+            ApiPassSandbox = "api_pass_sandbox_example",
           }
         }
       };

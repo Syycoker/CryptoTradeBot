@@ -17,7 +17,7 @@ namespace FractionalCryptoBot.Configuration
     /// <summary>
     /// To check wheter the authentication strings should be from the sandbox api or not.
     /// </summary>
-    public static bool SandBoxMode = false;
+    public static bool SandBoxMode { get; set; } = false;
     #endregion
     #region Static Constructor
     static AuthenticationConfig()
