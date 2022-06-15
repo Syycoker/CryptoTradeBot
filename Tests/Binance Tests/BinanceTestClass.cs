@@ -3,6 +3,7 @@ using FractionalCryptoBot.Configuration;
 using FractionalCryptoBot.Cores;
 using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
+using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework.Internal;
@@ -55,10 +56,17 @@ namespace Tests
     }
 
     [Fact]
-    public async Task Can_Buy_Asset_Stop_Loss() // Must use in sandbox mode / credentials
+    public async Task Can_Buy_Asset_Stop_Loss()
     {
+      // Must use in sandbox mode / credentials
       AuthenticationConfig.SandBoxMode = true;
       AuthenticationConfig.Initialise(string.Empty);
+
+      var crypto = await binanceCore.GetCryptoCurrency("ETHBTC");
+      if (crypto is null) return;
+
+      var operationStatus = await crypto.BuyAsset();
+      Assert.Equal(CoreStatus.BUY_SUCCESSFUL, operationStatus);
     }
   }
 }

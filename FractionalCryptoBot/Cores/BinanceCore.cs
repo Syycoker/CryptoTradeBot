@@ -122,9 +122,22 @@ namespace FractionalCryptoBot.Cores
           arr?["quoteAssetPrecision"]?.Value<int>() ?? 0, arr?["symbol"]?.Value<string>() ?? ""));
     }
 
-    public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
+    public async Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
     {
-      throw new NotImplementedException();
+      Dictionary<string, object> stopLossParameter = new()
+      {
+        { "symbol",crypto.PairName },
+        { "type","STOP_MARKET" },
+        { "side","BUY" },
+        { "stopPrice",crypto.BaseBiddingPrice },
+        { "closePosition",true },
+      };
+
+      var buyResponse = await Service.SendSignedAsync
+        (HttpMethod.Post, "",
+        stopLossParameter);
+
+      return CoreStatus.NONE;
     }
 
     public Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
