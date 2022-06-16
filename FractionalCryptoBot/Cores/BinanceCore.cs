@@ -127,9 +127,12 @@ namespace FractionalCryptoBot.Cores
       Dictionary<string, object> stopLossParameter = new()
       {
         { "symbol",crypto.PairName },
-        { "type","STOP_MARKET" },
-        { "side","BUY" },
-        { "stopPrice",crypto.BaseBiddingPrice },
+        { "side", "BUY" },
+        { "type", "STOP_LOSS" },
+        { "timeInForce", "GTC" },
+        { "quantity", 0 },
+        { "price", crypto.BaseMinimumBuyPrice },
+        { "stopPrice",crypto.BaseMinimumBuyPrice },
         { "closePosition",true },
       };
 
