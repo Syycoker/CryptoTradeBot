@@ -137,7 +137,7 @@ namespace FractionalCryptoBot.Cores
       };
 
       var buyResponse = await Service.SendSignedAsync
-        (HttpMethod.Post, "",
+        (HttpMethod.Post, "/api/v3/order",
         stopLossParameter);
 
       return CoreStatus.NONE;

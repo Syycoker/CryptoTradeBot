@@ -13,12 +13,12 @@ namespace FractionalCryptoBot.Services
     /// <summary>
     /// To make sure not cross-thread operations cause any issues when buying an asset.
     /// </summary>
-    private static Mutex BuyMutex = new Mutex();
+    private static SemaphoreSlim BuySemaphore = new SemaphoreSlim(1);
 
     /// <summary>
     /// To make sure no corss-thread operations cause any issues when selling an asset.
     /// </summary>
-    private static Mutex SellMutex = new Mutex();
+    private static SemaphoreSlim SellSemaphore = new SemaphoreSlim(1);
     #endregion
     #region Public
     /// <summary>
@@ -30,7 +30,7 @@ namespace FractionalCryptoBot.Services
     /// <returns></returns>
     public static async Task<CoreStatus> BuyAsset(this Crypto crypto, decimal price = 0.00m, decimal quantity = 0.00m)
     {
-      BuyMutex.WaitOne();
+      BuySemaphore.Wait();
       try
       {
         CoreStatus procedureResult = CoreStatus.NONE;
@@ -51,7 +51,7 @@ namespace FractionalCryptoBot.Services
       }
       finally
       {
-        BuyMutex.ReleaseMutex();
+        BuySemaphore.Release();
       }
     }
 
@@ -64,7 +64,7 @@ namespace FractionalCryptoBot.Services
     /// <returns></returns>
     public static async Task<CoreStatus> SellAsset(this Crypto crypto, decimal price = 0.00m, decimal quantity = 0.00m)
     {
-      SellMutex.WaitOne();
+      SellSemaphore.Wait();
       try
       {
         if (price != 0.00m || quantity != 0.00m)
@@ -74,7 +74,7 @@ namespace FractionalCryptoBot.Services
       }
       finally
       {
-        SellMutex.ReleaseMutex();
+        SellSemaphore.Release();
       }
     }
 
