@@ -62,10 +62,14 @@ namespace Tests
       AuthenticationConfig.SandBoxMode = true;
       AuthenticationConfig.Initialise(string.Empty);
 
-      var crypto = await binanceCore.GetCryptoCurrency("ETHBTC");
+      //var crypto = await binanceCore.GetCryptoCurrency("ETHBTC");
+      var crypto = new Crypto(binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
       if (crypto is null) return;
 
+      await crypto.RunStream();
+
       var operationStatus = await crypto.BuyAsset();
+
       Assert.Equal(CoreStatus.BUY_SUCCESSFUL, operationStatus);
     }
   }

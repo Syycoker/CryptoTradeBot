@@ -57,12 +57,7 @@ namespace FractionalCryptoBot.Services
       Log.LogInformation("{0}: '{1}' has been instantiated.", DateTime.UtcNow, nameof(CBProService));
     }
     #endregion
-
-
-// ------------------------------------------------ Bellow same as Binace Services .cs ------------------------------
-
-
-    #region Public Members
+    #region Public Methods
     /// <summary>
     /// Helper method to send an asynchoronus call to Binace's Pros endpoints.
     /// </summary>
@@ -153,7 +148,7 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="payload"></param>
     /// <exception cref="NotImplementedException"></exception>
-    public void ParseWebsocketPayload(Crypto crypto, string payload)
+    public void ParseWebsocketPayload(Crypto crypto, string content)
     {
       throw new NotImplementedException();
     }
@@ -178,7 +173,7 @@ namespace FractionalCryptoBot.Services
       }
     }
 
-    public (string, string) GetWebsocketEndpoint()
+    public string GetWebsocketPath(params string[] content)
     {
       throw new NotImplementedException();
     }

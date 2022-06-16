@@ -18,9 +18,9 @@ namespace FractionalCryptoBot.Services
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
-    private string baseUri = @"https://api.binance.com";
-    private string websocketBaseUri = string.Empty;   // = "wss://stream.binance.com:9443"
-    private string klineStreamInterval = string.Empty;
+    private string baseUri = "https://testnet.binance.vision/api"; // @"https://api.binance.com";
+    private string websocketBaseUri = "wss://testnet.binance.vision";   // = "wss://stream.binance.com:9443"
+    private string klineStreamInterval = "100ms";
     #endregion
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
@@ -142,7 +142,7 @@ namespace FractionalCryptoBot.Services
     /// </summary>
     /// <param name="payload"></param>
     /// <exception cref="NotImplementedException"></exception>
-    public void ParseWebsocketPayload(Crypto crypto, string payload)
+    public void ParseWebsocketPayload(Crypto crypto, string content)
     {
       throw new NotImplementedException();
     }
@@ -167,9 +167,9 @@ namespace FractionalCryptoBot.Services
       }
     }
 
-    public (string, string) GetWebsocketEndpoint()
+    public string GetWebsocketPath(params string[] content)
     {
-      throw new NotImplementedException();
+      return $"{WebsocketBaseUri}/ws/{ content[0] }@{ content[1] }_{ KlineStreamInterval }";
     }
     #endregion
   }

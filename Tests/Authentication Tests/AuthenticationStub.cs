@@ -10,7 +10,7 @@ namespace Tests.Authentication_Tests
     public AuthenticationStub(bool sandboxMode = false)
     {
       AuthenticationConfig.SandBoxMode = sandboxMode;
-      AuthenticationConfig.Initialise(string.Empty);
+      AuthenticationConfig.Initialise("FCB_Test.json");
       Authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE);
     }
   }

@@ -128,9 +128,7 @@ namespace FractionalCryptoBot.Models
       using (var ws = Core.Service.CreateWebSocket())
       {
         string pair = PairName.ToLower();
-        var wssEndpoint = Core.Service.GetWebsocketEndpoint();
-        string socketRequest = (wssEndpoint.Item1 + pair + wssEndpoint.Item2).ToLower();
-
+        string socketRequest = Core.Service.GetWebsocketPath(PairName, "kline");
         await ws.ConnectAsync(new Uri(socketRequest), CancellationToken.None);
         byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
         while (ws.State == WebSocketState.Open)
