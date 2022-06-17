@@ -1,4 +1,5 @@
 using FractionalCryptoBot;
+using FractionalCryptoBot.Configuration;
 using FractionalCryptoBot.Cores;
 using FractionalCryptoBot.Models;
 using Moq;
@@ -13,6 +14,10 @@ namespace Tests
   /// </summary>
   public class CoreSystemTests
   {
+    public CoreSystemTests()
+    {
+    }
+
     [Fact]
     public void Check_If_Binance_Service_Is_Active()
     {

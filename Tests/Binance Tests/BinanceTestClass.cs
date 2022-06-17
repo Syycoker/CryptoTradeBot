@@ -58,15 +58,13 @@ namespace Tests
     [Fact]
     public async Task Can_Buy_Asset_Stop_Loss()
     {
-      // Must use in sandbox mode / credentials
       AuthenticationConfig.SandBoxMode = true;
       AuthenticationConfig.Initialise(string.Empty);
 
-      //var crypto = await binanceCore.GetCryptoCurrency("ETHBTC");
       var crypto = new Crypto(binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
       if (crypto is null) return;
 
-      await crypto.RunStream();
+      // await crypto.RunStream();
 
       var operationStatus = await crypto.BuyAsset();
 
