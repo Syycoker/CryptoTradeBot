@@ -2,9 +2,7 @@
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Text;
 
 namespace FractionalCryptoBot.Cores
 {
@@ -129,11 +127,8 @@ namespace FractionalCryptoBot.Cores
         { "symbol",crypto.PairName },
         { "side", "BUY" },
         { "type", "STOP_LOSS" },
-        { "timeInForce", "GTC" },
         { "quantity", 0 },
-        { "price", crypto.BaseMinimumBuyPrice },
         { "stopPrice",crypto.BaseMinimumBuyPrice },
-        { "closePosition",true },
       };
 
       var buyResponse = await Service.SendSignedAsync
