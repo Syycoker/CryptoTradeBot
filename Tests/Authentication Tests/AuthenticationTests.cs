@@ -13,7 +13,7 @@ namespace Tests
 
     public AuthenticationTests()
     {
-      Authentication = new AuthenticationStub(false);
+      Authentication = new AuthenticationStub();
     }
 
     [Fact]
@@ -33,11 +33,9 @@ namespace Tests
     [Fact]
     public void Authentication_returns_correct_value_Sandbox_Mode()
     {
-      var newStub = new AuthenticationStub(true);
-
-      Assert.Equal("api_key_sandbox_example", newStub?.Authentication?.ApiKey);
-      Assert.Equal("api_secret_sandbox_example", newStub?.Authentication?.ApiSecret);
-      Assert.Equal("api_pass_sandbox_example", newStub?.Authentication?.ApiPass);
+      Assert.Equal("api_key_sandbox_example", Authentication?.Authentication?.ApiKeySandbox);
+      Assert.Equal("api_secret_sandbox_example", Authentication?.Authentication?.ApiSecretSandbox);
+      Assert.Equal("api_pass_sandbox_example", Authentication?.Authentication?.ApiPassSandbox);
     }
   }
 }

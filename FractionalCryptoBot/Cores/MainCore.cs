@@ -1,4 +1,5 @@
-﻿using FractionalCryptoBot.Enumerations;
+﻿using FractionalCryptoBot.Configuration;
+using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using Microsoft.Extensions.Logging;
 
@@ -25,6 +26,8 @@ namespace FractionalCryptoBot.Cores
     {
       Logger = logger;
       Logger.LogInformation("{0}: '{1}' has been instantiated.", DateTime.UtcNow, nameof(MainCore));
+
+      AuthenticationConfig.Initialise(AuthenticationConfig.GetAuthenticationFilePath());
     }
     #endregion
     #region Public Methods

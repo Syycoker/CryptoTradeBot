@@ -52,7 +52,7 @@ namespace FractionalCryptoBot.Exceptions
       {
         Exchanges = new()
         {
-          new ExchangeAuthentication(new Newtonsoft.Json.Linq.JObject())
+          new ExchangeAuthentication()
           {
             Exchange = "BINANCE",
             ApiKey = "api_key_example",

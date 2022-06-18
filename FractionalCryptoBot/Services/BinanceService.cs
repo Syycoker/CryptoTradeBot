@@ -63,7 +63,11 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
-        request.Headers.Add("X-MBX-APIKEY", Authentication?.ApiKey);
+        string apiKey = (AuthenticationConfig.SandboxMode ?
+          Authentication?.ApiKeySandbox :
+          Authentication?.ApiKey) ?? "null reference for api key";
+
+        request.Headers.Add("X-MBX-APIKEY", apiKey);
 
         if (!(content is null))
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
@@ -126,7 +130,10 @@ namespace FractionalCryptoBot.Services
       long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
       queryStringBuilder.Append("timestamp=").Append(now);
 
-      string secret = Authentication?.ApiSecret ?? string.Empty;
+      string secret = 
+        (AuthenticationConfig.SandboxMode ? 
+        Authentication?.ApiSecretSandbox :
+        Authentication?.ApiSecret) ?? "null dereference for secret";
 
       string signature = Sign(queryStringBuilder.ToString(), secret);
       queryStringBuilder.Append("&signature=").Append(signature);

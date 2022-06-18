@@ -12,5 +12,8 @@ namespace FractionalCryptoBot.Configuration
     public string ApiKey { get; }
     public string ApiSecret { get; }
     public string ApiPass { get; }
+    public string ApiKeySandbox { get; }
+    public string ApiSecretSandbox { get; }
+    public string ApiPassSandbox { get; }
   }
 }

@@ -3,6 +3,7 @@ using System.Net;
 using System.Xml;
 using FractionalCryptoBot.Enumerations;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace FractionalCryptoBot.Configuration
 {
@@ -14,16 +15,7 @@ namespace FractionalCryptoBot.Configuration
     /// </summary>
     public static bool Initialised { get; set; }
 
-    /// <summary>
-    /// To check wheter the authentication strings should be from the sandbox api or not.
-    /// </summary>
-    public static bool SandBoxMode { get; set; } = false;
-    #endregion
-    #region Static Constructor
-    static AuthenticationConfig()
-    {
-      Initialise(GetAuthenticationFilePath());
-    }
+    public static bool SandboxMode { get; set; }
     #endregion
     #region Initialisation
     /// <summary>
@@ -57,8 +49,11 @@ namespace FractionalCryptoBot.Configuration
 
       foreach (JObject exchange in exchanges)
       {
-        ExchangeAuthentication newAuth = new(exchange);
-        Authentications.Add(newAuth.Exchange, newAuth);
+        var exchangeObj = JsonConvert.DeserializeObject<ExchangeAuthentication>(exchange.ToString(Newtonsoft.Json.Formatting.None));
+
+        if (exchangeObj is null) continue;
+
+        Authentications.Add(exchangeObj.Exchange, exchangeObj);
       }
 
       return true;
@@ -69,22 +64,25 @@ namespace FractionalCryptoBot.Configuration
     /// </summary>
     /// <param name="marketplace"></param>
     /// <returns></returns>
-    public static IAuthentication? GetAuthentication(Marketplaces marketplace) =>
-      Authentications.ContainsKey($"{marketplace}") 
-      ? Authentications[$"{marketplace}"] 
-      : new ExchangeAuthentication(new JObject());
+    public static IAuthentication? GetAuthentication(Marketplaces marketplace)
+    {
+      if (!Initialised) Initialise(string.Empty);
 
+      return Authentications.ContainsKey($"{marketplace}")
+      ? Authentications[$"{marketplace}"]
+      : new ExchangeAuthentication();
+    }
+      
+    /// <summary>
+    /// The file address for the authentication file.
+    /// </summary>
+    public static string GetAuthenticationFilePath() { return Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + "FractionalCryptoBotAuthentication.json"; }
     #endregion
     #region Private
     /// <summary>
     /// Dictionary that contains and authentication of all marketplace information that are account specific.
     /// </summary>
     private static Dictionary<string, IAuthentication> Authentications = new();
-
-    /// <summary>
-    /// The file address for the authentication file.
-    /// </summary>
-    private static string GetAuthenticationFilePath() { return Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + "FractionalCryptoBotAuthentication.json"; }
     #endregion
   }
 }
