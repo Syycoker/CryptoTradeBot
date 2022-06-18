@@ -63,7 +63,9 @@ namespace Tests
       var crypto = new Crypto(binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
       if (crypto is null) return;
 
-      await crypto.RunStream();
+      // await crypto.RunStream();
+
+      AuthenticationConfig.SandboxMode = false;
     }
 
     [Fact]
@@ -77,6 +79,8 @@ namespace Tests
       var operationStatus = await crypto.BuyAsset();
 
       Assert.Equal(CoreStatus.BUY_SUCCESSFUL, operationStatus);
+
+      AuthenticationConfig.SandboxMode = false;
     }
   }
 }
