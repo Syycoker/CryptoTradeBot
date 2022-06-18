@@ -18,8 +18,8 @@ namespace FractionalCryptoBot.Services
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
-    private string baseUri = "https://testnet.binance.vision"; // @"https://api.binance.com";
-    private string websocketBaseUri = "wss://testnet.binance.vision";   // = "wss://stream.binance.com:9443"
+    private string baseUri = AuthenticationConfig.SandboxMode ? "https://testnet.binance.vision" : @"https://api.binance.com";
+    private string websocketBaseUri = AuthenticationConfig.SandboxMode ? "wss://testnet.binance.vision" : "wss://stream.binance.com:9443";
     private string klineStreamInterval = "100ms";
     #endregion
     #region Public Members

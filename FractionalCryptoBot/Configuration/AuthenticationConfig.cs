@@ -56,6 +56,7 @@ namespace FractionalCryptoBot.Configuration
         Authentications.Add(exchangeObj.Exchange, exchangeObj);
       }
 
+      Initialised = true;
       return true;
     }
 

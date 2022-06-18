@@ -9,33 +9,33 @@ namespace Tests
   /// </summary>
   public class AuthenticationTests
   {
-    public readonly AuthenticationStub Authentication;
+    public readonly AuthenticationStub AuthStub;
 
     public AuthenticationTests()
     {
-      Authentication = new AuthenticationStub();
+      AuthStub = new AuthenticationStub();
     }
 
     [Fact]
     public void Authentication_should_not_be_null()
     {
-      Assert.True(Authentication is not null);
+      Assert.True(AuthStub is not null);
     }
 
     [Fact]
     public void Authentication_returns_correct_value()
     {
-      Assert.Equal("api_key_example", Authentication?.Authentication?.ApiKey);
-      Assert.Equal("api_secret_example", Authentication?.Authentication?.ApiSecret);
-      Assert.Equal("api_pass_example", Authentication?.Authentication?.ApiPass);
+      Assert.Equal("api_key_example", AuthStub?.Authentication?.ApiKey);
+      Assert.Equal("api_secret_example", AuthStub?.Authentication?.ApiSecret);
+      Assert.Equal("api_pass_example", AuthStub?.Authentication?.ApiPass);
     }
 
     [Fact]
     public void Authentication_returns_correct_value_Sandbox_Mode()
     {
-      Assert.Equal("api_key_sandbox_example", Authentication?.Authentication?.ApiKeySandbox);
-      Assert.Equal("api_secret_sandbox_example", Authentication?.Authentication?.ApiSecretSandbox);
-      Assert.Equal("api_pass_sandbox_example", Authentication?.Authentication?.ApiPassSandbox);
+      Assert.Equal("api_key_sandbox_example", AuthStub?.Authentication?.ApiKeySandbox);
+      Assert.Equal("api_secret_sandbox_example", AuthStub?.Authentication?.ApiSecretSandbox);
+      Assert.Equal("api_pass_sandbox_example", AuthStub?.Authentication?.ApiPassSandbox);
     }
   }
 }
