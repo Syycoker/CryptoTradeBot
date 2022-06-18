@@ -71,10 +71,10 @@ namespace Tests
     [Fact]
     public async Task Can_Buy_Asset_Stop_Loss()
     {
-      AuthenticationConfig.SandboxMode = true;
-
-      var crypto = new Crypto(binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
+      Crypto? crypto = await binanceCore.GetCryptoCurrency("ETHBTC");
       if (crypto is null) return;
+
+      AuthenticationConfig.SandboxMode = true;
 
       var operationStatus = await crypto.BuyAsset();
 

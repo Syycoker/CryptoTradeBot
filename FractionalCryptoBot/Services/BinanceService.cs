@@ -18,14 +18,13 @@ namespace FractionalCryptoBot.Services
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
-    private string baseUri = AuthenticationConfig.SandboxMode ? "https://testnet.binance.vision" : @"https://api.binance.com";
     private string websocketBaseUri = AuthenticationConfig.SandboxMode ? "wss://testnet.binance.vision" : "wss://stream.binance.com:9443";
     private string klineStreamInterval = "100ms";
     #endregion
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
     public ILogger Log { get => log; private set => log = value; }
-    public string BaseUri { get => baseUri; private set => baseUri = value; }
+    public string BaseUri => AuthenticationConfig.SandboxMode ? "https://testnet.binance.vision" : @"https://api.binance.com";
     public string WebsocketBaseUri { get => websocketBaseUri; private set => websocketBaseUri = value; }
     public string KlineStreamInterval { get => klineStreamInterval; private set => klineStreamInterval = value; }
     public IAuthentication? Authentication { get => authentication; private set => authentication = value; }
@@ -41,7 +40,7 @@ namespace FractionalCryptoBot.Services
       // Nothing needs to be set in the constructor for now.
       httpClient = new HttpClient()
       {
-        BaseAddress = new Uri(baseUri),
+        BaseAddress = new Uri(BaseUri),
       };
 
       authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE);
