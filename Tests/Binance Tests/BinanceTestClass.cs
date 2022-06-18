@@ -56,14 +56,23 @@ namespace Tests
     }
 
     [Fact]
-    public async Task Can_Buy_Asset_Stop_Loss()
+    public async Task Can_Start_Stream()
     {
       AuthenticationConfig.SandboxMode = true;
 
       var crypto = new Crypto(binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
       if (crypto is null) return;
 
-      // await crypto.RunStream();
+      await crypto.RunStream();
+    }
+
+    [Fact]
+    public async Task Can_Buy_Asset_Stop_Loss()
+    {
+      AuthenticationConfig.SandboxMode = true;
+
+      var crypto = new Crypto(binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
+      if (crypto is null) return;
 
       var operationStatus = await crypto.BuyAsset();
 
