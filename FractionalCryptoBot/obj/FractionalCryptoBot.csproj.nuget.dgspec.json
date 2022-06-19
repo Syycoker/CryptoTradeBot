@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Sylas Coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj": {}
+    "C:\\Users\\Sylas Coker\\Documents\\Work\\Fractional Bot\\FractionalCryptoBot\\FractionalCryptoBot.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Sylas Coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj": {
+    "C:\\Users\\Sylas Coker\\Documents\\Work\\Fractional Bot\\FractionalCryptoBot\\FractionalCryptoBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Sylas Coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
+        "projectUniqueName": "C:\\Users\\Sylas Coker\\Documents\\Work\\Fractional Bot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
         "projectName": "FractionalCryptoBot",
-        "projectPath": "C:\\Users\\Sylas Coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
+        "projectPath": "C:\\Users\\Sylas Coker\\Documents\\Work\\Fractional Bot\\FractionalCryptoBot\\FractionalCryptoBot.csproj",
         "packagesPath": "C:\\Users\\Sylas Coker\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Sylas Coker\\Documents\\GitHub\\CryptoTradeBot\\FractionalCryptoBot\\obj\\",
+        "outputPath": "C:\\Users\\Sylas Coker\\Documents\\Work\\Fractional Bot\\FractionalCryptoBot\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Sylas Coker\\AppData\\Roaming\\NuGet\\NuGet.Config",

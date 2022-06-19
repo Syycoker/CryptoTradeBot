@@ -123,27 +123,25 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     public async Task RunStream()
     {
-      CancellationTokenSource source = new CancellationTokenSource();
-
-      using (var ws = Core.Service.CreateWebSocket())
+      await Task.Run(async () => 
       {
-        string pair = PairName.ToLower();
-        string socketRequest = Core.Service.GetWebsocketPath(PairName, "kline");
-        await ws.ConnectAsync(new Uri(socketRequest), CancellationToken.None);
-        byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
-        while (ws.State == WebSocketState.Open)
+        using (var ws = Core.Service.CreateWebSocket())
         {
-          var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-          if (result.MessageType == WebSocketMessageType.Close)
+          string socketRequest = Core.Service.GetWebsocketPath(PairName, "kline");
+          await ws.ConnectAsync(new Uri(socketRequest), CancellationToken.None);
+
+          byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
+
+          while (ws.State == WebSocketState.Open)
           {
-            await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-          }
-          else
-          {
-            HandleMessage(buffer, result.Count);
+            var result = ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None).Result;
+            if (result.MessageType == WebSocketMessageType.Close)
+              await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            else
+              HandleMessage(buffer, result.Count);
           }
         }
-      }
+      });
     }
 
     /// <summary>

@@ -63,7 +63,7 @@ namespace Tests
       var crypto = new Crypto(binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
       if (crypto is null) return;
 
-      // await crypto.RunStream();
+      await crypto.RunStream();
 
       AuthenticationConfig.SandboxMode = false;
     }
