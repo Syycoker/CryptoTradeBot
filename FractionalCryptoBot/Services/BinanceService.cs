@@ -3,6 +3,7 @@ using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -148,7 +149,13 @@ namespace FractionalCryptoBot.Services
     /// <exception cref="NotImplementedException"></exception>
     public void ParseWebsocketPayload(Crypto crypto, string content)
     {
-      throw new NotImplementedException();
+      var payload = JObject.Parse(content);
+      if (payload is null) return;
+
+      crypto.SetBaseBiddingPrice(payload["a"]?.Value<decimal>() ?? 0.00m); // Best ask price
+      crypto.SetMarketCap(payload["w"]?.Value<decimal>() ?? 0.00m); // Weighted average price
+      crypto.SetVolumeChange(payload["P"]?.Value<decimal>() ?? 0.00m); // Price change percent
+      crypto.SetBaseMinimumPrice(payload["l"]?.Value<decimal>() ?? 0.00m); // Low price
     }
 
     /// <summary>
@@ -171,10 +178,8 @@ namespace FractionalCryptoBot.Services
       }
     }
 
-    public string GetWebsocketPath(params string[] content)
-    {
-      return $"{WebsocketBaseUri}/ws/{ content[0] }@{ content[1] }_{ KlineStreamInterval }";
-    }
+    public string GetWebsocketPath(params string[] content) 
+      => $"{WebsocketBaseUri}/ws/{ content[0] }@{ content[1] }_{ KlineStreamInterval }";
     #endregion
   }
 }

@@ -1,5 +1,6 @@
 ﻿using FractionalCryptoBot.Cores;
 using System.Net.WebSockets;
+using System.Text;
 
 namespace FractionalCryptoBot.Models
 {
@@ -12,7 +13,7 @@ namespace FractionalCryptoBot.Models
     /// <summary>
     /// The maximum amount of data that can be stored in a byte.
     /// </summary>
-    private const ushort WEBSOCKET_BYTE_COUNT = 256;
+    private const ushort WEBSOCKET_BYTE_COUNT = 512;
     #endregion
     #region Members
     /// <summary>
@@ -111,10 +112,9 @@ namespace FractionalCryptoBot.Models
     /// <param name="count">The amount of bytes (int).</param>
     private void HandleMessage(byte[] buffer, int count)
     {
-      string messageRecieved = BitConverter.ToString(buffer, 0, count);
-
+      string message = Encoding.UTF8.GetString(buffer, 0, count);
       // Handle the payload by exchange implementation
-      Core.Service.ParseWebsocketPayload(this, messageRecieved);
+      Core.Service.ParseWebsocketPayload(this, message);
     }
     #endregion
     #region Public Methods
@@ -123,26 +123,25 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     public async Task RunStream()
     {
-      await Task.Run(async () => 
+      string socketRequest = $"{ Core.Service.WebsocketBaseUri}/ws/{PairName.ToLower()}@ticker";
+      
+      using (var ws = Core.Service.CreateWebSocket())
       {
-        using (var ws = Core.Service.CreateWebSocket())
+        await ws.ConnectAsync(new Uri(socketRequest), CancellationToken.None);
+
+        byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
+
+        await Task.Run(async () =>
         {
-          string socketRequest = $"{ Core.Service.WebsocketBaseUri}/ws/{PairName.ToLower()}@ticker";
-          
-          await ws.ConnectAsync(new Uri(socketRequest), CancellationToken.None);
-
-          byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
-
           while (ws.State == WebSocketState.Open)
           {
-            var result = ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None).Result;
-            if (result.MessageType == WebSocketMessageType.Close)
-              await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-            else
-              HandleMessage(buffer, result.Count);
+            var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+            if (result.MessageType == WebSocketMessageType.Close) await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            else HandleMessage(buffer, result.Count);
           }
-        }
-      });
+        });
+      }
     }
 
     /// <summary>

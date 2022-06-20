@@ -65,6 +65,13 @@ namespace Tests
 
       await crypto.RunStream();
 
+      await Task.Delay(1000);
+
+      Assert.True(crypto.BaseBiddingPrice != decimal.One);
+      Assert.True(crypto.QuoteBiddingPrice != decimal.One);
+      Assert.True(crypto.MarketCap != decimal.One);
+      Assert.True(crypto.VolumeChange != decimal.One);
+
       AuthenticationConfig.SandboxMode = false;
     }
 
