@@ -9,6 +9,7 @@ using Moq;
 using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -65,12 +66,12 @@ namespace Tests
 
       await crypto.RunStream();
 
-      await Task.Delay(1000);
+      Thread.Sleep(5000);
 
-      Assert.True(crypto.BaseBiddingPrice != decimal.One);
-      Assert.True(crypto.QuoteBiddingPrice != decimal.One);
-      Assert.True(crypto.MarketCap != decimal.One);
-      Assert.True(crypto.VolumeChange != decimal.One);
+      Assert.True(crypto.BaseBiddingPrice != decimal.Zero);
+      Assert.True(crypto.QuoteBiddingPrice != decimal.Zero);
+      Assert.True(crypto.MarketCap != decimal.Zero);
+      Assert.True(crypto.VolumeChange != decimal.Zero);
 
       AuthenticationConfig.SandboxMode = false;
     }

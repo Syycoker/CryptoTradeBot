@@ -76,6 +76,13 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     /// <returns>A string representation of the asset in the exchange.</returns>
     public string PairName { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Determines whether the stream is active or not.
+    /// </summary>
+    public bool StreamActive { get; private set; } = false;
+
+    private Thread? StreamThread { get; set; }
     #endregion
     #region Constructor
     /// <summary>
@@ -123,6 +130,9 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     public async Task RunStream()
     {
+      if (StreamActive || StreamThread is not null) return;
+      StreamActive = true;
+
       string socketRequest = $"{ Core.Service.WebsocketBaseUri}/ws/{PairName.ToLower()}@ticker";
       
       using (var ws = Core.Service.CreateWebSocket())
@@ -131,18 +141,14 @@ namespace FractionalCryptoBot.Models
 
         byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
 
-        await Task.Run(async () =>
-        {
-          while (ws.State == WebSocketState.Open)
-          {
-            var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-            if (result.MessageType == WebSocketMessageType.Close) await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-            else HandleMessage(buffer, result.Count);
-          }
-        });
+        Task.Run(() => Stream(ws, buffer));
       }
     }
+
+    /// <summary>
+    /// Stops the stream if it's currently running.
+    /// </summary>
+    public void StopStream() => StreamActive = false;
 
     /// <summary>
     /// Public method to set the base asset's bidding price.
@@ -179,6 +185,18 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     /// <param name="volumeChange">The current (24h) volume change for  this DTO.</param>
     public void SetVolumeChange(decimal volumeChange) => VolumeChange = volumeChange;
+    #endregion
+    #region Private Methods
+    private async Task Stream(ClientWebSocket ws, byte[] buffer)
+    {
+      while (ws.State == WebSocketState.Open && StreamActive)
+      {
+        var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+        if (result.MessageType == WebSocketMessageType.Close) await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+        else HandleMessage(buffer, result.Count);
+      }
+    }
     #endregion
     #region Comments for implementation details
     //// Testing stream 'kline'.
