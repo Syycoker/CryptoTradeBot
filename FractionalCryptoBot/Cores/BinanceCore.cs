@@ -135,7 +135,14 @@ namespace FractionalCryptoBot.Cores
         (HttpMethod.Post, "/api/v3/order",
         stopLossParameter);
 
-      return CoreStatus.NONE;
+      Dictionary<string, CoreStatus> buyActivities = new Dictionary<string, CoreStatus>()
+      {
+        {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
+        {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
+        {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
+      };
+
+      return buyActivities[buyResponse];
     }
 
     public Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)

@@ -39,6 +39,7 @@ namespace Tests
 
     [Theory]
     [InlineData("ETHBTC", "eth", "btc")]
+    [InlineData("BTCUSDT", "btc", "usdt")]
     public async Task Can_Get_A_Cryptocurrency(string cryptoName, params string[] expectedCosignments)
     {
       var crypto = await binanceCore.GetCryptoCurrency(cryptoName);
@@ -79,10 +80,12 @@ namespace Tests
     [Fact]
     public async Task Can_Buy_Asset_Stop_Loss()
     {
-      Crypto? crypto = await binanceCore.GetCryptoCurrency("ETHBTC");
+      Crypto? crypto = await binanceCore.GetCryptoCurrency("BTCUSDT");
       if (crypto is null) return;
 
       AuthenticationConfig.SandboxMode = true;
+
+      crypto.SetBaseMinimumPrice(100.00m);
 
       var operationStatus = await crypto.BuyAsset();
 
