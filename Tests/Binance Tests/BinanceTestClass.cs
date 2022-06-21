@@ -66,10 +66,10 @@ namespace Tests
 
       await crypto.RunStream();
 
-      Thread.Sleep(5000);
+      Thread.Sleep(10000);
 
       Assert.True(crypto.BaseBiddingPrice != decimal.Zero);
-      Assert.True(crypto.QuoteBiddingPrice != decimal.Zero);
+      Assert.True(crypto.BaseMinimumBuyPrice != decimal.Zero);
       Assert.True(crypto.MarketCap != decimal.Zero);
       Assert.True(crypto.VolumeChange != decimal.Zero);
 

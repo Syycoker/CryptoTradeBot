@@ -133,16 +133,12 @@ namespace FractionalCryptoBot.Models
       if (StreamActive || StreamThread is not null) return;
       StreamActive = true;
 
-      string socketRequest = $"{ Core.Service.WebsocketBaseUri}/ws/{PairName.ToLower()}@ticker";
-      
-      using (var ws = Core.Service.CreateWebSocket())
+      Thread thread = new Thread(() => Stream())
       {
-        await ws.ConnectAsync(new Uri(socketRequest), CancellationToken.None);
-
-        byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
-
-        Task.Run(() => Stream(ws, buffer));
-      }
+        IsBackground = true,
+        Name = $"{PairName}-Stream",
+      };
+      thread.Start();
     }
 
     /// <summary>
@@ -187,14 +183,23 @@ namespace FractionalCryptoBot.Models
     public void SetVolumeChange(decimal volumeChange) => VolumeChange = volumeChange;
     #endregion
     #region Private Methods
-    private async Task Stream(ClientWebSocket ws, byte[] buffer)
+    private async Task Stream()
     {
-      while (ws.State == WebSocketState.Open && StreamActive)
-      {
-        var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+      string socketRequest = $"{ Core.Service.WebsocketBaseUri}/ws/{PairName.ToLower()}@ticker";
 
-        if (result.MessageType == WebSocketMessageType.Close) await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-        else HandleMessage(buffer, result.Count);
+      using (var ws = Core.Service.CreateWebSocket())
+      {
+        await ws.ConnectAsync(new Uri(socketRequest), CancellationToken.None);
+
+        byte[] buffer = new byte[WEBSOCKET_BYTE_COUNT];
+
+        while (ws.State == WebSocketState.Open && StreamActive)
+        {
+          var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+          if (result.MessageType == WebSocketMessageType.Close) await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+          else HandleMessage(buffer, result.Count);
+        }
       }
     }
     #endregion
