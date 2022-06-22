@@ -185,7 +185,7 @@ namespace FractionalCryptoBot.Models
     #region Private Methods
     private async Task Stream()
     {
-      string socketRequest = $"{ Core.Service.WebsocketBaseUri}/ws/{PairName.ToLower()}@ticker";
+      string socketRequest = Core.Service.GetWebsocketPath(PairName.ToLower(), "ticker");
 
       using (var ws = Core.Service.CreateWebSocket())
       {

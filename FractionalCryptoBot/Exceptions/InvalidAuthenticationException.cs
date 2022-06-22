@@ -48,28 +48,24 @@ namespace FractionalCryptoBot.Exceptions
     /// <param name="filePath"></param>
     private void CreateJsonFile(string filePath)
     {
-      ExchangeAuth newExchangeAuth = new()
-      {
-        Exchanges = new()
-        {
-          new ExchangeAuthentication()
-          {
-            Exchange = "BINANCE",
-            ApiKey = "api_key_example",
-            ApiSecret = "api_secret_example",
-            ApiPass = "api_pass_example",
-            ApiKeySandbox = "api_key_sandbox_example",
-            ApiSecretSandbox = "api_secret_sandbox_example",
-            ApiPassSandbox = "api_pass_sandbox_example",
-          }
-        }
-      };
+      string defaultExchangeJsonString = "{\r\n  " +
+        "\"Exchanges\": [\r\n" +
+        "    {\r\n" +
+        "      \"Exchange\": \"BINANCE\",\r\n" +
+        "      \"ApiUrl\": \"https://github.com/Syycoker\",\r\n" +
+        "      \"WebsocketUrl\": \"https://github.com/Syycoker\",\r\n" +
+        "      \"ApiKey\": \"api_key_example\",\r\n" +
+        "      \"ApiSecret\": \"api_secret_example\",\r\n" +
+        "      \"ApiPass\": \"api_pass_example\",\r\n" +
+        "      \"ApiUrlSandbox\": \"https://github.com/Syycoker\",\r\n" +
+        "      \"WebsocketUrlSandbox\": \"https://github.com/Syycoker\",\r\n" +
+        "      \"ApiKeySandbox\": \"api_key_sandbox_example\",\r\n" +
+        "      \"ApiSecretSandbox\": \"api_secret_sandbox_example\",\r\n" +
+        "      \"ApiPassSandbox\": \"api_pass_sandbox_example\"\r\n" +
+        "    }\r\n" +
+        "  ]\r\n}";
 
-      string serialisedObj = 
-        JsonConvert.SerializeObject(newExchangeAuth,
-        Formatting.Indented);
-
-      File.WriteAllLines(filePath, new string[] { serialisedObj });
+      File.WriteAllLines(filePath, new string[] { defaultExchangeJsonString });
     }
 
     /// <summary>
@@ -110,7 +106,6 @@ namespace FractionalCryptoBot.Exceptions
         docElement.AppendChild(defaultApi);
         docElement.AppendChild(defaultApiTest);
         doc.AppendChild(docElement);
-
 
         doc.Save(userFilePath);
       }

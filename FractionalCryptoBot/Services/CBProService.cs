@@ -35,7 +35,7 @@ namespace FractionalCryptoBot.Services
     public string BaseUri { get => baseUri; private set => baseUri = value; }
     public string WebsocketBaseUri { get => websocketBaseUri; private set => websocketBaseUri = value; }
     public string KlineStreamInterval { get => klineStreamInterval; private set => klineStreamInterval = value; }
-    public IAuthentication? Authentication { get => authentication; private set => authentication = value; }
+    public IAuthentication? Authentication { get => authentication; set => authentication = value; }
     #endregion
     #region Constructor
     /// <summary>
@@ -69,7 +69,7 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
-        request.Headers.Add("X-MBX-APIKEY", Authentication?.ApiKey);
+        request.Headers.Add("X-MBX-APIKEY", Authentication?.Key);
 
         if (!(content is null))
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
@@ -132,7 +132,7 @@ namespace FractionalCryptoBot.Services
       long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
       queryStringBuilder.Append("timestamp=").Append(now);
 
-      string secret = Authentication?.ApiSecret ?? string.Empty;
+      string secret = Authentication?.Secret ?? string.Empty;
 
       string signature = Sign(queryStringBuilder.ToString(), secret);
       queryStringBuilder.Append("&signature=").Append(signature);

@@ -1,4 +1,5 @@
 using FractionalCryptoBot.Configuration;
+using System.IO;
 using Tests.Authentication_Tests;
 using Xunit;
 
@@ -13,29 +14,30 @@ namespace Tests
 
     public AuthenticationTests()
     {
-      AuthStub = new AuthenticationStub();
+      AuthStub = new AuthenticationStub()
+        .WithDefault()
+        .Build();
     }
 
     [Fact]
-    public void Authentication_should_not_be_null()
+    public void Authentication_was_created()
     {
-      Assert.True(AuthStub is not null);
+      Assert.NotNull(AuthStub);
     }
 
-    [Fact]
-    public void Authentication_returns_correct_value()
+    [Theory]
+    [InlineData(false, "https://github.com/Syycoker", "https://github.com/Syycoker", "api_key_example", "api_secret_example", "api_pass_example")]
+    [InlineData(true, "https://github.com/Syycoker", "https://github.com/Syycoker", "api_key_sandbox_example", "api_secret_sandbox_example", "api_pass_sandbox_example")]
+    public void Authentication_returns_correct_values(bool sandbox, string uri,
+      string websocket, string key, string secret, string pass)
     {
-      Assert.Equal("api_key_example", AuthStub?.Authentication?.ApiKey);
-      Assert.Equal("api_secret_example", AuthStub?.Authentication?.ApiSecret);
-      Assert.Equal("api_pass_example", AuthStub?.Authentication?.ApiPass);
-    }
+      AuthStub.Authentication.SandboxMode = sandbox;
 
-    [Fact]
-    public void Authentication_returns_correct_value_Sandbox_Mode()
-    {
-      Assert.Equal("api_key_sandbox_example", AuthStub?.Authentication?.ApiKeySandbox);
-      Assert.Equal("api_secret_sandbox_example", AuthStub?.Authentication?.ApiSecretSandbox);
-      Assert.Equal("api_pass_sandbox_example", AuthStub?.Authentication?.ApiPassSandbox);
+      Assert.Equal(uri, AuthStub?.Authentication?.Uri);
+      Assert.Equal(websocket, AuthStub?.Authentication?.WebsocketUri);
+      Assert.Equal(key, AuthStub?.Authentication?.Key);
+      Assert.Equal(secret, AuthStub?.Authentication?.Secret);
+      Assert.Equal(pass, AuthStub?.Authentication?.Pass);
     }
   }
 }

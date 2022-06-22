@@ -15,7 +15,7 @@ namespace FractionalCryptoBot.Configuration
     /// </summary>
     public static bool Initialised { get; set; }
 
-    public static bool SandboxMode { get; set; }
+    public static Mutex Mutex { get; set; } = new Mutex();
     #endregion
     #region Initialisation
     /// <summary>
@@ -26,38 +26,46 @@ namespace FractionalCryptoBot.Configuration
     /// <exception cref="InvalidAuthenticationException"></exception>
     public static bool Initialise(string filePath)
     {
-      ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-      if (string.IsNullOrEmpty(filePath)) filePath = GetAuthenticationFilePath();
-
+      Mutex.WaitOne();
       try
       {
-        if (!File.Exists(filePath)) throw new InvalidAuthenticationException(filePath);
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+        if (string.IsNullOrEmpty(filePath)) filePath = GetAuthenticationFilePath();
+
+        try
+        {
+          if (!File.Exists(filePath)) throw new InvalidAuthenticationException(filePath);
+        }
+        catch
+        {
+          // Swallow exception
+        }
+
+        var authentications = JObject.Parse(File.ReadAllText(filePath));
+
+        var exchanges = authentications["Exchanges"]?.Value<JArray>();
+
+        if (exchanges is null) throw new InvalidAuthenticationException();
+
+        Authentications.Clear();
+
+        foreach (JObject exchange in exchanges)
+        {
+          var exchangeObj = JsonConvert.DeserializeObject<ExchangeAuthentication>(exchange.ToString(Newtonsoft.Json.Formatting.None));
+
+          if (exchangeObj is null) continue;
+
+          Authentications.Add(exchangeObj.Exchange, exchangeObj);
+        }
+
+        Initialised = true;
+        return true;
       }
-      catch
+      finally
       {
-        // Swallow exception
+        Mutex.ReleaseMutex();
       }
-
-      var authentications = JObject.Parse(File.ReadAllText(filePath));
-
-      var exchanges = authentications["Exchanges"]?.Value<JArray>();
-
-      if (exchanges is null) throw new InvalidAuthenticationException();
-
-      Authentications.Clear();
-
-      foreach (JObject exchange in exchanges)
-      {
-        var exchangeObj = JsonConvert.DeserializeObject<ExchangeAuthentication>(exchange.ToString(Newtonsoft.Json.Formatting.None));
-
-        if (exchangeObj is null) continue;
-
-        Authentications.Add(exchangeObj.Exchange, exchangeObj);
-      }
-
-      Initialised = true;
-      return true;
     }
 
     /// <summary>

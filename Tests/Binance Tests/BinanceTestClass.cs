@@ -5,12 +5,10 @@ using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using FractionalCryptoBot.Services;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework.Internal;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Tests.Authentication_Tests;
 using Xunit;
 
 namespace Tests
@@ -20,20 +18,27 @@ namespace Tests
   /// </summary>
   public class BinanceTestClass
   {
-    readonly ICore binanceCore;
+    readonly ICore _binanceCore;
+    readonly AuthenticationStub _authenticationStub;
 
     public BinanceTestClass()
     {
-      binanceCore = new BinanceCore(new LoggerFactory().CreateLogger<ICore>());
+      _authenticationStub = new AuthenticationStub()
+        .Build();
+
+      _binanceCore = CoreFactory.GetCore(Marketplaces.BINANCE) 
+        ?? new BinanceCore(new LoggerFactory().CreateLogger<ICore>());
+
+      _binanceCore.Service.Authentication = _authenticationStub.Authentication;
     }
 
     [Fact]
-    public void Binance_Core_Is_Not_Null() => Assert.NotNull(binanceCore);
+    public void Binance_Core_Is_Not_Null() => Assert.NotNull(_binanceCore);
 
     [Fact]
     public async Task Can_Make_Active_Call()
     {
-      var isActive = await binanceCore.ActiveService();
+      var isActive = await _binanceCore.ActiveService();
       Assert.True(isActive);
     }
 
@@ -42,7 +47,9 @@ namespace Tests
     [InlineData("BTCUSDT", "btc", "usdt")]
     public async Task Can_Get_A_Cryptocurrency(string cryptoName, params string[] expectedCosignments)
     {
-      var crypto = await binanceCore.GetCryptoCurrency(cryptoName);
+      _authenticationStub.Authentication.SandboxMode = true;
+
+      var crypto = await _binanceCore.GetCryptoCurrency(cryptoName);
       Assert.NotNull(crypto);
       Assert.True(crypto?.BaseName.ToLower().Equals(expectedCosignments[0]));
       Assert.True(crypto?.QuoteName.ToLower().Equals(expectedCosignments[1]));
@@ -51,7 +58,9 @@ namespace Tests
     [Fact]
     public async Task Can_Get_Collection_Of_Cryptocurrency()
     {
-      var collection = await binanceCore.GetCryptoCurrencies();
+      _authenticationStub.Authentication.SandboxMode = true;
+
+      var collection = await _binanceCore.GetCryptoCurrencies();
       Assert.NotNull(collection);
       Assert.True(collection.Count() > 0);
       Assert.Contains(collection, c => c.PairName.Equals("ETHBTC"));
@@ -60,9 +69,9 @@ namespace Tests
     [Fact]
     public async Task Can_Start_Stream()
     {
-      AuthenticationConfig.SandboxMode = true;
+      _authenticationStub.Authentication.SandboxMode = true;
 
-      var crypto = new Crypto(binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
+      var crypto = new Crypto(_binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
       if (crypto is null) return;
 
       await crypto.RunStream();
@@ -73,25 +82,21 @@ namespace Tests
       Assert.True(crypto.BaseMinimumBuyPrice != decimal.Zero);
       Assert.True(crypto.MarketCap != decimal.Zero);
       Assert.True(crypto.VolumeChange != decimal.Zero);
-
-      AuthenticationConfig.SandboxMode = false;
     }
 
     [Fact]
     public async Task Can_Buy_Asset_Stop_Loss()
     {
-      Crypto? crypto = await binanceCore.GetCryptoCurrency("BTCUSDT");
-      if (crypto is null) return;
+      _authenticationStub.Authentication.SandboxMode = true;
 
-      AuthenticationConfig.SandboxMode = true;
+      Crypto? crypto = await _binanceCore.GetCryptoCurrency("BTCUSDT");
+      if (crypto is null) return;
 
       crypto.SetBaseMinimumPrice(100.00m);
 
       var operationStatus = await crypto.BuyAsset();
 
       Assert.Equal(CoreStatus.BUY_SUCCESSFUL, operationStatus);
-
-      AuthenticationConfig.SandboxMode = false;
     }
   }
 }

@@ -22,7 +22,7 @@ namespace FractionalCryptoBot.Services
     /// <summary>
     /// The authentication for the service to make valid signed calls.
     /// </summary>
-    public IAuthentication? Authentication { get; }
+    public IAuthentication? Authentication { get; set; }
 
     /// <summary>
     /// The Logger for the service.

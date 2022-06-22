@@ -23,10 +23,10 @@ namespace FractionalCryptoBot.Services
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
     public ILogger Log { get => log; private set => log = value; }
-    public string BaseUri => AuthenticationConfig.SandboxMode ? "https://testnet.binance.vision" : @"https://api.binance.com";
-    public string WebsocketBaseUri => AuthenticationConfig.SandboxMode? "wss://testnet.binance.vision" : "wss://stream.binance.com:9443";
+    public string BaseUri => Authentication?.Uri ?? string.Empty;
+    public string WebsocketBaseUri => Authentication?.WebsocketUri ?? string.Empty;
     public string KlineStreamInterval => "100ms";
-    public IAuthentication? Authentication { get => authentication; private set => authentication = value; }
+    public IAuthentication? Authentication { get => authentication; set => authentication = value; }
     #endregion
     #region Constructor
     /// <summary>
@@ -36,13 +36,14 @@ namespace FractionalCryptoBot.Services
     /// <param name="httpClient"></param>
     public BinanceService(ILogger logger)
     {
+      authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE);
+
       // Nothing needs to be set in the constructor for now.
       httpClient = new HttpClient()
       {
-        BaseAddress = new Uri(BaseUri),
+        BaseAddress = new Uri(Authentication?.Uri ?? ""),
       };
 
-      authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE);
       log = logger;
 
       // Not using string interpolation as I lose more valuable information and processing time when doing so.
@@ -61,9 +62,7 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
-        string apiKey = (AuthenticationConfig.SandboxMode ?
-          Authentication?.ApiKeySandbox :
-          Authentication?.ApiKey) ?? "null reference for api key";
+        string apiKey = (Authentication?.Key) ?? "null reference for api key";
 
         request.Headers.Add("X-MBX-APIKEY", apiKey);
 
@@ -129,9 +128,7 @@ namespace FractionalCryptoBot.Services
       queryStringBuilder.Append("timestamp=").Append(now);
 
       string secret = 
-        (AuthenticationConfig.SandboxMode ? 
-        Authentication?.ApiSecretSandbox :
-        Authentication?.ApiSecret) ?? "null dereference for secret";
+        (Authentication?.Secret) ?? "null dereference for secret";
 
       string signature = Sign(queryStringBuilder.ToString(), secret);
       queryStringBuilder.Append("&signature=").Append(signature);
@@ -179,7 +176,7 @@ namespace FractionalCryptoBot.Services
     }
 
     public string GetWebsocketPath(params string[] content) 
-      => $"{WebsocketBaseUri}/ws/{ content[0] }@{ content[1] }_{ KlineStreamInterval }";
+      => $"{Authentication?.WebsocketUri}/ws/{ content[0] }@{ content[1] }";
     #endregion
   }
 }

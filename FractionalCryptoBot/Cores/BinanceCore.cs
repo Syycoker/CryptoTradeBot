@@ -83,9 +83,7 @@ namespace FractionalCryptoBot.Cores
     {
       var parameters = new Dictionary<string, object>()
       {
-        {
-          "symbol", crypto
-        }
+        { "symbol", crypto }
       };
 
       string cryptoResponse = await Service.SendPublicAsync(HttpMethod.Get, "/api/v3/exchangeInfo", parameters);
@@ -135,14 +133,16 @@ namespace FractionalCryptoBot.Cores
         (HttpMethod.Post, "/api/v3/order",
         stopLossParameter);
 
+      JObject buyJson = JObject.Parse(buyResponse);
+
+      string msg = buyJson?["msg"]?.Value<string>() ?? "";
+
       Dictionary<string, CoreStatus> buyActivities = new Dictionary<string, CoreStatus>()
       {
         {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
-        {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
-        {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
       };
 
-      return buyActivities[buyResponse];
+      return buyActivities[msg];
     }
 
     public Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
