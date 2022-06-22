@@ -10,11 +10,6 @@ namespace FractionalCryptoBot.Configuration
   public static class AuthenticationConfig
   {
     #region Public
-    /// <summary>
-    ///  Checks if Authentication Config has been initialised.
-    /// </summary>
-    public static bool Initialised { get; set; }
-
     public static Mutex Mutex { get; set; } = new Mutex();
     #endregion
     #region Initialisation
@@ -24,7 +19,8 @@ namespace FractionalCryptoBot.Configuration
     /// <param name="filePath"></param>
     /// <returns></returns>
     /// <exception cref="InvalidAuthenticationException"></exception>
-    public static bool Initialise(string filePath)
+    public static bool Initialise(string filePath,
+      out Dictionary<string, IAuthentication> authenticationDictionary)
     {
       Mutex.WaitOne();
       try
@@ -48,7 +44,7 @@ namespace FractionalCryptoBot.Configuration
 
         if (exchanges is null) throw new InvalidAuthenticationException();
 
-        Authentications.Clear();
+        authenticationDictionary = new();
 
         foreach (JObject exchange in exchanges)
         {
@@ -56,10 +52,9 @@ namespace FractionalCryptoBot.Configuration
 
           if (exchangeObj is null) continue;
 
-          Authentications.Add(exchangeObj.Exchange, exchangeObj);
+          authenticationDictionary.Add(exchangeObj.Exchange, exchangeObj);
         }
 
-        Initialised = true;
         return true;
       }
       finally
@@ -73,12 +68,16 @@ namespace FractionalCryptoBot.Configuration
     /// </summary>
     /// <param name="marketplace"></param>
     /// <returns></returns>
-    public static IAuthentication? GetAuthentication(Marketplaces marketplace)
+    public static IAuthentication? GetAuthentication(Marketplaces marketplace, string filePath = "")
     {
-      if (!Initialised) Initialise(string.Empty);
+      string path = string.IsNullOrEmpty(filePath)
+        ? GetAuthenticationFilePath()
+        : filePath;
 
-      return Authentications.ContainsKey($"{marketplace}")
-      ? Authentications[$"{marketplace}"]
+      Initialise(path, out var authentication);
+
+      return authentication.ContainsKey($"{marketplace}")
+      ? authentication[$"{marketplace}"]
       : new ExchangeAuthentication();
     }
       
@@ -86,12 +85,6 @@ namespace FractionalCryptoBot.Configuration
     /// The file address for the authentication file.
     /// </summary>
     public static string GetAuthenticationFilePath() { return Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + "FractionalCryptoBotAuthentication.json"; }
-    #endregion
-    #region Private
-    /// <summary>
-    /// Dictionary that contains and authentication of all marketplace information that are account specific.
-    /// </summary>
-    private static Dictionary<string, IAuthentication> Authentications = new();
     #endregion
   }
 }

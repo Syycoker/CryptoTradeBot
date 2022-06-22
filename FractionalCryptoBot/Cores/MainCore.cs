@@ -26,8 +26,6 @@ namespace FractionalCryptoBot.Cores
     {
       Logger = logger;
       Logger.LogInformation("{0}: '{1}' has been instantiated.", DateTime.UtcNow, nameof(MainCore));
-
-      AuthenticationConfig.Initialise(AuthenticationConfig.GetAuthenticationFilePath());
     }
     #endregion
     #region Public Methods

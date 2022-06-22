@@ -17,8 +17,7 @@ namespace Tests.Authentication_Tests
 
     public AuthenticationStub Build()
     {
-      AuthenticationConfig.Initialise(_path);
-      Authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE) ?? new ExchangeAuthentication();
+      Authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE, _path) ?? new ExchangeAuthentication();
       return this;
     }
   }
