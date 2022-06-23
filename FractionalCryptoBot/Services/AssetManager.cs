@@ -37,14 +37,9 @@ namespace FractionalCryptoBot.Services
 
         // If the user chooses to override the price or quantity, choose accordingly
         if (price != 0.00m || quantity != 0.00m)
-        {
           procedureResult = await crypto.Core.BuyAsset(crypto, price, quantity);
-        }
         else
-        {
-          // If nothing has been specified / overriden the buy the smallest amount of which we can buy.
           procedureResult = await crypto.Core.BuyAsset(crypto, crypto.BaseMinimumBuyPrice);
-        }
 
         // Return the response up a level.
         return procedureResult;

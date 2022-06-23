@@ -144,11 +144,10 @@ namespace FractionalCryptoBot.Models
           CHECK_STATUS_POLLING_INTERVAL = PROMISING_TRANSACTION_POLL_TIME;
         }
 
-        // Attempt to buy the asset.
-        var buyResponse = await lowestAsset.BuyAsset();
-
-        // Attempt to sell the asset.
-        var sellResponse = await highestAsset.SellAsset();
+        // Buy and sell at the exact same time for now.
+        Task.WaitAll(
+          Task.Run(async ()=> await lowestAsset.BuyAsset()),
+          Task.Run(async ()=> await highestAsset.SellAsset()));
       }
     }
 
