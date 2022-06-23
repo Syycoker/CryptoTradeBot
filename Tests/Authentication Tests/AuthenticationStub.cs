@@ -7,6 +7,7 @@ namespace Tests.Authentication_Tests
   public class AuthenticationStub
   {
     public IAuthentication Authentication { get; set; } = new ExchangeAuthentication();
+    private Marketplaces _marketplace = Marketplaces.BINANCE;
     private string _path = AuthenticationConfig.GetAuthenticationFilePath();
     
     public AuthenticationStub WithDefault()
@@ -15,9 +16,16 @@ namespace Tests.Authentication_Tests
       return this;
     }
 
+
+    public AuthenticationStub UsingExchange(Marketplaces marketplace)
+    {
+      _marketplace = marketplace;
+      return this;
+    }
+
     public AuthenticationStub Build()
     {
-      Authentication = AuthenticationConfig.GetAuthentication(Marketplaces.BINANCE, _path) ?? new ExchangeAuthentication();
+      Authentication = AuthenticationConfig.GetAuthentication(_marketplace, _path) ?? new ExchangeAuthentication();
       return this;
     }
   }

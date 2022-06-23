@@ -24,6 +24,7 @@ namespace Tests
     public BinanceTestClass()
     {
       _authenticationStub = new AuthenticationStub()
+        .UsingExchange(Marketplaces.BINANCE)
         .Build();
 
       _binanceCore = CoreFactory.GetCore(Marketplaces.BINANCE) 
