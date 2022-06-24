@@ -89,19 +89,20 @@ namespace FractionalCryptoBot.Cores
       string cryptoResponse = await Service.SendPublicAsync(HttpMethod.Get, "/api/v3/exchangeInfo", parameters);
 
       JObject cryptoJson = JObject.Parse(cryptoResponse);
-      var jsonArray = cryptoJson["symbols"];
+      var item = cryptoJson?["symbols"]?.Value<JArray>()?[0];
 
-      if (jsonArray is null) return null;
-      var item = jsonArray[0];
-      if (item is null) return null;
+      var lotSize = item?["filters"]?.Value<JArray>()?
+        .Single(filter => (filter?["filterType"]?.Value<string>() ?? "")
+        .Equals("LOT_SIZE"));
 
-      string symbol = item["symbol"]?.Value<string>() ?? string.Empty;
-      string baseAsset = item["baseAsset"]?.Value<string>() ?? string.Empty;
-      string quoteAsset = item["quoteAsset"]?.Value<string>() ?? string.Empty;
-      int baseAssetPrecision = item["baseAssetPrecision"]?.Value<int>() ?? 0;
-      int quoteAssetPrecision = item["quoteAssetPrecision"]?.Value<int>() ?? 0;
+      var minQty = lotSize?["minQty"]?.Value<decimal>() ?? 0.00m;
+      var stepSize = lotSize?["stepSize"]?.Value<float>() ?? 0;
+      var minimumQuantity = (decimal)Math.Floor(Math.Log10(stepSize));
 
-      return new Crypto(this, baseAsset, quoteAsset, baseAssetPrecision, quoteAssetPrecision, symbol);
+      return new Crypto(this, item?["baseAsset"]?.Value<string>() ?? "",
+                item?["quoteAsset"]?.Value<string>() ?? "", item?["baseAssetPrecision"]?.Value<int>() ?? 0,
+                item?["quoteAssetPrecision"]?.Value<int>() ?? 0, item?["symbol"]?.Value<string>() ?? "",
+                minimumQuantity);
     }
 
     public async Task<IEnumerable<Crypto>> GetCryptoCurrencies()
@@ -109,10 +110,10 @@ namespace FractionalCryptoBot.Cores
       string cryptoResponses = await Service.SendPublicAsync(HttpMethod.Get, "/api/v3/exchangeInfo");
 
       JObject cryptoJsonArray = JObject.Parse(cryptoResponses);
-      var jsonArray = cryptoJsonArray?["symbols"]?.Value<JArray>();
-      if (jsonArray is null) return new List<Crypto>();
+      var symbolArr = cryptoJsonArray?["symbols"]?.Value<JArray>();
+      if (symbolArr is null) return new List<Crypto>();
 
-      return jsonArray.Select(arr => 
+      return symbolArr.Select(arr => 
           new Crypto(this, arr?["baseAsset"]?.Value<string>() ?? "",
           arr?["quoteAsset"]?.Value<string>() ?? "", arr?["baseAssetPrecision"]?.Value<int>() ?? 0,
           arr?["quoteAssetPrecision"]?.Value<int>() ?? 0, arr?["symbol"]?.Value<string>() ?? ""));
@@ -125,7 +126,7 @@ namespace FractionalCryptoBot.Cores
         { "symbol", crypto.PairName },
         { "side", "BUY" },
         { "type", "MARKET" },
-        { "price", crypto.BaseMinimumBuyPrice },
+        { "quantity", crypto.QuoteMinimumQuantity },
       };
 
       var buyResponse = await Service.SendSignedAsync
@@ -134,12 +135,14 @@ namespace FractionalCryptoBot.Cores
 
       JObject buyJson = JObject.Parse(buyResponse);
 
-      string msg = buyJson?["msg"]?.Value<string>() ?? "";
+      string msg = buyJson?["msg"]?.Value<string>() ?? "Success";
 
       Dictionary<string, CoreStatus> buyActivities = new Dictionary<string, CoreStatus>()
       {
         {"Timestamp for this request was 1000ms ahead of the server's time.", CoreStatus.OUT_OF_SYNC},
         {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
+        {"Account has insufficient balance for requested action." , CoreStatus.INSUFFICIENT_FUNDS},
+        {"Success" , CoreStatus.BUY_SUCCESSFUL},
       };
 
       return buyActivities[msg];

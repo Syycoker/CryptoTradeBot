@@ -41,6 +41,8 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     public readonly int QuotePrecision;
 
+    public decimal QuoteMinimumQuantity { get; private set; } = decimal.Zero;
+
     /// <summary>
     /// The current bidding price for the base asset.
     /// </summary>
@@ -94,7 +96,8 @@ namespace FractionalCryptoBot.Models
     /// <param name="basePrecision">e.g.'8' (0.00000001).</param>
     /// <param name="quotePrecision">e.g.'8' (0.00000001).</param>
     public Crypto(ICore core, string baseName, string quoteName,
-                  int basePrecision, int quotePrecision, string pairName = "")
+                  int basePrecision, int quotePrecision, string pairName = "",
+                  decimal quoteMinimumQuantity = 0.00m)
     {
       // Setting corresponding fields & properties.
 
@@ -109,19 +112,8 @@ namespace FractionalCryptoBot.Models
       PairName = string.IsNullOrEmpty(pairName) ? BaseName + QuoteName : pairName;
       // On construction of the object, bootup the websocket in its core to update the bidding price &
       // minimum buy price in the background.
-    }
-    #endregion
-    #region Private Methods
-    /// <summary>
-    /// Handles the message read from the websocket.
-    /// </summary>
-    /// <param name="buffer">The data being recieved.</param>
-    /// <param name="count">The amount of bytes (int).</param>
-    private void HandleMessage(byte[] buffer, int count)
-    {
-      string message = Encoding.UTF8.GetString(buffer, 0, count);
-      // Handle the payload by exchange implementation
-      Core.Service.ParseWebsocketPayload(this, message);
+
+      QuoteMinimumQuantity = quoteMinimumQuantity;
     }
     #endregion
     #region Public Methods
@@ -198,7 +190,12 @@ namespace FractionalCryptoBot.Models
           var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
           if (result.MessageType == WebSocketMessageType.Close) await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-          else HandleMessage(buffer, result.Count);
+          else
+          {
+            string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+            // Handle the payload by exchange implementation
+            Core.Service.ParseWebsocketPayload(this, message);
+          }
         }
       }
     }

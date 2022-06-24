@@ -54,6 +54,7 @@ namespace Tests
       Assert.NotNull(crypto);
       Assert.True(crypto?.BaseName.ToLower().Equals(expectedCosignments[0]));
       Assert.True(crypto?.QuoteName.ToLower().Equals(expectedCosignments[1]));
+      Assert.True(crypto?.QuoteMinimumQuantity != decimal.Zero);
     }
 
     [Fact]
@@ -86,14 +87,12 @@ namespace Tests
     }
 
     [Fact]
-    public async Task Can_Buy_Asset_Stop_Loss()
+    public async Task Can_Buy_Minimum_Of_Quote_Asset_To_Buy_Base()
     {
       _authenticationStub.Authentication.SandboxMode = true;
 
       Crypto? crypto = await _binanceCore.GetCryptoCurrency("BTCUSDT");
       if (crypto is null) return;
-
-      crypto.SetBaseMinimumPrice(100.00m);
 
       var operationStatus = await crypto.BuyAsset();
 
