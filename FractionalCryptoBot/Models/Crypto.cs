@@ -203,16 +203,5 @@ namespace FractionalCryptoBot.Models
       }
     }
     #endregion
-    #region Comments for implementation details
-    //// Testing stream 'kline'.
-    //string pair = "btcusdt";
-    //string interval = "1m";
-    //string socketRequest = $"{WebsocketBaseUri}/ws/{ pair }@{ parameter }_{ interval }";
-
-    //  using (var socket = new WebSocket(socketRequest))
-    //  {
-    //    socket.OnOpen += SocketOnOpen;
-    //  }
-    #endregion
   }
 }

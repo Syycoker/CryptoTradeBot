@@ -122,11 +122,10 @@ namespace FractionalCryptoBot.Cores
     {
       Dictionary<string, object> stopLossParameter = new()
       {
-        { "symbol",crypto.PairName },
+        { "symbol", crypto.PairName },
         { "side", "BUY" },
-        { "type", "STOP_LOSS" },
-        { "quantity", 0 },
-        { "stopPrice",crypto.BaseMinimumBuyPrice },
+        { "type", "MARKET" },
+        { "price", crypto.BaseMinimumBuyPrice },
       };
 
       var buyResponse = await Service.SendSignedAsync
@@ -139,6 +138,7 @@ namespace FractionalCryptoBot.Cores
 
       Dictionary<string, CoreStatus> buyActivities = new Dictionary<string, CoreStatus>()
       {
+        {"Timestamp for this request was 1000ms ahead of the server's time.", CoreStatus.OUT_OF_SYNC},
         {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
       };
 

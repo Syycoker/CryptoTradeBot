@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 
 namespace FractionalCryptoBot
 {
-  using FractionalCryptoBot.Enumerations;
   public class ApplicationEntry
   {
     static void Main(string[] args)
