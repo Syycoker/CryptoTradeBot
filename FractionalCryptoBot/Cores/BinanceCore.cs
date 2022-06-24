@@ -145,7 +145,9 @@ namespace FractionalCryptoBot.Cores
         {"Success" , CoreStatus.BUY_SUCCESSFUL},
       };
 
-      return buyActivities[msg];
+      return buyActivities.ContainsKey(msg)
+        ? buyActivities[msg]
+        : CoreStatus.UNKNOWN_ERROR;
     }
 
     public Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
