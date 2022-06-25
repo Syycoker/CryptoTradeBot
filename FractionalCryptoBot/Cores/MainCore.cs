@@ -129,7 +129,10 @@ namespace FractionalCryptoBot.Cores
     public void CheckPerformanceOfCryptosInExchange(IEnumerable<SharedCrypto> sharedCrypto)
     {
       // Make each object run their specific task.
-      sharedCrypto.Select(sc => sc.CheckStatus());
+      sharedCrypto
+        .Select(sc => Task
+        .Run(async ()=> await sc
+        .CheckStatus()));
     }
     #endregion
   }

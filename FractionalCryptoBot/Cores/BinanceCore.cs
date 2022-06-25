@@ -97,7 +97,7 @@ namespace FractionalCryptoBot.Cores
 
       var minQty = lotSize?["minQty"]?.Value<decimal>() ?? 0.00m;
       var stepSize = lotSize?["stepSize"]?.Value<float>() ?? 0;
-      var minimumQuantity = (decimal)Math.Floor(Math.Log10(stepSize));
+      var minimumQuantity = (decimal)Math.Abs(Math.Floor(Math.Log(stepSize, 10)));
 
       return new Crypto(this, item?["baseAsset"]?.Value<string>() ?? "",
                 item?["quoteAsset"]?.Value<string>() ?? "", item?["baseAssetPrecision"]?.Value<int>() ?? 0,
