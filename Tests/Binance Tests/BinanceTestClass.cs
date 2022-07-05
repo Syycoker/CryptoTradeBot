@@ -78,7 +78,7 @@ namespace Tests
 
       await crypto.RunStream();
 
-      Thread.Sleep(10000);
+      Thread.Sleep(15000);
 
       Assert.True(crypto.BaseBiddingPrice != decimal.Zero);
       Assert.True(crypto.BaseMinimumBuyPrice != decimal.Zero);

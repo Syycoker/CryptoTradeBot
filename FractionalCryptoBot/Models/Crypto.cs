@@ -193,7 +193,6 @@ namespace FractionalCryptoBot.Models
           else
           {
             string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-            // Handle the payload by exchange implementation
             Core.Service.ParseWebsocketPayload(this, message);
           }
         }

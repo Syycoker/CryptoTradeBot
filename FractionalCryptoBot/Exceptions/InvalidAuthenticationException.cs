@@ -38,7 +38,9 @@ namespace FractionalCryptoBot.Exceptions
     /// </summary>
     public InvalidAuthenticationException(string filePath)
     {
+      Console.WriteLine("Could not detect authentication file, creating...");
       CreateJsonFile(filePath);
+      Console.WriteLine($"Use '{DesktopPath}' to set the authentication for your account/s.");
     }
     #endregion
     #region Private
