@@ -24,7 +24,7 @@ namespace Tests
     public void Gets_The_Lowest_Bidding_Crypto()
     {
       var lowestAsset = sharedCrypto.GetLowestBaseBiddingAsset();
-      var lowestPrice = lowestAsset?.BaseBiddingPrice;
+      var lowestPrice = lowestAsset?.BidPrice;
 
       var collectionWithoutLowestAsset =
         new SharedCrypto(sharedCrypto
@@ -34,7 +34,7 @@ namespace Tests
 
       var lowestAssetInNewCollection = collectionWithoutLowestAsset.GetLowestBaseBiddingAsset();
 
-      var lowestAmmenededPrice = lowestAssetInNewCollection?.BaseBiddingPrice;
+      var lowestAmmenededPrice = lowestAssetInNewCollection?.BidPrice;
 
       Assert.True(lowestPrice < lowestAmmenededPrice);
     }
@@ -43,7 +43,7 @@ namespace Tests
     public void Gets_The_Highest_Bidding_Crypto()
     {
       var highestAsset = sharedCrypto.GetHighestBaseBiddingAsset();
-      var highestPrice = highestAsset?.BaseBiddingPrice;
+      var highestPrice = highestAsset?.BidPrice;
 
       var collectionWithoutHighestAsset =
         new SharedCrypto(sharedCrypto
@@ -53,7 +53,7 @@ namespace Tests
 
       var highestAssetInNewCollection = collectionWithoutHighestAsset.GetHighestBaseBiddingAsset();
 
-      var highestAmmenededPrice = highestAssetInNewCollection?.BaseBiddingPrice;
+      var highestAmmenededPrice = highestAssetInNewCollection?.BidPrice;
 
       Assert.True(highestPrice > highestAmmenededPrice);
     }

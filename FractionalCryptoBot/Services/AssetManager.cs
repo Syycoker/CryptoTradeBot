@@ -39,7 +39,7 @@ namespace FractionalCryptoBot.Services
         if (price != 0.00m || quantity != 0.00m)
           procedureResult = await crypto.Core.BuyAsset(crypto, price, quantity);
         else
-          procedureResult = await crypto.Core.BuyAsset(crypto, crypto.BaseMinimumBuyPrice);
+          procedureResult = await crypto.Core.BuyAsset(crypto, crypto.BidQty);
 
         // Return the response up a level.
         return procedureResult;
@@ -65,7 +65,7 @@ namespace FractionalCryptoBot.Services
         if (price != 0.00m || quantity != 0.00m)
           return await crypto.Core.SellAsset(crypto, price, quantity);
         else
-          return await crypto.Core.SellAsset(crypto, crypto.BaseMinimumBuyPrice);
+          return await crypto.Core.SellAsset(crypto, crypto.AskQty);
       }
       finally
       {

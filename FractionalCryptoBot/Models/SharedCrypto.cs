@@ -38,6 +38,7 @@ namespace FractionalCryptoBot.Models
     /// The upper end of a marketcap for a cryptocurrency to be classified as a safe investment, but prone to risky.
     /// </summary>
     private const long MID_CAP_HIGH = MID_CAP_LOW * 3;
+    private const float PROFIT_THRESHOLD = 10.00f;
     #endregion
     #region Members
     /// <summary>
@@ -120,14 +121,11 @@ namespace FractionalCryptoBot.Models
         // If whatever we recieve is invalid, throw an exception up a level to the procedure that is calling.
         if (lowestAsset is null || highestAsset is null) throw new Exception(string.Format("Unable to justify the assets in the collection - '{1}'.", nameof(CheckStatus)));
 
-        // Check if the volume change in the past 24h is positive...
-        bool positiveVolumeChange = lowestAsset.VolumeChange.CompareTo(decimal.Zero) >= 0 ? true : false;
-
         // Get the fees of the cheaper of the two cryptocurrency.
         decimal transactionFee = lowestAsset.Core.TakerFee;
 
         // Calculate the difference between the lowest & highest asset (minus the fee) to see if we can make a profit.
-        decimal difference = (highestAsset.BaseBiddingPrice - lowestAsset.BaseBiddingPrice) - transactionFee;
+        decimal difference = (highestAsset.BidPrice - lowestAsset.BidPrice) - transactionFee;
 
         bool continueBuyProcedure = difference.CompareTo(decimal.Zero) > 0;
 
@@ -161,25 +159,13 @@ namespace FractionalCryptoBot.Models
     /// Returns the asset with the lowest base bidding price in the collection stored.
     /// </summary>
     /// <returns>The lowest bidding asset from multiple exchanges.</returns>
-    public Crypto? GetLowestBaseBiddingAsset() => Cryptos.MinBy(crypto => crypto.BaseBiddingPrice);
+    public Crypto? GetLowestBaseBiddingAsset() => Cryptos.MinBy(crypto => crypto.BidPrice);
 
     /// <summary>
     /// Returns the asset with the highest base bidding price in the collection stored.
     /// </summary>
     /// <returns></returns>
-    public Crypto? GetHighestBaseBiddingAsset() => Cryptos.MaxBy(crypto => crypto.BaseBiddingPrice);
-
-    /// <summary>
-    /// Returns the asset with the lowest quote price in the collection stored.
-    /// </summary>
-    /// <returns></returns>
-    public Crypto? GetLowestQuoteBiddingPriceAsset() => Cryptos.MinBy(crypto => crypto.QuoteBiddingPrice);
-
-    /// <summary>
-    /// Returns the asset with the highest quote bidding price in the collection stored.
-    /// </summary>
-    /// <returns></returns>
-    public Crypto? GetHighestQuoteBiddingAsset() => Cryptos.MaxBy(crypto => crypto.QuoteBiddingPrice);
+    public Crypto? GetHighestBaseBiddingAsset() => Cryptos.MaxBy(crypto => crypto.BidPrice);
     #endregion
   }
 }

@@ -149,10 +149,10 @@ namespace FractionalCryptoBot.Services
       var payload = JObject.Parse(content);
       if (payload is null) return;
 
-      crypto.SetBaseBiddingPrice(payload["a"]?.Value<decimal>() ?? 0.00m); // Best ask price
-      crypto.SetMarketCap(payload["w"]?.Value<decimal>() ?? 0.00m); // Weighted average price
-      crypto.SetVolumeChange(payload["P"]?.Value<decimal>() ?? 0.00m); // Price change percent
-      crypto.SetBaseMinimumPrice(payload["l"]?.Value<decimal>() ?? 0.00m); // Low price
+      crypto.SetBidPrice(payload["b"]?.Value<decimal>() ?? 0.00m);
+      crypto.SetBidQty(payload["B"]?.Value<decimal>() ?? 0.00m);
+      crypto.SetAskPrice(payload["a"]?.Value<decimal>() ?? 0.00m);
+      crypto.SetAskQty(payload["A"]?.Value<decimal>() ?? 0.00m);
     }
 
     /// <summary>

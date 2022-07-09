@@ -80,14 +80,14 @@ namespace Tests
 
       Thread.Sleep(15000);
 
-      Assert.True(crypto.BaseBiddingPrice != decimal.Zero);
-      Assert.True(crypto.BaseMinimumBuyPrice != decimal.Zero);
-      Assert.True(crypto.MarketCap != decimal.Zero);
-      Assert.True(crypto.VolumeChange != decimal.Zero);
+      Assert.True(crypto.BidPrice != decimal.Zero);
+      Assert.True(crypto.BidQty != decimal.Zero);
+      Assert.True(crypto.AskPrice != decimal.Zero);
+      Assert.True(crypto.AskQty != decimal.Zero);
     }
 
     [Fact]
-    public async Task Can_Buy_Minimum_Of_Quote_Asset_To_Buy_Base()
+    public async Task Can_Buy_Asset()
     {
       _authenticationStub.Authentication.SandboxMode = true;
 

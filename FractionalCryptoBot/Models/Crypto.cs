@@ -44,36 +44,6 @@ namespace FractionalCryptoBot.Models
     public decimal QuoteMinimumQuantity { get; private set; } = decimal.Zero;
 
     /// <summary>
-    /// The current bidding price for the base asset.
-    /// </summary>
-    public decimal BaseBiddingPrice { get; private set; } = decimal.Zero;
-
-    /// <summary>
-    /// The current bidding price for the quote asset.
-    /// </summary>
-    public decimal QuoteBiddingPrice { get; private set; } = decimal.Zero;
-
-    /// <summary>
-    /// The current minimum buy price for the base asset.
-    /// </summary>
-    public decimal BaseMinimumBuyPrice { get; private set; } = decimal.Zero;
-
-    /// <summary>
-    /// The current minimum buy price for the quote asset.
-    /// </summary>
-    public decimal QuoteMinimumBuyPrice { get; private set; } = decimal.Zero;
-
-    /// <summary>
-    /// The marketcap for this particular crypto, i.e. how many are circulating * price of each individual asset.
-    /// </summary>
-    public decimal MarketCap { get; private set; } = decimal.Zero;
-
-    /// <summary>
-    /// What's the trend of the cryptocurrency in this particular exchange, i.e. negative volume change means less people are trading it than in the last 24 hours.
-    /// </summary>
-    public decimal VolumeChange { get; private set; } = decimal.Zero;
-
-    /// <summary>
     /// Returns the pair name for this asset.
     /// </summary>
     /// <returns>A string representation of the asset in the exchange.</returns>
@@ -83,6 +53,11 @@ namespace FractionalCryptoBot.Models
     /// Determines whether the stream is active or not.
     /// </summary>
     public bool StreamActive { get; private set; } = false;
+
+    public decimal BidPrice { get; private set; }
+    public decimal BidQty { get; private set; }
+    public decimal AskPrice { get; private set; }
+    public decimal AskQty { get; private set; }
 
     private Thread? StreamThread { get; set; }
     #endregion
@@ -138,46 +113,16 @@ namespace FractionalCryptoBot.Models
     /// </summary>
     public void StopStream() => StreamActive = false;
 
-    /// <summary>
-    /// Public method to set the base asset's bidding price.
-    /// </summary>
-    /// <param name="baseBiddingPrice">The bidding price for the base asset.</param>
-    public void SetBaseBiddingPrice(decimal baseBiddingPrice) => BaseBiddingPrice = baseBiddingPrice;
+    public void SetBidPrice(decimal bidPrice) => BidPrice = bidPrice;
+    public void SetBidQty(decimal bidQty) => BidQty = bidQty;
+    public void SetAskPrice(decimal askPrice) => AskPrice = askPrice;
+    public void SetAskQty(decimal askQty) => AskQty = askQty;
 
-    /// <summary>
-    /// Public method to set the quote asset's bidding price.
-    /// </summary>
-    /// <param name="quoteBiddingPrice">The bidding price for the quote asset.</param>
-    public void SetQuoteBiddingPrice(decimal quoteBiddingPrice) => QuoteBiddingPrice = quoteBiddingPrice;
-
-    /// <summary>
-    /// Public method to set the base asset's minimum buy price.
-    /// </summary>
-    /// <param name="baseMinimumPrice">The minimum buy price for the base asset.</param>
-    public void SetBaseMinimumPrice(decimal baseMinimumPrice) => BaseMinimumBuyPrice = baseMinimumPrice;
-
-    /// <summary>
-    /// Public method to set the quote asset's minimum buy price.
-    /// </summary>
-    /// <param name="quoteMinimumPrice">The minimum buy price for the quote asset.</param>
-    public void SetQuoteMinimumPrice(decimal quoteMinimumPrice) => QuoteMinimumBuyPrice = quoteMinimumPrice;
-
-    /// <summary>
-    /// Sets the marketcap for this particular cryptocurrency trade pair.
-    /// </summary>
-    /// <param name="marketCap">The current marketcap for this DTO.</param>
-    public void SetMarketCap(decimal marketCap) => MarketCap = marketCap;
-
-    /// <summary>
-    /// Sets the volume chane for this particual cryptocurrency trade pair.
-    /// </summary>
-    /// <param name="volumeChange">The current (24h) volume change for  this DTO.</param>
-    public void SetVolumeChange(decimal volumeChange) => VolumeChange = volumeChange;
     #endregion
     #region Private Methods
     private async Task Stream()
     {
-      string socketRequest = Core.Service.GetWebsocketPath(PairName.ToLower(), "ticker");
+      string socketRequest = Core.Service.GetWebsocketPath(PairName.ToLower(), "bookTicker");
 
       using (var ws = Core.Service.CreateWebSocket())
       {
