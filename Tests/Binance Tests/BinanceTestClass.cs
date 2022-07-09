@@ -97,5 +97,19 @@ namespace Tests
 
       Assert.Equal(CoreStatus.BUY_SUCCESSFUL, operationStatus);
     }
+
+    [Fact]
+    public async Task Can_Sell_Asset()
+    {
+      _authenticationStub.Authentication.SandboxMode = true;
+
+      Crypto? crypto = await _binanceCore.GetCryptoCurrency("ETHBTC");
+      if (crypto is null) return;
+      crypto.SetAskQty(1.00m);
+
+      var operationStatus = await crypto.SellAsset();
+
+      Assert.Equal(CoreStatus.SELL_SUCCESSFUL, operationStatus);
+    }
   }
 }

@@ -121,7 +121,7 @@ namespace FractionalCryptoBot.Cores
 
     public async Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
     {
-      Dictionary<string, object> stopLossParameter = new()
+      Dictionary<string, object> buyParameter = new()
       {
         { "symbol", crypto.PairName },
         { "side", "BUY" },
@@ -131,7 +131,7 @@ namespace FractionalCryptoBot.Cores
 
       var buyResponse = await Service.SendSignedAsync
         (HttpMethod.Post, "/api/v3/order",
-        stopLossParameter);
+        buyParameter);
 
       JObject buyJson = JObject.Parse(buyResponse);
 
@@ -150,9 +150,35 @@ namespace FractionalCryptoBot.Cores
         : CoreStatus.UNKNOWN_ERROR;
     }
 
-    public Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
+    public async Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
     {
-      throw new NotImplementedException();
+      Dictionary<string, object> sellParameter = new()
+      {
+        { "symbol", crypto.PairName },
+        { "side", "SELL" },
+        { "type", "MARKET" },
+        { "quantity", crypto.AskQty },
+      };
+
+      var sellResponse = await Service.SendSignedAsync
+        (HttpMethod.Post, "/api/v3/order",
+        sellParameter);
+
+      JObject sellJson = JObject.Parse(sellResponse);
+
+      string msg = sellJson?["msg"]?.Value<string>() ?? "Success";
+
+      Dictionary<string, CoreStatus> sellActivities = new Dictionary<string, CoreStatus>()
+      {
+        {"Timestamp for this request was 1000ms ahead of the server's time.", CoreStatus.OUT_OF_SYNC},
+        {"Stop loss orders are not supported for this symbol", CoreStatus.SELL_UNSUCCESSFUL },
+        {"Account has insufficient balance for requested action." , CoreStatus.INSUFFICIENT_FUNDS},
+        {"Success" , CoreStatus.SELL_SUCCESSFUL},
+      };
+
+      return sellActivities.ContainsKey(msg)
+        ? sellActivities[msg]
+        : CoreStatus.UNKNOWN_ERROR;
     }
 
     public CoreStatus TransferAssetToColdWallet(Crypto crypto, int walletId)
