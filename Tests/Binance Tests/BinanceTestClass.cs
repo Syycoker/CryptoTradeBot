@@ -43,6 +43,22 @@ namespace Tests
       Assert.True(isActive);
     }
 
+    [Fact]
+    public async Task Can_Start_Stream()
+    {
+      var crypto = new Crypto(_binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
+      if (crypto is null) return;
+
+      await crypto.RunStream();
+
+      Thread.Sleep(15000);
+
+      Assert.True(crypto.BidPrice != decimal.Zero);
+      Assert.True(crypto.BidQty != decimal.Zero);
+      Assert.True(crypto.AskPrice != decimal.Zero);
+      Assert.True(crypto.AskQty != decimal.Zero);
+    }
+
     [Theory]
     [InlineData("ETHBTC", "eth", "btc")]
     [InlineData("BTCUSDT", "btc", "usdt")]
@@ -66,24 +82,6 @@ namespace Tests
       Assert.NotNull(collection);
       Assert.True(collection.Count() > 0);
       Assert.Contains(collection, c => c.PairName.Equals("ETHBTC"));
-    }
-
-    [Fact]
-    public async Task Can_Start_Stream()
-    {
-      _authenticationStub.Authentication.SandboxMode = true;
-
-      var crypto = new Crypto(_binanceCore, "ETH", "BTC", 0, 0, "ETHBTC");
-      if (crypto is null) return;
-
-      await crypto.RunStream();
-
-      Thread.Sleep(15000);
-
-      Assert.True(crypto.BidPrice != decimal.Zero);
-      Assert.True(crypto.BidQty != decimal.Zero);
-      Assert.True(crypto.AskPrice != decimal.Zero);
-      Assert.True(crypto.AskQty != decimal.Zero);
     }
 
     [Fact]

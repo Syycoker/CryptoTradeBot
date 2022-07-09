@@ -38,7 +38,8 @@ namespace FractionalCryptoBot.Models
     /// The upper end of a marketcap for a cryptocurrency to be classified as a safe investment, but prone to risky.
     /// </summary>
     private const long MID_CAP_HIGH = MID_CAP_LOW * 3;
-    private const float PROFIT_THRESHOLD = 10.00f;
+    private const decimal MIN_PROFIT = 1.3m;
+    private const decimal PROFIT_THRESHOLD = 0.1m;
     #endregion
     #region Members
     /// <summary>
@@ -121,31 +122,22 @@ namespace FractionalCryptoBot.Models
         // If whatever we recieve is invalid, throw an exception up a level to the procedure that is calling.
         if (lowestAsset is null || highestAsset is null) throw new Exception(string.Format("Unable to justify the assets in the collection - '{1}'.", nameof(CheckStatus)));
 
-        // Get the fees of the cheaper of the two cryptocurrency.
-        decimal transactionFee = lowestAsset.Core.TakerFee;
+        // Calculate the total amount of fees we will incur
+        var lowExchangeMakerFee = lowestAsset.BidPrice * lowestAsset.Core.MakerFee;
+        var highExchnageTakerFee = highestAsset.AskPrice * highestAsset.Core.TakerFee;
 
-        // Calculate the difference between the lowest & highest asset (minus the fee) to see if we can make a profit.
-        decimal difference = (highestAsset.BidPrice - lowestAsset.BidPrice) - transactionFee;
+        var lowExchange = lowestAsset.BidPrice - lowExchangeMakerFee;
+        var highExchange = highestAsset.AskPrice - highExchnageTakerFee;
 
-        bool continueBuyProcedure = difference.CompareTo(decimal.Zero) > 0;
+        var differenceInPriceInPercent = highExchange / lowExchange;
 
-        // If the difference is negative, we will lose money if we fulfil the buy order so, let's just sleep for a while...
-        if (!continueBuyProcedure || !positiveVolumeChange)
-        {
-          // Check the collection and how it's doing less frequently.
-          CHECK_STATUS_POLLING_INTERVAL = NON_PROMISING_TRANSACTION_POLL_INTERVAL;
-          continue;
-        }
-        else
-        {
-          // Check the collection and how it's performing more frequently.
-          CHECK_STATUS_POLLING_INTERVAL = PROMISING_TRANSACTION_POLL_TIME;
-        }
+        if (differenceInPriceInPercent < MIN_PROFIT + (MIN_PROFIT * PROFIT_THRESHOLD)) continue;
 
         // Buy and sell at the exact same time for now.
         Task.WaitAll(
           Task.Run(async ()=> await lowestAsset.BuyAsset()),
-          Task.Run(async ()=> await highestAsset.SellAsset()));
+          Task.Run(async ()=> await highestAsset.SellAsset())
+          );
       }
     }
 
