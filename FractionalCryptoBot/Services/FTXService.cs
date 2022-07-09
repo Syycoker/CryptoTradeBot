@@ -51,11 +51,7 @@ namespace FractionalCryptoBot.Services
 
     public string Sign(string source, string key)
     {
-      var hashMaker = new HMACSHA256(Encoding.UTF8.GetBytes(Authentication?.Secret ?? string.Empty));
-      var signaturePayload = $"{_nonce}{method.ToString().ToUpper()}{endpoint}";
-      var hash = hashMaker.ComputeHash(Encoding.UTF8.GetBytes(signaturePayload));
-      var hashString = BitConverter.ToString(hash).Replace("-", string.Empty);
-      var signature = hashString.ToLower();
+      return "";
     }
   }
 }

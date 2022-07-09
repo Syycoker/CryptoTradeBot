@@ -34,7 +34,7 @@ namespace Tests
     }
 
     [Fact]
-    public void Binance_Core_Is_Not_Null() => Assert.NotNull(_ftxCore);
+    public void FTX_Core_Is_Not_Null() => Assert.NotNull(_ftxCore);
 
     [Fact]
     public async Task Can_Make_Active_Call()
