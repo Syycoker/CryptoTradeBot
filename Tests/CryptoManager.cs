@@ -42,7 +42,7 @@ namespace Tests
       Random rand = new Random();
 
       foreach (var crypto in cryptos)
-        crypto.SetBaseBiddingPrice(rand.Next(0, 100));
+        crypto.SetBidPrice(rand.Next(0, 100));
 
       return cryptos;
     }

@@ -89,8 +89,9 @@ namespace Tests
     {
       _authenticationStub.Authentication.SandboxMode = true;
 
-      Crypto? crypto = await _binanceCore.GetCryptoCurrency("BTCUSDT");
+      Crypto? crypto = await _binanceCore.GetCryptoCurrency("ETHBTC");
       if (crypto is null) return;
+      crypto.SetBidQty(1.00m);
 
       var operationStatus = await crypto.BuyAsset();
 

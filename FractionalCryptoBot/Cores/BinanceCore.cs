@@ -126,7 +126,7 @@ namespace FractionalCryptoBot.Cores
         { "symbol", crypto.PairName },
         { "side", "BUY" },
         { "type", "MARKET" },
-        { "quantity", crypto.QuoteMinimumQuantity },
+        { "quantity", crypto.BidQty },
       };
 
       var buyResponse = await Service.SendSignedAsync
