@@ -22,11 +22,10 @@ namespace FractionalCryptoBot.Services
     #endregion
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
+    public IAuthentication? Authentication { get => authentication; set => authentication = value; }
     public ILogger Log { get => log; private set => log = value; }
     public string BaseUri => Authentication?.Uri ?? string.Empty;
     public string WebsocketBaseUri => Authentication?.WebsocketUri ?? string.Empty;
-    public string KlineStreamInterval => "100ms";
-    public IAuthentication? Authentication { get => authentication; set => authentication = value; }
     #endregion
     #region Constructor
     /// <summary>

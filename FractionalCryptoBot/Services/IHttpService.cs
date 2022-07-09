@@ -38,11 +38,6 @@ namespace FractionalCryptoBot.Services
     /// The base uri for the service's websocket.
     /// </summary>
     public string WebsocketBaseUri { get; }
-
-    /// <summary>
-    /// The interval the stream from the marketplace will be checked at.
-    /// </summary>
-    public string KlineStreamInterval { get; }
     #endregion
     #region Public
     /// <summary>
