@@ -9,16 +9,12 @@ using System.Web;
 
 namespace FractionalCryptoBot.Services
 {
-  /// <summary>
-  /// The service class for Coinbase Pro.
-  /// </summary>
   public sealed class CBProService : IHttpService
   {
     #region Private Members
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
-    private string SignedString = "";
     #endregion
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
@@ -28,14 +24,8 @@ namespace FractionalCryptoBot.Services
     public IAuthentication? Authentication { get => authentication; set => authentication = value; }
     #endregion
     #region Constructor
-    /// <summary>
-    /// Default constuctor to instantiate a Coinabse Pro service object.
-    /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="httpClient"></param>
     public CBProService(ILogger logger)
     {
-      // Nothing needs to be set in the constructor for now.
       httpClient = new HttpClient()
       {
         BaseAddress = new Uri(Authentication?.Uri ?? ""),  
@@ -44,7 +34,6 @@ namespace FractionalCryptoBot.Services
       authentication = AuthenticationConfig.GetAuthentication(Marketplaces.COINBASE_PRO);
       log = logger;
 
-      // Not using string interpolation as I lose more valuable information and processing time when doing so.
       Log.LogInformation("{0}: '{1}' has been instantiated.", DateTime.UtcNow, nameof(CBProService));
     }
     #endregion
@@ -55,7 +44,7 @@ namespace FractionalCryptoBot.Services
       {
         request.Headers.Add("Accept", "application/json");
         request.Headers.Add("CB-ACCESS-KEY", Authentication?.Key);
-        request.Headers.Add("CB-ACCESS-SIGN", SignedString);
+        request.Headers.Add("CB-ACCESS-SIGN", requestUri);
         request.Headers.Add("CB-ACCESS-TIMESTAMP", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
         request.Headers.Add("CB-ACCESS-PASSPHRASE", Authentication?.Pass);
 
@@ -107,7 +96,6 @@ namespace FractionalCryptoBot.Services
       string secret = Authentication?.Secret ?? string.Empty;
 
       var signature = Sign(queryStringBuilder.ToString(), secret);
-      SignedString = signature;
       queryStringBuilder.Append("&signature=").Append(signature);
 
       StringBuilder requestUriBuilder = new StringBuilder(requestUri);
