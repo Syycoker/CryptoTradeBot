@@ -16,7 +16,6 @@ namespace Tests.Authentication_Tests
       return this;
     }
 
-
     public AuthenticationStub UsingExchange(Marketplaces marketplace)
     {
       _marketplace = marketplace;

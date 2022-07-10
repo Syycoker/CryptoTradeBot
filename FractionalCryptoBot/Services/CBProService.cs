@@ -18,6 +18,7 @@ namespace FractionalCryptoBot.Services
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
+    private string SignedString = "";
     #endregion
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
@@ -48,18 +49,14 @@ namespace FractionalCryptoBot.Services
     }
     #endregion
     #region Public Methods
-    /// <summary>
-    /// Helper method to send an asynchoronus call to Binace's Pros endpoints.
-    /// </summary>
-    /// <param name="httpMethod">'GET', 'POST', 'DELETE'.</param>
-    /// <param name="requestUri">The address of the endpoint.</param>
-    /// <param name="content">The content to go with the call.</param>
-    /// <returns>A response string in JSON.</returns>
     public async Task<string> SendAsync(HttpMethod httpMethod, string requestUri, object? content = null)
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
-        request.Headers.Add("X-MBX-APIKEY", Authentication?.Key);
+        request.Headers.Add("CB-ACCESS-KEY", Authentication?.Key);
+        request.Headers.Add("CB-ACCESS-SIGN", SignedString);
+        request.Headers.Add("CB-ACCESS-TIMESTAMP", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
+        request.Headers.Add("CB-ACCESS-PASSPHRASE", Authentication?.Pass);
 
         if (!(content is null))
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
@@ -75,14 +72,6 @@ namespace FractionalCryptoBot.Services
       }
     }
 
-    /// <summary>
-    /// Makes a public call to Binance's Api Endpoints that doesn't need to specifiy a client's authorisation keys.
-    /// </summary>
-    /// <param name="httpMethod">'GET', 'POST', 'DELETE'.</param>
-    /// <param name="requestUri">The address of the endpoint.</param>
-    /// <param name="query">Queries to be added to the request uri.</param>
-    /// <param name="content">The content to go with the call.</param>
-    /// <returns>A response string in JSON.</returns>
     public async Task<string> SendPublicAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null)
     {
       if (!(query is null))
@@ -98,14 +87,6 @@ namespace FractionalCryptoBot.Services
       return await SendAsync(httpMethod, requestUri, content);
     }
 
-    /// <summary>
-    /// Makes a signed call to Binance's Api Endpoints that needs to specifiy a client's authorisation keys.
-    /// </summary>
-    /// <param name="httpMethod">'GET', 'POST', 'DELETE'.</param>
-    /// <param name="requestUri">The address of the endpoint.</param>
-    /// <param name="query">Queries to be added to the request uri.</param>
-    /// <param name="content">The content to go with the call.</param>
-    /// <returns>A response string in JSON.</returns>
     public async Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null)
     {
       StringBuilder queryStringBuilder = new StringBuilder();
@@ -124,7 +105,8 @@ namespace FractionalCryptoBot.Services
 
       string secret = Authentication?.Secret ?? string.Empty;
 
-      string signature = Sign(queryStringBuilder.ToString(), secret);
+      var signature = Sign(queryStringBuilder.ToString(), secret);
+      SignedString = signature;
       queryStringBuilder.Append("&signature=").Append(signature);
 
       StringBuilder requestUriBuilder = new StringBuilder(requestUri);
@@ -133,22 +115,11 @@ namespace FractionalCryptoBot.Services
       return await SendAsync(httpMethod, requestUriBuilder.ToString(), content);
     }
 
-    /// <summary>
-    /// Parses the payload.
-    /// </summary>
-    /// <param name="payload"></param>
-    /// <exception cref="NotImplementedException"></exception>
     public void ParseWebsocketPayload(Crypto crypto, string content)
     {
       throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// HMAC signs the string if provided a source and its secret.
-    /// </summary>
-    /// <param name="source">The source string to then be encrypted.</param>
-    /// <param name="key">The secret key to encrypt the source.</param>
-    /// <returns>An encrypted string.</returns>
     public string Sign(string source, string key)
     {
       byte[] keyBytes = Encoding.UTF8.GetBytes(key);
