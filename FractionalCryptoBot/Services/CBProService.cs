@@ -9,13 +9,6 @@ using System.Web;
 
 namespace FractionalCryptoBot.Services
 {
-
-// sandbox URL's - 
-    // REST API	    https://api-public.sandbox.exchange.coinbase.com
-    // FIX API  	tcp+ssl://fix-public.sandbox.exchange.coinbase.com:4198
-    //Websocket Feed	wss://ws-feed-public.sandbox.exchange.coinbase.com
-
-
   /// <summary>
   /// The service class for Coinbase Pro.
   /// </summary>
@@ -25,16 +18,12 @@ namespace FractionalCryptoBot.Services
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
-    private string baseUri = @"https://api.exchange.coinbase.com";   
-    private string websocketBaseUri = string.Empty;  // ="wss://ws-feed.exchange.coinbase.com";
-    private string klineStreamInterval = string.Empty;
     #endregion
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
     public ILogger Log { get => log; private set => log = value; }
-    public string BaseUri { get => baseUri; private set => baseUri = value; }
-    public string WebsocketBaseUri { get => websocketBaseUri; private set => websocketBaseUri = value; }
-    public string KlineStreamInterval { get => klineStreamInterval; private set => klineStreamInterval = value; }
+    public string BaseUri => Authentication?.Uri ?? string.Empty;
+    public string WebsocketBaseUri => Authentication?.WebsocketUri ?? string.Empty;
     public IAuthentication? Authentication { get => authentication; set => authentication = value; }
     #endregion
     #region Constructor
@@ -48,8 +37,9 @@ namespace FractionalCryptoBot.Services
       // Nothing needs to be set in the constructor for now.
       httpClient = new HttpClient()
       {
-        BaseAddress = new Uri("https://api.exchange.coinbase.com"),  
+        BaseAddress = new Uri(Authentication?.Uri ?? ""),  
       };
+
       authentication = AuthenticationConfig.GetAuthentication(Marketplaces.COINBASE_PRO);
       log = logger;
 
@@ -175,7 +165,7 @@ namespace FractionalCryptoBot.Services
 
     public string GetWebsocketPath(params string[] content)
     {
-      throw new NotImplementedException();
+      return $"{Authentication?.WebsocketUri}";
     }
     #endregion
   }
