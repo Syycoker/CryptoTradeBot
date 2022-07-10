@@ -53,6 +53,7 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
+        request.Headers.Add("Accept", "application/json");
         request.Headers.Add("CB-ACCESS-KEY", Authentication?.Key);
         request.Headers.Add("CB-ACCESS-SIGN", SignedString);
         request.Headers.Add("CB-ACCESS-TIMESTAMP", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
