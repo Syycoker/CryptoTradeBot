@@ -26,12 +26,13 @@ namespace FractionalCryptoBot.Services
     #region Constructor
     public CBProService(ILogger logger)
     {
+      authentication = AuthenticationConfig.GetAuthentication(Marketplaces.COINBASE_PRO);
+
       httpClient = new HttpClient()
       {
         BaseAddress = new Uri(Authentication?.Uri ?? ""),  
       };
 
-      authentication = AuthenticationConfig.GetAuthentication(Marketplaces.COINBASE_PRO);
       log = logger;
 
       Log.LogInformation("{0}: '{1}' has been instantiated.", DateTime.UtcNow, nameof(CBProService));
