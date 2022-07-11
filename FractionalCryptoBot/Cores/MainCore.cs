@@ -57,10 +57,10 @@ namespace FractionalCryptoBot.Cores
       catch(Exception e)
       {
         // Log the exception
-        Logger.LogCritical("{0}: '{1}'.", DateTime.UtcNow, e.Message);
+        Logger.LogError("{0}: '{1}'.", DateTime.UtcNow, e.Message);
 
         // Reboot procedure if you get certain exceptions.
-        Logger.LogCritical("{0}: An error has occured in '{1}', attempting to reboot...", DateTime.UtcNow, nameof(RunMainProcedure));
+        Logger.LogError("{0}: An error has occured in '{1}', attempting to reboot...", DateTime.UtcNow, nameof(RunMainProcedure));
       }
     }
 

@@ -42,10 +42,11 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
+        var signAndTimestamp = (ValueTuple<string, string>) content;
         request.Headers.Add("Accept", "application/json");
         request.Headers.Add("CB-ACCESS-KEY", Authentication?.Key);
-        request.Headers.Add("CB-ACCESS-SIGN", requestUri);
-        request.Headers.Add("CB-ACCESS-TIMESTAMP", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
+        request.Headers.Add("CB-ACCESS-SIGN", signAndTimestamp.Item1);
+        request.Headers.Add("CB-ACCESS-TIMESTAMP", signAndTimestamp.Item2);
         request.Headers.Add("CB-ACCESS-PASSPHRASE", Authentication?.Pass);
 
         if (!(content is null))
@@ -81,27 +82,19 @@ namespace FractionalCryptoBot.Services
     {
       StringBuilder queryStringBuilder = new StringBuilder();
 
-      if (!(query is null))
-      {
-        string queryParameterString = string.Join("&", query.Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value?.ToString())).Select(kvp => string.Format("{0}={1}", kvp.Key, HttpUtility.UrlEncode(kvp.Value.ToString()))));
-        queryStringBuilder.Append(queryParameterString);
-      }
+      string method = httpMethod.ToString();
+      string body = JsonConvert.SerializeObject(query);
+      string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
-      if (queryStringBuilder.Length > 0)
-        queryStringBuilder.Append("&");
+      var message = timestamp + method + requestUri + body;
 
-      long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-      queryStringBuilder.Append("timestamp=").Append(now);
+      using var hash = SHA256.Create();
+      var byteArray = hash.ComputeHash(Encoding.UTF8.GetBytes(Authentication?.Secret ?? ""));
+      string hmac = Convert.ToHexString(byteArray).ToLower();
 
-      string secret = Authentication?.Secret ?? string.Empty;
+      var signature = Sign(message, hmac);
 
-      var signature = Sign(queryStringBuilder.ToString(), secret);
-      queryStringBuilder.Append("&signature=").Append(signature);
-
-      StringBuilder requestUriBuilder = new StringBuilder(requestUri);
-      requestUriBuilder.Append("?").Append(queryStringBuilder.ToString());
-
-      return await SendAsync(httpMethod, requestUriBuilder.ToString(), content);
+      return await SendAsync(httpMethod, requestUri, (signature, timestamp));
     }
 
     public void ParseWebsocketPayload(Crypto crypto, string content)
