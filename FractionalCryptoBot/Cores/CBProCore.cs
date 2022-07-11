@@ -78,7 +78,15 @@ namespace FractionalCryptoBot.Cores
     #region Public Methods
     public async Task<bool> ActiveService()
     {
-      return true; // Turning all active calls to true for now.
+      HttpResponseMessage response = 
+        await new HttpClient()
+        .SendAsync(new HttpRequestMessage()
+        {
+          Method = HttpMethod.Get,
+          RequestUri = new Uri(@"https://api.coinbase.com/v2/time"),
+        });
+
+      return response.IsSuccessStatusCode;
     }
 
     public Task<Crypto?> GetCryptoCurrency(string crypto)

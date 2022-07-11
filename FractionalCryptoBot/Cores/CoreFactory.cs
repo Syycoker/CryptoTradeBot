@@ -64,7 +64,7 @@ namespace FractionalCryptoBot
         default:
         case Marketplaces.NONE: throw new Exception(string.Format("Unable to identify type, please specify a type which implements type '0'.", nameof(ICore)));
         case Marketplaces.BINANCE: return new BinanceCore(LoggerFactory.CreateLogger<ICore>());
-        case Marketplaces.COINBASE_PRO: return new BinanceCore(LoggerFactory.CreateLogger<ICore>());
+        case Marketplaces.COINBASE_PRO: return new CBProCore(LoggerFactory.CreateLogger<ICore>());
       }
     }
   }
