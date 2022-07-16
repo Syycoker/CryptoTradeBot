@@ -41,7 +41,7 @@ namespace Tests
       => Assert.True(await _coinbasePro.ActiveService());
 
     [Theory]
-    [InlineData("ETH","BTC","ETHBTC")]
+    [InlineData("ETHBTC", "ETH","BTC")]
     public async Task Can_get_a_collection_of_cryptocurrency(string pairName,
       string baseAsset, string quoteAsset)
     {

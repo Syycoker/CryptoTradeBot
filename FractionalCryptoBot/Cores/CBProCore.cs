@@ -91,14 +91,10 @@ namespace FractionalCryptoBot.Cores
 
     public async Task<Crypto?> GetCryptoCurrency(string crypto)
     {
-      var parameter = new Dictionary<string, object>()
-      {
-        {"Symbol", crypto},
-      };
+      var response = await Service
+        .SendPublicAsync(HttpMethod.Get, $"/currencies/{crypto}", content: "test");
 
-      var response = await Service.SendSignedAsync(HttpMethod.Get, "", parameter);
-
-      return new Crypto();
+      return null;
     }
 
     public Task<IEnumerable<Crypto>> GetCryptoCurrencies()

@@ -46,14 +46,13 @@ namespace FractionalCryptoBot.Services
         if(content is not null)
         {
           var signAndTimestamp = (ValueTuple<string, string>)content;
-          request.Headers.Add("Accept", "application/json");
+          request.Headers.Add("USER-AGENT", "coinbaseex");
           request.Headers.Add("CB-ACCESS-KEY", Authentication?.Key);
           request.Headers.Add("CB-ACCESS-SIGN", signAndTimestamp.Item1);
           request.Headers.Add("CB-ACCESS-TIMESTAMP", signAndTimestamp.Item2);
           request.Headers.Add("CB-ACCESS-PASSPHRASE", Authentication?.Pass);
 
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
-
         }
 
         HttpResponseMessage response = await Client.SendAsync(request);
