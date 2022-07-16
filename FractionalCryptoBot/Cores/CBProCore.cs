@@ -92,9 +92,16 @@ namespace FractionalCryptoBot.Cores
     public async Task<Crypto?> GetCryptoCurrency(string crypto)
     {
       var response = await Service
-        .SendPublicAsync(HttpMethod.Get, $"/currencies/{crypto}", content: "test");
+        .SendPublicAsync(HttpMethod.Get, $"/products/{crypto}");
 
-      return null;
+      var json = JObject.Parse(response);
+      int basePrecision = 0;
+      int quotePrecision = 0;
+
+      return new Crypto(this, json?["base_currency"]?.Value<string>() ?? "",
+        json?["quote_currency"]?.Value<string>() ?? "",
+        basePrecision, quotePrecision, crypto
+        );
     }
 
     public Task<IEnumerable<Crypto>> GetCryptoCurrencies()

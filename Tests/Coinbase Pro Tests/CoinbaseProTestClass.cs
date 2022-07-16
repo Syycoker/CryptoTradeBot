@@ -41,15 +41,16 @@ namespace Tests
       => Assert.True(await _coinbasePro.ActiveService());
 
     [Theory]
-    [InlineData("ETHBTC", "ETH","BTC")]
-    public async Task Can_get_a_collection_of_cryptocurrency(string pairName,
-      string baseAsset, string quoteAsset)
+    [InlineData("ETH-USD", "ETH","USD")]
+    [InlineData("BTC-USD", "BTC","USD")]
+    [InlineData("USDT-USD", "USDT","USD")]
+    public async Task Can_get_a_collection_of_cryptocurrency(string cryptoName, params string[] expectedCosignments)
     {
-      var crypto = await _coinbasePro.GetCryptoCurrency(pairName);
+      var crypto = await _coinbasePro.GetCryptoCurrency(cryptoName);
 
-      Assert.True(crypto?.BaseName.ToLower().Equals(baseAsset));
-      Assert.True(crypto?.QuoteName.ToLower().Equals(quoteAsset));
-      Assert.True(crypto?.PairName.ToLower().Equals(pairName));
+      Assert.True(crypto?.BaseName.Equals(expectedCosignments[0]));
+      Assert.True(crypto?.QuoteName.Equals(expectedCosignments[1]));
+      Assert.True(crypto?.PairName.Equals(cryptoName));
     }
   }
 }
