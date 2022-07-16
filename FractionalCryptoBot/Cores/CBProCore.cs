@@ -89,9 +89,16 @@ namespace FractionalCryptoBot.Cores
       return response.IsSuccessStatusCode;
     }
 
-    public Task<Crypto?> GetCryptoCurrency(string crypto)
+    public async Task<Crypto?> GetCryptoCurrency(string crypto)
     {
-      throw new NotImplementedException();
+      var parameter = new Dictionary<string, object>()
+      {
+        {"Symbol", crypto},
+      };
+
+      var response = await Service.SendSignedAsync(HttpMethod.Get, "", parameter);
+
+      return new Crypto();
     }
 
     public Task<IEnumerable<Crypto>> GetCryptoCurrencies()

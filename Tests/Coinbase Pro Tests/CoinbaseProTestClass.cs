@@ -38,8 +38,18 @@ namespace Tests
 
     [Fact]
     public async Task Can_Make_Active_Call()
+      => Assert.True(await _coinbasePro.ActiveService());
+
+    [Theory]
+    [InlineData("ETH","BTC","ETHBTC")]
+    public async Task Can_get_a_collection_of_cryptocurrency(string pairName,
+      string baseAsset, string quoteAsset)
     {
-      Assert.True(await _coinbasePro.ActiveService());
+      var crypto = await _coinbasePro.GetCryptoCurrency(pairName);
+
+      Assert.True(crypto?.BaseName.ToLower().Equals(baseAsset));
+      Assert.True(crypto?.QuoteName.ToLower().Equals(quoteAsset));
+      Assert.True(crypto?.PairName.ToLower().Equals(pairName));
     }
   }
 }

@@ -68,7 +68,7 @@ namespace FractionalCryptoBot.Configuration
     /// </summary>
     /// <param name="marketplace"></param>
     /// <returns></returns>
-    public static IAuthentication? GetAuthentication(Marketplaces marketplace, string filePath = "")
+    public static IAuthentication GetAuthentication(Marketplaces marketplace, string filePath = "")
     {
       string path = string.IsNullOrEmpty(filePath)
         ? GetAuthenticationFilePath()
