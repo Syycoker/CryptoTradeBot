@@ -121,9 +121,35 @@ namespace FractionalCryptoBot.Cores
         ?? new List<Crypto>();
     }
 
-    public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
+    public async Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
     {
-      throw new NotImplementedException();
+      var parameters = new Dictionary<string, object>()
+      {
+        {"type", "market"},
+        {"product_id", crypto.PairName },
+        {"side", "buy" },
+        {"funds", crypto.BidQty }
+      };
+
+      var response = await Service
+        .SendSignedAsync(HttpMethod.Post,
+        "/orders", parameters);
+
+      JObject buyJson = JObject.Parse(response);
+
+      string msg = buyJson?["msg"]?.Value<string>() ?? "Success";
+
+      Dictionary<string, CoreStatus> buyActivities = new Dictionary<string, CoreStatus>()
+      {
+        {"Timestamp for this request was 1000ms ahead of the server's time.", CoreStatus.OUT_OF_SYNC},
+        {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
+        {"Account has insufficient balance for requested action." , CoreStatus.INSUFFICIENT_FUNDS},
+        {"Success" , CoreStatus.BUY_SUCCESSFUL},
+      };
+
+      return buyActivities.ContainsKey(msg)
+        ? buyActivities[msg]
+        : CoreStatus.UNKNOWN_ERROR;
     }
 
     public Task<CoreStatus> SellAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)

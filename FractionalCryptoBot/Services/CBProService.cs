@@ -83,8 +83,6 @@ namespace FractionalCryptoBot.Services
 
     public async Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null)
     {
-      StringBuilder queryStringBuilder = new StringBuilder();
-
       string method = httpMethod.ToString();
       string body = JsonConvert.SerializeObject(query);
       string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();

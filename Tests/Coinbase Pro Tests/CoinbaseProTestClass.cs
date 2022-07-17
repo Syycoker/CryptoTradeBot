@@ -60,5 +60,17 @@ namespace Tests
       Assert.NotNull(collection);
       Assert.True(collection.Count() > 0);
     }
+
+    [Fact]
+    public async Task Can_Buy_Asset()
+    {
+      Crypto? crypto = await _coinbasePro.GetCryptoCurrency("BTC-USD");
+      if (crypto is null) return;
+      crypto.SetBidQty(1.00m);
+
+      var operationStatus = await crypto.BuyAsset();
+
+      Assert.Equal(CoreStatus.BUY_SUCCESSFUL, operationStatus);
+    }
   }
 }
