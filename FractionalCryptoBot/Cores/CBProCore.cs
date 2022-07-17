@@ -95,18 +95,30 @@ namespace FractionalCryptoBot.Cores
         .SendPublicAsync(HttpMethod.Get, $"/products/{crypto}");
 
       var json = JObject.Parse(response);
-      int basePrecision = 0;
-      int quotePrecision = 0;
+
+      int basePrecision = GetPrecision(json?["base_increment"]?.Value<decimal>() ?? 0);
+      int quotePrecision = GetPrecision(json?["quote_increment"]?.Value<decimal>() ?? 0);
 
       return new Crypto(this, json?["base_currency"]?.Value<string>() ?? "",
         json?["quote_currency"]?.Value<string>() ?? "",
         basePrecision, quotePrecision, crypto
-        );
+      );
     }
 
-    public Task<IEnumerable<Crypto>> GetCryptoCurrencies()
+    public async Task<IEnumerable<Crypto>> GetCryptoCurrencies()
     {
-      throw new NotImplementedException();
+      var response = await Service
+        .SendPublicAsync(HttpMethod.Get, $"/products");
+
+      var json = JArray.Parse(response);
+
+      return json?.Select(crypto => new Crypto(this, 
+        json?[0]?["base_currency"]?.Value<string>() ?? "",
+        json?[0]?["quote_currency"]?.Value<string>() ?? "",
+        GetPrecision(json?[0]?["base_increment"]?.Value<decimal>() ?? 0),
+        GetPrecision(json?[0]?["quote_increment"]?.Value<decimal>() ?? 0),
+        json?[0]?["id"]?.Value<string>() ?? ""))
+        ?? new List<Crypto>();
     }
 
     public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)
@@ -127,6 +139,16 @@ namespace FractionalCryptoBot.Cores
     public Task<CoreStatus> TransferAssetToExchange(Crypto crypto, string walletId)
     {
       throw new NotImplementedException();
+    }
+    #endregion
+    #region Exchange Specific Methods
+    private int GetPrecision(decimal number)
+    {
+      string num = $"{number}";
+      int indexOfDecimalPoint = num.IndexOf('.');
+      if (indexOfDecimalPoint == -1) indexOfDecimalPoint = 0;
+      int subLength = num.Substring(indexOfDecimalPoint).Length;
+      return subLength - 1;
     }
     #endregion
   }

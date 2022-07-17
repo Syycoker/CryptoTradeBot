@@ -52,5 +52,13 @@ namespace Tests
       Assert.True(crypto?.QuoteName.Equals(expectedCosignments[1]));
       Assert.True(crypto?.PairName.Equals(cryptoName));
     }
+
+    [Fact]
+    public async Task Can_Get_Collection_Of_Cryptocurrency()
+    {
+      var collection = await _coinbasePro.GetCryptoCurrencies();
+      Assert.NotNull(collection);
+      Assert.True(collection.Count() > 0);
+    }
   }
 }
