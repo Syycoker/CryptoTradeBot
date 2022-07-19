@@ -48,10 +48,10 @@ namespace FractionalCryptoBot.Services
 
         if (content is not null)
         {
-          var signAndTimestamp = (ValueTuple<string, string>)content;
-          request.Headers.Add("CB-ACCESS-SIGN", signAndTimestamp.Item1);
-          request.Headers.Add("CB-ACCESS-TIMESTAMP", signAndTimestamp.Item2);
+          var signAndTimestamp = (ValueTuple<string, long>)content;
           request.Headers.Add("CB-ACCESS-KEY", Authentication?.Key);
+          request.Headers.Add("CB-ACCESS-SIGN", signAndTimestamp.Item1);
+          request.Headers.Add("CB-ACCESS-TIMESTAMP", $"{signAndTimestamp.Item2}");
           request.Headers.Add("CB-ACCESS-PASSPHRASE", Authentication?.Pass);
         }
 
@@ -85,17 +85,10 @@ namespace FractionalCryptoBot.Services
     {
       string method = httpMethod.ToString();
       string body = JsonConvert.SerializeObject(query);
-      string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+      long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-      var message = timestamp + method + requestUri + body;
-
-      using var hash = SHA256.Create();
-      var byteArray = hash.ComputeHash(Encoding.UTF8.GetBytes(Authentication?.Secret ?? ""));
-      string hmac = Convert.ToHexString(byteArray).ToLower();
-
-      var signature = Sign(message, hmac);
-
-      return await SendAsync(httpMethod, requestUri, (signature, timestamp));
+      return await SendAsync(httpMethod, requestUri, 
+        (Sign(Authentication?.Secret ?? "", timestamp + method + requestUri + body), timestamp));
     }
 
     public void ParseWebsocketPayload(Crypto crypto, string content)
@@ -103,17 +96,15 @@ namespace FractionalCryptoBot.Services
       throw new NotImplementedException();
     }
 
-    public string Sign(string source, string key)
+    public string Sign(string base64key, string data)
     {
-      byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+      var hmacKey = Convert.FromBase64String(base64key);
+      var dataBytes = Encoding.UTF8.GetBytes(data);
 
-      using (HMACSHA256 hmacsha256 = new HMACSHA256(keyBytes))
+      using (var hmac = new HMACSHA256(hmacKey))
       {
-        byte[] sourceBytes = Encoding.UTF8.GetBytes(source);
-
-        byte[] hash = hmacsha256.ComputeHash(sourceBytes);
-
-        return BitConverter.ToString(hash).Replace("-", "").ToLower();
+        var sig = hmac.ComputeHash(dataBytes);
+        return Convert.ToBase64String(sig);
       }
     }
 

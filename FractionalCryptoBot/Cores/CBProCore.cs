@@ -126,9 +126,10 @@ namespace FractionalCryptoBot.Cores
       var parameters = new Dictionary<string, object>()
       {
         {"type", "market"},
-        {"product_id", crypto.PairName },
+        {"price", crypto.BidQty },
+        {"size", crypto.BidQty },
         {"side", "buy" },
-        {"funds", crypto.BidQty }
+        {"product_id", crypto.PairName },
       };
 
       var response = await Service
@@ -137,11 +138,11 @@ namespace FractionalCryptoBot.Cores
 
       JObject buyJson = JObject.Parse(response);
 
-      string msg = buyJson?["msg"]?.Value<string>() ?? "Success";
+      string msg = buyJson?["message"]?.Value<string>() ?? "Success";
 
       Dictionary<string, CoreStatus> buyActivities = new Dictionary<string, CoreStatus>()
       {
-        {"Timestamp for this request was 1000ms ahead of the server's time.", CoreStatus.OUT_OF_SYNC},
+        {"request timestamp expired", CoreStatus.OUT_OF_SYNC},
         {"Stop loss orders are not supported for this symbol", CoreStatus.BUY_UNSUCCESSFUL },
         {"Account has insufficient balance for requested action." , CoreStatus.INSUFFICIENT_FUNDS},
         {"Success" , CoreStatus.BUY_SUCCESSFUL},
