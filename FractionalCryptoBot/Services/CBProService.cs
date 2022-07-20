@@ -49,6 +49,7 @@ namespace FractionalCryptoBot.Services
         if (content is not null)
         {
           var signAndTimestamp = (ValueTuple<string, long>)content;
+          request.Headers.Add("CB-VERSION", "2015-04-08");
           request.Headers.Add("CB-ACCESS-KEY", Authentication?.Key);
           request.Headers.Add("CB-ACCESS-SIGN", signAndTimestamp.Item1);
           request.Headers.Add("CB-ACCESS-TIMESTAMP", $"{signAndTimestamp.Item2}");
@@ -85,7 +86,9 @@ namespace FractionalCryptoBot.Services
     {
       string method = httpMethod.ToString();
       string body = JsonConvert.SerializeObject(query);
-      long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+      DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+      TimeSpan diff = DateTime.Now.ToUniversalTime() - origin;
+      long timestamp = (long)Math.Floor(diff.TotalSeconds);
 
       return await SendAsync(httpMethod, requestUri, 
         (Sign(Authentication?.Secret ?? "", timestamp + method + requestUri + body), timestamp));
