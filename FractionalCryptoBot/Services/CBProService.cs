@@ -3,6 +3,7 @@ using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -44,7 +45,7 @@ namespace FractionalCryptoBot.Services
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
         request.Headers.Add("Accept", "application/json");
-        request.Headers.Add("USER-AGENT", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0");
+        request.Headers.Add("USER-AGENT", "CoinbaseProClient");
 
         if (content is not null)
         {
@@ -52,7 +53,7 @@ namespace FractionalCryptoBot.Services
           request.Headers.Add("CB-VERSION", "2015-04-08");
           request.Headers.Add("CB-ACCESS-KEY", Authentication?.Key);
           request.Headers.Add("CB-ACCESS-SIGN", signAndTimestamp.Item1);
-          request.Headers.Add("CB-ACCESS-TIMESTAMP", $"{signAndTimestamp.Item2}");
+          request.Headers.Add("CB-ACCESS-TIMESTAMP", signAndTimestamp.Item2.ToString("F0", CultureInfo.InvariantCulture));
           request.Headers.Add("CB-ACCESS-PASSPHRASE", Authentication?.Pass);
         }
 
@@ -84,14 +85,21 @@ namespace FractionalCryptoBot.Services
 
     public async Task<string> SendSignedAsync(HttpMethod httpMethod, string requestUri, Dictionary<string, object>? query = null, object? content = null)
     {
-      string method = httpMethod.ToString();
-      string body = JsonConvert.SerializeObject(query);
       DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
       TimeSpan diff = DateTime.Now.ToUniversalTime() - origin;
       long timestamp = (long)Math.Floor(diff.TotalSeconds);
 
+      var computedSignature = ComputeSignature(httpMethod,
+        Authentication?.Secret ?? "", timestamp, requestUri,
+        JsonConvert.SerializeObject(query));
+
+      //string method = httpMethod.ToString();
+      //string body = JsonConvert.SerializeObject(query);
+      //var prehash = timestamp.ToString("F0", CultureInfo.InvariantCulture) + httpMethod.ToString().ToUpper() + requestUri + body;
+      //var sign = Sign(Authentication?.Secret ?? "" , prehash);
+
       return await SendAsync(httpMethod, requestUri, 
-        (Sign(Authentication?.Secret ?? "", timestamp + method + requestUri + body), timestamp));
+        (computedSignature, timestamp));
     }
 
     public void ParseWebsocketPayload(Crypto crypto, string content)
@@ -99,15 +107,35 @@ namespace FractionalCryptoBot.Services
       throw new NotImplementedException();
     }
 
-    public string Sign(string base64key, string data)
+    public string ComputeSignature(
+    HttpMethod httpMethod,
+    string secret,
+    double timestamp,
+    string requestUri,
+    string contentBody = "")
     {
-      var hmacKey = Convert.FromBase64String(base64key);
-      var dataBytes = Encoding.UTF8.GetBytes(data);
+      var convertedString = Convert.FromBase64String(secret);
+      var prehash = timestamp.ToString("F0", CultureInfo.InvariantCulture) + httpMethod.ToString().ToUpper() + requestUri + contentBody;
+      return HashString(prehash, convertedString);
+    }
 
-      using (var hmac = new HMACSHA256(hmacKey))
+    private string HashString(string str, byte[] secret)
+    {
+      var bytes = Encoding.UTF8.GetBytes(str);
+      using (var hmaccsha = new HMACSHA256(secret))
       {
-        var sig = hmac.ComputeHash(dataBytes);
-        return Convert.ToBase64String(sig);
+        return Convert.ToBase64String(hmaccsha.ComputeHash(bytes));
+      }
+    }
+
+    public string Sign(string secretKey, string data)
+    {
+      var secret = Convert.FromBase64String(secretKey);
+
+      var bytes = Encoding.UTF8.GetBytes(data);
+      using (var hmaccsha = new HMACSHA256(secret))
+      {
+        return System.Convert.ToBase64String(hmaccsha.ComputeHash(bytes));
       }
     }
 

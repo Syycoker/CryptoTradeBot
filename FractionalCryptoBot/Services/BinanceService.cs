@@ -61,7 +61,7 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
-        string apiKey = (Authentication?.Key) ?? "null reference for api key";
+        string apiKey = (Authentication?.Key) ?? "";
 
         request.Headers.Add("X-MBX-APIKEY", apiKey);
 
