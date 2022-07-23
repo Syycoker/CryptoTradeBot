@@ -2,6 +2,7 @@
 using FractionalCryptoBot.Enumerations;
 using FractionalCryptoBot.Models;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -51,6 +52,8 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
+        request.Headers.Add("Accept", "application/json");
+
         if (content is not null)
         {
           var signAndTimestamp = (ValueTuple<string, long>)content;
@@ -58,6 +61,8 @@ namespace FractionalCryptoBot.Services
           request.Headers.Add("FTX-SIGN", signAndTimestamp.Item1);
           request.Headers.Add("FTX-TS", signAndTimestamp.Item2.ToString());
         }
+        if (!(content is null))
+          request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await Client.SendAsync(request);
 
