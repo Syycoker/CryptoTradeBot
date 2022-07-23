@@ -47,8 +47,9 @@ namespace FractionalCryptoBot
 
       var responseObj = JObject.Parse(responseStr);
       if (responseObj is null) return false;
-
-      return (responseObj?["success"]?.Value<bool>() ?? false);
+      var isSuccess = (responseObj?["success"]?.Value<bool>());
+      if (!isSuccess.HasValue) return false;
+      return isSuccess.Value;
     }
 
     public Task<CoreStatus> BuyAsset(Crypto crypto, decimal price, decimal quantity = 0.00M)

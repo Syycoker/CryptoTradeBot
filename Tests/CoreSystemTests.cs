@@ -33,7 +33,7 @@ namespace Tests
     public void Check_If_All_Services_Instantiated_Are_Active()
     {
       // Get all cores that don't give an inactive service status.
-      var anyCoresInactive = CoreFactory.GetCores().Any(core => !core.ActiveService().Result);
+      var anyCoresInactive = CoreFactory.GetCores().Any(core => core.ActiveService().Result == false);
 
       // We don't expect any cores to be inactive
       Assert.False(anyCoresInactive);

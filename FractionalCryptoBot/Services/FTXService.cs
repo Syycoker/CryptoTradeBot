@@ -15,6 +15,7 @@ namespace FractionalCryptoBot.Services
     private HttpClient httpClient;
     private IAuthentication? authentication;
     private ILogger log;
+    private readonly HMACSHA256 _hashMaker;
     #endregion
     #region Public Members
     public HttpClient Client { get => httpClient; private set => httpClient = value; }
@@ -32,6 +33,8 @@ namespace FractionalCryptoBot.Services
       {
         BaseAddress = new Uri(Authentication?.Uri ?? ""),
       };
+
+      _hashMaker = new HMACSHA256(Encoding.UTF8.GetBytes(Authentication?.Secret ?? ""));
 
       log = logger;
 
@@ -52,15 +55,15 @@ namespace FractionalCryptoBot.Services
     {
       using (var request = new HttpRequestMessage(httpMethod, BaseUri + requestUri))
       {
-        request.Headers.Add("Accept", "application/json");
-
         if (content is not null)
         {
           var signAndTimestamp = (ValueTuple<string, long>)content;
+          request.Headers.Add("Accepts", "application/json");
           request.Headers.Add("FTX-KEY", Authentication?.Key);
           request.Headers.Add("FTX-SIGN", signAndTimestamp.Item1);
           request.Headers.Add("FTX-TS", signAndTimestamp.Item2.ToString());
         }
+
         if (!(content is null))
           request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 
@@ -100,27 +103,28 @@ namespace FractionalCryptoBot.Services
         queryStringBuilder.Append(queryParameterString);
       }
 
-      if (queryStringBuilder.Length > 0)
-        queryStringBuilder.Append("&");
+      var _nonce = GetNonce();
 
-      long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
-      var signaturePayload = $"{now}{httpMethod.ToString().ToUpper()}{requestUri}";
+      var signaturePayload = $"{_nonce}{httpMethod.ToString().ToUpper()}{requestUri}";
 
       string signature = Sign(signaturePayload, Authentication?.Secret ?? "");
 
       StringBuilder requestUriBuilder = new StringBuilder(requestUri);
       requestUriBuilder.Append("?").Append(queryStringBuilder.ToString());
 
-      return await SendAsync(httpMethod, requestUriBuilder.ToString(), content);
+      return await SendAsync(httpMethod, requestUriBuilder.ToString(), (signature, _nonce));
     }
 
     public string Sign(string source, string secret)
     {
-      var hashMaker = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-      var hash = hashMaker.ComputeHash(Encoding.UTF8.GetBytes(source));
-      var hashString = BitConverter.ToString(hash).Replace("-", string.Empty);
-      return hashString.ToLower();
+      var hash = _hashMaker.ComputeHash(Encoding.UTF8.GetBytes(source));
+      var hashStringBase64 = BitConverter.ToString(hash).Replace("-", string.Empty);
+      return hashStringBase64.ToLower();
+    }
+
+    private long GetNonce()
+    {
+      return Utility.Util.GetMillisecondsFromEpochStart();
     }
   }
 }
